@@ -119,7 +119,20 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .cmdr{display:inline-flex;align-items:center;gap:1.4cqmin;height:max(26px,7.5cqmin);padding:0 2.4cqmin;border-radius:99px;background:rgba(0,0,0,.32);font-size:max(12px,3.8cqmin);font-weight:600;white-space:nowrap;max-width:100%;font-variant-numeric:tabular-nums}
 .cmdr .cn{overflow:hidden;text-overflow:ellipsis;max-width:38cqw}
 .cmdr .tx{opacity:.9}
+.cmdr{cursor:pointer}
 .cmdr .cost{padding:0 1.6cqmin;border-radius:99px;background:var(--fg);color:var(--bg2);font-weight:700}
+.cardv{flex:1;min-height:0;display:flex;gap:3cqmin;align-items:stretch}
+.cardv .ci{flex:none;height:100%;max-width:46%;display:flex;align-items:flex-start;justify-content:center}
+.cardv .ci img{max-height:100%;max-width:100%;border-radius:4.5%/3.3%;box-shadow:0 6px 24px rgba(0,0,0,.5);display:block}
+.cardv .ct{flex:1;min-width:0;overflow:auto;display:grid;gap:1.6cqmin;align-content:start;touch-action:pan-y;font-size:max(13px,3.8cqmin);line-height:1.4}
+.cardv .ct h4{margin:0;font-family:var(--f-title);font-size:max(15px,5cqmin);letter-spacing:.02em}
+.cardv .ct .ty{opacity:.8;font-style:italic}
+.cardv .ct .tx{white-space:pre-wrap;background:rgba(0,0,0,.22);padding:2cqmin;border-radius:10px}
+.cardv .ct .pt{font-family:var(--f-num);font-weight:700;font-size:max(18px,6cqmin)}
+.cardv .ct .en{opacity:.7;font-size:.92em}
+.ms{display:inline-grid;place-items:center;width:1.35em;height:1.35em;border-radius:50%;font-family:var(--f-num);font-weight:700;font-size:.85em;margin:0 .06em;color:#1a1a1a;background:#cfc7b8;vertical-align:-.15em;font-style:normal}
+.ms.W{background:#f6f0d6}.ms.U{background:#a9d0ef}.ms.B{background:#b9aeb4}.ms.R{background:#f19c80}.ms.G{background:#9bd3ae}.ms.C{background:#d5d0cc}
+@container (max-width:520px){.cardv{flex-direction:column}.cardv .ci{height:auto;max-height:52%;max-width:100%}.cardv .ci img{max-height:100%}}
 .pchips{display:flex;flex-wrap:wrap;justify-content:center;gap:1.4cqmin;pointer-events:auto;max-width:92%}
 .pchip{display:inline-flex;align-items:center;gap:1cqmin;height:max(24px,7cqmin);padding:0 2.2cqmin;border-radius:8px;background:rgba(0,0,0,.25);font-size:max(12px,3.8cqmin);font-weight:600;font-variant-numeric:tabular-nums}
 .pchip i{width:max(9px,2.6cqmin);height:max(9px,2.6cqmin);border-radius:50%;background:var(--dot);box-shadow:0 0 0 1px rgba(255,255,255,.5)}
@@ -339,7 +352,7 @@ function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.setup)
 let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}},250)}
 
 let S=migrate(load()||fresh());
-const ui={pad:{},archConfirm:false,ov:{},fx:{},delta:{},assign:null,modal:null,roll:{},rollTop:new Set(),pick:null,die:null,planar:null,confirm:null,shake:{}};
+const ui={cardK:{},cardEn:{},pad:{},archConfirm:false,ov:{},fx:{},delta:{},assign:null,modal:null,roll:{},rollTop:new Set(),pick:null,die:null,planar:null,confirm:null,shake:{}};
 let undo=[],undoKey=null,undoT=0;
 let wl=null;
 
@@ -468,25 +481,43 @@ function fullscreen(){const d=document.documentElement;try{if(document.fullscree
 /* ---------- Scryfall: Commander-Suche ---------- */
 const SF='https://api.scryfall.com';
 async function sfAuto(q){try{const r=await fetch(SF+'/cards/autocomplete?q='+encodeURIComponent(q));if(!r.ok)return[];const j=await r.json();return j.data||[]}catch(e){return[]}}
-async function sfCard(name){try{const r=await fetch(SF+'/cards/named?fuzzy='+encodeURIComponent(name));if(!r.ok)return null;const c=await r.json();
-  const face=c.image_uris?c:(c.card_faces&&c.card_faces[0])||{};const iu=c.image_uris||face.image_uris||{};
-  return{name:c.name,art:iu.art_crop||null,cmc:typeof c.cmc==='number'?c.cmc:null,cost:c.mana_cost||face.mana_cost||'',ci:c.color_identity||[]}}catch(e){return null}}
+const deMap={};
+async function sfJSON(path){try{const r=await fetch(SF+path);if(!r.ok)return null;return await r.json()}catch(e){return null}}
+async function sfSearchDe(q){const j=await sfJSON('/cards/search?q='+encodeURIComponent(q+' lang:de')+'&unique=cards');return j&&j.data?j.data:[]}
+function faceOf(c){return c.image_uris?c:(c.card_faces&&c.card_faces[0])||{}}
+function cardText(c,key){if(c[key])return c[key];if(c.card_faces)return c.card_faces.map(f=>f[key]||'').filter(Boolean).join('\n—\n');return''}
+async function sfCard(name){
+  let c=await sfJSON('/cards/named?fuzzy='+encodeURIComponent(name));
+  if(!c||c.object!=='card'){const de=deMap[name.toLowerCase()];if(de)c=await sfJSON('/cards/named?exact='+encodeURIComponent(de));}
+  if(!c||c.object!=='card'){const hits=await sfSearchDe(name);if(hits[0])c=await sfJSON('/cards/named?exact='+encodeURIComponent(hits[0].name));}
+  if(!c||c.object!=='card')return null;
+  const face=faceOf(c),iu=c.image_uris||face.image_uris||{};
+  const out={name:c.name,art:iu.art_crop||null,img:iu.normal||null,cmc:typeof c.cmc==='number'?c.cmc:null,cost:c.mana_cost||face.mana_cost||'',ci:c.color_identity||[],
+    type:c.type_line||'',text:cardText(c,'oracle_text'),pt:c.power!=null?c.power+'/'+c.toughness:(face.power!=null?face.power+'/'+face.toughness:''),oracle:c.oracle_id||null,full:true};
+  if(out.oracle){const j=await sfJSON('/cards/search?q='+encodeURIComponent('oracleid:'+out.oracle+' lang:de')+'&unique=prints&order=released&dir=desc');
+    const d=j&&j.data&&j.data[0];if(d){const df=faceOf(d),diu=d.image_uris||df.image_uris||{};
+      out.nameDe=d.printed_name||(d.card_faces?d.card_faces.map(f=>f.printed_name).filter(Boolean).join(' // '):'')||null;
+      out.typeDe=d.printed_type_line||df.printed_type_line||'';out.textDe=cardText(d,'printed_text');out.imgDe=diu.normal||null}}
+  return out}
+async function enrich(cd){if(!cd||cd.full||cd.offline||!cd.name)return cd;const c=await sfCard(cd.name);return c||cd}
 function ciColor(ci){if(!ci||!ci.length)return'C';if(ci.length>1)return'M';return ci[0]}
 const shortName=n=>{const s=n.split(' // ')[0];return s.length>22?s.split(',')[0]:s};
 let acT=null;
 async function onCmdInput(inp){const q=inp.value.trim();clearTimeout(acT);if(q.length<2)return;
-  acT=setTimeout(async()=>{const list=await sfAuto(q);const dl=document.getElementById('dl-'+inp.id);if(dl)dl.innerHTML=list.slice(0,12).map(n=>`<option value="${esc(n)}"></option>`).join('')},250)}
+  acT=setTimeout(async()=>{let list=await sfAuto(q);
+    if(list.length<4&&q.length>=3){const de=await sfSearchDe(q);de.slice(0,10).forEach(c=>{const pn=c.printed_name||(c.card_faces&&c.card_faces[0].printed_name);if(pn){deMap[pn.toLowerCase()]=c.name;if(!list.includes(pn))list.push(pn)}})}
+    const dl=document.getElementById('dl-'+inp.id);if(dl)dl.innerHTML=list.slice(0,14).map(n=>`<option value="${esc(n)}"></option>`).join('')},300)}
 async function resolveCmd(i,k){const st=S.setup,p=st.players[i],name=(p.cmdr[k]||'').trim();
   if(!name){p.cdata[k]=null;setPrev(i,k);save();return}
   const prev=document.getElementById(`cprev${i}-${k}`);if(prev)prev.innerHTML='<span>Suche Karte …</span>';
   const c=await sfCard(name);
-  if(c){p.cdata[k]=c;p.cmdr[k]=c.name;const inp=document.getElementById(`cmd${i}-${k}`);if(inp&&document.activeElement!==inp)inp.value=c.name;
+  if(c){p.cdata[k]=c;p.cmdr[k]=c.nameDe||c.name;const inp=document.getElementById(`cmd${i}-${k}`);if(inp&&document.activeElement!==inp)inp.value=p.cmdr[k];
     if(k===0&&!p.colorSet){p.color=ciColor(c.ci)}}
   else p.cdata[k]={name,art:null,cmc:null,cost:'',ci:[],offline:true};
   setPrev(i,k);save();
   if(!document.activeElement||document.activeElement.tagName!=='INPUT')renderSetup()}
 function setPrev(i,k){const el=document.getElementById(`cprev${i}-${k}`);if(!el)return;const c=S.setup.players[i].cdata[k];
-  el.innerHTML=!c?'':c.offline?`<span>Karte nicht gefunden oder offline – Name wird so angezeigt</span>`:`${c.art?`<img src="${c.art}" alt="">`:''}<b>${esc(c.name)}</b><span>${c.cmc!=null?c.cmc+' Mana':''}</span>`}
+  el.innerHTML=!c?'':c.offline?`<span>Karte nicht gefunden oder offline – Name wird so angezeigt</span>`:`${c.art?`<img src="${c.art}" alt="">`:''}<b>${esc(c.nameDe||c.name)}</b><span>${c.nameDe&&c.nameDe!==c.name?esc(c.name)+' · ':''}${c.cmc!=null?c.cmc+' Mana':''}${c.full&&!c.nameDe?' · nur auf Englisch gedruckt':''}</span>`}
 
 /* ---------- Setup ---------- */
 const ROTS=[null,0,90,180,270];const rotName=r=>r==null?'automatisch':r===0?'unten':r===90?'links':r===180?'oben':'rechts';
@@ -565,7 +596,7 @@ function startGame(){readSetupInputs();const st=S.setup;
   logLives();ev('Neues Spiel · '+st.n+' Spieler'+(st.arch>=0?' · Archenemy: '+S.players[st.arch].name:' · '+st.start+' Leben'));
   S.phase='game';show();save();wake();if(S.cfg.sound)ac()}
 function cmdObj(c){return c?{...c}:null}
-function cmdName(p,k){const c=p.cdata&&p.cdata[k];const n=(c&&c.name)||(p.cmdr&&p.cmdr[k])||'';return n?shortName(n):''}
+function cmdName(p,k){const c=p.cdata&&p.cdata[k];const n=(c&&(c.nameDe||c.name))||(p.cmdr&&p.cmdr[k])||'';return n?shortName(n):''}
 function newG(){return{paused:false,pausedAt:null,turn:1,active:null,first:null,monarch:null,initiative:null,dn:0,storm:0,planar:0,started:Date.now(),turnStart:null,ended:false,endedAt:null,winner:null}}
 function restartSame(){pushUndo();S.players.forEach(p=>{Object.assign(p,{life:p.startLife,poison:0,energy:0,exp:0,rad:0,tax1:0,tax2:0,misc:0,elim:null,time:0});(p.custom||[]).forEach(c=>c.v=0);for(const f in p.cmd)p.cmd[f]=[0,0]});
   S.g=newG();S.lifeLog=[];logLives();ev('Neue Runde');ui.ov={};ui.fx={};ui.delta={};closeModal();update();save();toast('Neue Runde')}
@@ -622,6 +653,19 @@ function ovHTML(p,type){
         <button class="tb go2" data-act="fx" data-kind="alllose" data-pid="${p.id}">Alle verlieren ${x}</button>
         <button class="tb go2" data-act="fx" data-kind="allgain" data-pid="${p.id}">Alle erhalten ${x}</button></div>
     </div>`}
+  if(type==='card'){const k=ui.cardK[p.id]||0;const c=p.cdata&&p.cdata[k];const tax=p[k?'tax2':'tax1']||0;const n=cmdName(p,k)||'Commander';
+    const hasDe=c&&(c.textDe||c.imgDe);const en=ui.cardEn[p.id]||!hasDe;
+    const img=c?(en?c.img:(c.imgDe||c.img)):null;
+    const body=!c||c.offline?`<div class="ct"><p>Zu „${esc(n)}“ sind keine Kartendaten da. Mit Internet wird die Karte beim nächsten Öffnen geladen.</p></div>`:!c.full?`<div class="ct"><p>Karte wird geladen …</p></div>`:
+      `${img?`<div class="ci"><img src="${img}" alt="${esc(n)}"></div>`:''}<div class="ct">
+        <h4>${esc(en?c.name:(c.nameDe||c.name))} ${manaHTML(c.cost)}</h4>
+        <div class="ty">${esc(en?c.type:(c.typeDe||c.type))}</div>
+        ${(en?c.text:(c.textDe||c.text))?`<div class="tx">${manaInText(esc(en?c.text:(c.textDe||c.text)))}</div>`:''}
+        ${c.pt?`<div class="pt">${esc(c.pt)}</div>`:''}
+        <div class="r"><div class="lab"><span>Gestorben / neu gewirkt<small>Steuer +${tax*2}${c.cmc!=null?' · kostet jetzt '+(c.cmc+tax*2)+' Mana':''}</small></span></div>${rowsCtl(`data-act="ctr" data-pid="${p.id}" data-k="${k?'tax2':'tax1'}"`,tax)}</div>
+        ${!hasDe?'<div class="en">Diese Karte gibt es nicht auf Deutsch, daher der englische Text.</div>':''}
+      </div>`;
+    return`<div class="ov-h"><div><h3>${esc(n)}</h3></div>${hasDe?`<button class="tb" data-act="cardlang" data-pid="${p.id}">${en?'Deutsch':'English'}</button>`:''}${close}</div><div class="cardv">${body}</div>`}
   if(type==='pad'){const v=ui.pad[p.id]??'';const keys=['1','2','3','4','5','6','7','8','9','±','0','⌫'];
     return`<div class="ov-h"><div><h3>Leben eingeben</h3><p>Aktuell ${p.life}</p></div>${close}</div>
     <div class="padv">${v===''?'<span style="opacity:.4">'+p.life+'</span>':esc(v)}</div>
@@ -648,9 +692,11 @@ function chipsHTML(p){const out=[];
   if(p.misc)out.push(`<span class="pchip">Marken ${p.misc}</span>`);
   return out.join('')}
 
+function manaHTML(cost){if(!cost)return'';return cost.replace(/\{([^}]+)\}/g,(m,x)=>{const c=x.replace('/','');const cls=/^[WUBRGC]$/.test(c)?c:'';return`<i class="ms ${cls}">${esc(x.length>2?x.replace('/',''):x)}</i>`}).replace(/ \/\/ /g,' / ')}
+function manaInText(t){return t.replace(/\{([^}]+)\}/g,(m,x)=>{const c=x.replace('/','');const cls=/^[WUBRGC]$/.test(c)?c:'';return`<i class="ms ${cls}">${x==='T'?'↷':x.replace('/','')}</i>`})}
 function cmdrHTML(p){const out=[];[0,1].forEach(k=>{if(k===1&&!p.partner)return;const n=cmdName(p,k);if(!n)return;const tax=p[k?'tax2':'tax1']||0;const c=p.cdata[k];
     const cost=c&&c.cmc!=null?c.cmc+tax*2:null;
-    out.push(`<span class="cmdr" title="${esc(n)}"><span class="cn">${esc(n)}</span>${tax?`<span class="tx">† ${tax}</span>`:''}${cost!=null?`<span class="cost">${cost} Mana</span>`:tax?`<span class="cost">+${tax*2}</span>`:''}</span>`)});
+    out.push(`<span class="cmdr" title="${esc(n)}" data-act="card" data-pid="${p.id}" data-k="${k}"><span class="cn">${esc(n)}</span>${tax?`<span class="tx">† ${tax}</span>`:''}${cost!=null?`<span class="cost">${cost} Mana</span>`:tax?`<span class="cost">+${tax*2}</span>`:''}</span>`)});
   return out.join('')}
 function barHTML(){const g=S.g;
   if(ui.assign){const what=ui.assign==='monarch'?'den Monarchen':'die Initiative';
@@ -732,6 +778,10 @@ function runAct(b){const a=b.dataset.act,pid=+b.dataset.pid,d=+b.dataset.d;
 
 elGame.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||b.hasAttribute('data-rep')||b.disabled)return;const a=b.dataset.act,pid=b.dataset.pid!=null?+b.dataset.pid:null;
   switch(a){
+    case'card':{const k=+b.dataset.k;ui.cardK[pid]=k;ui.ov[pid]='card';update();const pl=P(pid),cd=pl.cdata&&pl.cdata[k];
+      if(cd&&!cd.full&&!cd.offline){enrich(cd).then(n=>{if(n&&n!==cd){pl.cdata[k]=n;if(S.setup.players[pid])S.setup.players[pid].cdata[k]={...n};save();update()}})}
+      else if(!cd&&pl.cmdr&&pl.cmdr[k]){sfCard(pl.cmdr[k]).then(n=>{if(n){pl.cdata[k]=n;save();update()}})}break}
+    case'cardlang':ui.cardEn[pid]=!ui.cardEn[pid];update();break;
     case'ov':ui.ov[pid]=ui.ov[pid]===b.dataset.ov?null:b.dataset.ov;if(b.dataset.ov==='pad')ui.pad[pid]='';update();break;
     case'ovclose':ui.ov[pid]=null;update();break;
     case'fxset':fxState(pid).amt=+b.dataset.v;update();break;
