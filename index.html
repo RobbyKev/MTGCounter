@@ -54,6 +54,14 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .prow-top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .prow input[type=text]{flex:1 1 160px;min-width:0;height:44px;border-radius:9px;border:1px solid #2b2f37;background:#0f1114;color:var(--ink);padding:0 12px;font-size:17px;font-family:var(--f-ui)}
 .seat{font-size:13px;color:var(--muted)}
+.cmdin{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
+.cmdin input{height:44px;border-radius:9px;border:1px solid #2b2f37;background:#0f1114;color:var(--ink);padding:0 12px;font-size:16px;font-family:var(--f-ui);min-width:0;width:100%}
+.cprev{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);min-height:20px}
+.cprev img{width:44px;height:32px;object-fit:cover;border-radius:5px}
+.cprev b{color:var(--ink);font-weight:600}
+.arch-list{display:grid;gap:8px}
+.arch-item{display:grid;gap:4px;padding:10px 12px;border-radius:12px;background:#0f1013;font-size:14px}
+.arch-item small{color:var(--muted)}
 .sw-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .sw{width:34px;height:34px;border-radius:50%;background:var(--c);border:2px solid transparent;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
 .sw[aria-pressed="true"]{border-color:var(--ink);transform:scale(1.08)}
@@ -86,6 +94,10 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .panel.active{box-shadow:0 0 0 3px var(--brass),0 0 28px rgba(201,164,92,.35)}
 .panel.pick{box-shadow:0 0 0 4px #fff,0 0 40px rgba(255,255,255,.5)}
 .panel.dead{filter:grayscale(.85) brightness(.7)}
+.panel.hasart{--fg:#f7f3ea}
+.inner.art{background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,rgba(0,0,0,.18) 38%,rgba(0,0,0,.25) 62%,rgba(0,0,0,.6) 100%),var(--art) center 30%/cover no-repeat}
+.inner.art .num{text-shadow:0 2px 14px rgba(0,0,0,.7),0 0 2px rgba(0,0,0,.6)}
+.inner.art .name,.inner.art .cmdr{text-shadow:0 1px 6px rgba(0,0,0,.8)}
 .panel.shake{animation:shake .5s}
 @keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
 
@@ -103,6 +115,11 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .badge{display:inline-flex;align-items:center;gap:1cqmin;height:max(22px,6.5cqmin);padding:0 2cqmin;border-radius:99px;background:rgba(0,0,0,.28);font-size:max(11px,3.6cqmin);font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
 .badge svg{width:max(14px,4.2cqmin);height:max(14px,4.2cqmin)}
 .badge.turn{background:var(--brass);color:#1a1408}
+.cmdrline{display:flex;flex-wrap:wrap;justify-content:center;gap:1.4cqmin;pointer-events:auto;max-width:94%}
+.cmdr{display:inline-flex;align-items:center;gap:1.4cqmin;height:max(26px,7.5cqmin);padding:0 2.4cqmin;border-radius:99px;background:rgba(0,0,0,.32);font-size:max(12px,3.8cqmin);font-weight:600;white-space:nowrap;max-width:100%;font-variant-numeric:tabular-nums}
+.cmdr .cn{overflow:hidden;text-overflow:ellipsis;max-width:38cqw}
+.cmdr .tx{opacity:.9}
+.cmdr .cost{padding:0 1.6cqmin;border-radius:99px;background:var(--fg);color:var(--bg2);font-weight:700}
 .pchips{display:flex;flex-wrap:wrap;justify-content:center;gap:1.4cqmin;pointer-events:auto;max-width:92%}
 .pchip{display:inline-flex;align-items:center;gap:1cqmin;height:max(24px,7cqmin);padding:0 2.2cqmin;border-radius:8px;background:rgba(0,0,0,.25);font-size:max(12px,3.8cqmin);font-weight:600;font-variant-numeric:tabular-nums}
 .pchip i{width:max(9px,2.6cqmin);height:max(9px,2.6cqmin);border-radius:50%;background:var(--dot);box-shadow:0 0 0 1px rgba(255,255,255,.5)}
@@ -160,7 +177,17 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .tb{min-height:max(40px,10cqmin);padding:0 2.6cqmin;border-radius:10px;background:rgba(255,255,255,.12);font-weight:600;font-size:max(13px,3.8cqmin);display:inline-flex;align-items:center;gap:1.4cqmin}
 .tb[aria-pressed="true"]{background:var(--fg);color:var(--bg2)}
 .tb.go2{background:var(--fg);color:var(--bg2);width:100%;justify-content:center}
-.amt{display:flex;align-items:center;gap:2cqmin}
+.amt{display:flex;align-items:center;gap:2cqmin;flex-wrap:wrap}
+.padv{font-family:var(--f-num);font-weight:700;font-size:max(36px,14cqmin);text-align:center;line-height:1;padding:1cqmin;border-radius:12px;background:rgba(0,0,0,.25);font-variant-numeric:tabular-nums}
+.padg{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6cqmin;flex:1;min-height:0}
+.padg button{border-radius:12px;background:rgba(255,255,255,.12);font-family:var(--f-num);font-size:max(22px,7cqmin);font-weight:700;min-height:max(40px,9cqh)}
+.padg button:active{background:rgba(255,255,255,.3)}
+.padg .ok{background:var(--fg);color:var(--bg2)}
+.addrow{display:flex;gap:1.6cqmin}
+.addrow input{flex:1;min-width:0;height:max(44px,11cqmin);border-radius:10px;border:0;background:rgba(0,0,0,.3);color:var(--fg);padding:0 2.4cqmin;font-size:16px;font-family:var(--f-ui)}
+.r .del{width:max(32px,8cqmin);height:max(32px,8cqmin);border-radius:8px;background:rgba(0,0,0,.25);display:grid;place-items:center}
+.r .del svg{width:60%;height:60%}
+.r.cust{grid-template-columns:minmax(0,1fr) auto auto auto auto}
 .amt b{font-family:var(--f-num);font-size:max(30px,11cqmin);min-width:max(50px,14cqmin);text-align:center;font-variant-numeric:tabular-nums}
 
 /* ---------- Leiste ---------- */
@@ -174,7 +201,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .bb.turnb{background:#22262d;font-family:var(--f-num);font-size:19px;letter-spacing:.02em;max-width:260px}
 .bb.turnb span{overflow:hidden;text-overflow:ellipsis}
 .sp{flex:1 0 6px}
-.clock{flex:none;font-family:var(--f-num);font-size:19px;color:var(--muted);font-variant-numeric:tabular-nums;padding:0 4px}
+.clock{flex:none;height:48px;border-radius:12px;font-family:var(--f-num);font-size:19px;color:var(--muted);font-variant-numeric:tabular-nums;padding:0 8px;display:inline-flex;align-items:center;gap:6px}
+.clock.paused{color:var(--brass)}
+.clock svg{width:16px;height:16px}
 .banner{flex:1;display:flex;align-items:center;gap:10px;justify-content:center;font-weight:600;font-size:16px;color:var(--brass);white-space:nowrap}
 .banner svg{width:20px;height:20px}
 @container (max-width:980px){.bb .t{display:none}.bb{padding:0 10px}}
@@ -296,12 +325,21 @@ const fmtT=ms=>{const s=Math.max(0,Math.floor(ms/1000));const h=Math.floor(s/360
 const elSetup=$('#setup'),elGame=$('#game'),elModal=$('#modal'),elToast=$('#toast');
 const STANDALONE=!!(navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches));
 
-function fresh(){return{phase:'setup',setup:{n:4,start:40,cmdLife:true,sound:true,table:'long',arch:-1,players:Array.from({length:6},(_,i)=>({name:'Spieler '+(i+1),color:CORDER[i],partner:false,rot:null}))},cfg:null,players:[],g:null,hist:[],lifeLog:[]}}
+function fresh(){return{phase:'setup',setup:{n:4,start:40,cmdLife:true,sound:true,clock:true,art:true,table:'long',arch:-1,players:Array.from({length:6},(_,i)=>newSetupPlayer(i))},cfg:null,players:[],g:null,hist:[],lifeLog:[]}}
+function newSetupPlayer(i){return{name:'Spieler '+(i+1),color:CORDER[i],partner:false,rot:null,cmdr:['',''],cdata:[null,null]}}
+function migrate(s){const st=s.setup;if(st.clock==null)st.clock=true;if(st.art==null)st.art=true;
+  st.players.forEach((p,i)=>{if(!p.cmdr)p.cmdr=['',''];if(!p.cdata)p.cdata=[null,null]});
+  if(s.cfg){if(s.cfg.clock==null)s.cfg.clock=true;if(s.cfg.art==null)s.cfg.art=true}
+  (s.players||[]).forEach(p=>{if(!p.cmdr)p.cmdr=['',''];if(!p.cdata)p.cdata=[null,null];if(!p.custom)p.custom=[]});
+  if(s.g&&s.g.paused==null)s.g.paused=false;return s}
+const AKEY='commander-tafel-archiv';
+function loadArch(){try{return JSON.parse(localStorage.getItem(AKEY))||[]}catch(e){return[]}}
+function saveArch(a){try{localStorage.setItem(AKEY,JSON.stringify(a))}catch(e){}}
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.setup)return s}catch(e){}return null}
 let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}},250)}
 
-let S=load()||fresh();
-const ui={ov:{},fx:{},delta:{},assign:null,modal:null,roll:{},rollTop:new Set(),pick:null,die:null,planar:null,confirm:null,shake:{}};
+let S=migrate(load()||fresh());
+const ui={pad:{},archConfirm:false,ov:{},fx:{},delta:{},assign:null,modal:null,roll:{},rollTop:new Set(),pick:null,die:null,planar:null,confirm:null,shake:{}};
 let undo=[],undoKey=null,undoT=0;
 let wl=null;
 
@@ -335,6 +373,7 @@ const alive=()=>S.players.filter(p=>!deadReason(p)).map(p=>p.id);
 function pushUndo(key){const now=Date.now();if(key&&key===undoKey&&now-undoT<1500){undoT=now;return}undoKey=key||null;undoT=now;
   undo.push(JSON.stringify({players:S.players,g:S.g,hist:S.hist,lifeLog:S.lifeLog}));if(undo.length>200)undo.shift()}
 function doUndo(){const s=undo.pop();undoKey=null;if(!s){toast('Nichts zum Rückgängigmachen');return}const o=JSON.parse(s);S.players=o.players;S.g=o.g;S.hist=o.hist;S.lifeLog=o.lifeLog||[];ui.delta={};
+  if(!S.g.ended)unarchive();else archiveGame();
   if(ui.modal==='end'&&!S.g.ended)closeModal();relayout();update();save();toast('Rückgängig')}
 function addHist(e){e.t=Date.now();const l=S.hist[S.hist.length-1];
   if(e.k!=='ev'&&l&&l.pid===e.pid&&l.k===e.k&&l.sub===e.sub&&e.t-l.t<4000){l.d+=e.d;l.res=e.res;l.t=e.t;if(l.d===0)S.hist.pop()}
@@ -364,10 +403,16 @@ function afterChange(by){
   const al=alive();
   if(S.players.length>1&&al.length<=1&&!S.g.ended){
     const now=Date.now();if(S.g.active!=null&&S.g.turnStart){P(S.g.active).time+=now-S.g.turnStart}S.g.turnStart=null;
-    S.g.ended=true;S.g.endedAt=now;S.g.winner=al.length?al[0]:null;ev(al.length?P(al[0]).name+' gewinnt':'Alle ausgeschieden – unentschieden');
+    S.g.ended=true;S.g.endedAt=now;S.g.winner=al.length?al[0]:null;archiveGame();ev(al.length?P(al[0]).name+' gewinnt':'Alle ausgeschieden – unentschieden');
     tone([[523,.16],[659,.16],[784,.16],[1047,.5]]);setTimeout(()=>openModal('end'),650)}
-  else if(al.length>1&&S.g.ended){S.g.ended=false;S.g.endedAt=null;S.g.winner=null;S.g.turnStart=Date.now()}
+  else if(al.length>1&&S.g.ended){S.g.ended=false;S.g.endedAt=null;S.g.winner=null;S.g.turnStart=Date.now();unarchive()}
 }
+function archiveGame(){const g=S.g;const id='g'+g.started;const a=loadArch().filter(x=>x.id!==id);
+  const order=S.players.slice().sort((x,y)=>(y.elim?y.elim.t:Infinity)-(x.elim?x.elim.t:Infinity));
+  a.push({id,date:g.started,dur:g.endedAt-g.started,turns:g.turn,winner:g.winner!=null?P(g.winner).name:null,
+    players:S.players.map(p=>({name:p.name,cmdr:[0,1].map(k=>cmdName(p,k)).filter(Boolean).join(' + '),color:p.color,place:order.indexOf(p)+1,by:p.elim&&p.elim.by!=null&&P(p.elim.by)?P(p.elim.by).name:null}))});
+  saveArch(a.slice(-500))}
+function unarchive(){const id='g'+S.g.started;saveArch(loadArch().filter(x=>x.id!==id))}
 
 /* ---------- Aktionen ---------- */
 function changeLife(pid,d){const p=P(pid);p.life+=d;bumpDelta(pid,d);addHist({pid,k:'life',d,res:p.life});afterChange(null);update();save()}
@@ -392,7 +437,7 @@ function runFx(pid,kind){const me=P(pid),f=fxState(pid),x=f.amt;const opp=alive(
   else if(kind==='allgain'){alive().forEach(i=>hit(i,x));msg=`${me.name}: alle Spieler erhalten ${x}`}
   ev(msg,pid);afterChange(pid);ui.ov[pid]=null;update();save();toast(msg)}
 
-function setActive(nx){const g=S.g,now=Date.now();if(g.active!=null&&g.turnStart&&!g.ended){P(g.active).time+=now-g.turnStart}g.active=nx;g.turnStart=g.ended?null:now;g.storm=0;g.planar=0}
+function setActive(nx){const g=S.g,now=nowG();if(g.active!=null&&g.turnStart&&!g.ended){P(g.active).time+=now-g.turnStart}g.active=nx;g.turnStart=g.ended?null:now;g.storm=0;g.planar=0}
 function stepTurn(dir){pushUndo();const g=S.g,n=S.players.length,ord=[...Array(n).keys()];
   if(!alive().length)return;
   if(g.active==null){const a=alive()[0];setActive(a);g.first=a;g.turn=1;ev('Zug 1 – '+P(a).name+' beginnt',a);update();save();return}
@@ -420,6 +465,29 @@ async function wake(){try{if('wakeLock' in navigator&&document.visibilityState==
 document.addEventListener('visibilitychange',()=>{if(S.phase==='game')wake()});
 function fullscreen(){const d=document.documentElement;try{if(document.fullscreenElement||document.webkitFullscreenElement){(document.exitFullscreen||document.webkitExitFullscreen).call(document)}else{const f=d.requestFullscreen||d.webkitRequestFullscreen;if(f){const r=f.call(d);if(r&&r.catch)r.catch(()=>toast('Vollbild ist hier gesperrt – nutze die Safari-Version'))}else toast('Vollbild ist hier gesperrt – nutze die Safari-Version')}}catch(e){toast('Vollbild ist hier gesperrt – nutze die Safari-Version')}}
 
+/* ---------- Scryfall: Commander-Suche ---------- */
+const SF='https://api.scryfall.com';
+async function sfAuto(q){try{const r=await fetch(SF+'/cards/autocomplete?q='+encodeURIComponent(q));if(!r.ok)return[];const j=await r.json();return j.data||[]}catch(e){return[]}}
+async function sfCard(name){try{const r=await fetch(SF+'/cards/named?fuzzy='+encodeURIComponent(name));if(!r.ok)return null;const c=await r.json();
+  const face=c.image_uris?c:(c.card_faces&&c.card_faces[0])||{};const iu=c.image_uris||face.image_uris||{};
+  return{name:c.name,art:iu.art_crop||null,cmc:typeof c.cmc==='number'?c.cmc:null,cost:c.mana_cost||face.mana_cost||'',ci:c.color_identity||[]}}catch(e){return null}}
+function ciColor(ci){if(!ci||!ci.length)return'C';if(ci.length>1)return'M';return ci[0]}
+const shortName=n=>{const s=n.split(' // ')[0];return s.length>22?s.split(',')[0]:s};
+let acT=null;
+async function onCmdInput(inp){const q=inp.value.trim();clearTimeout(acT);if(q.length<2)return;
+  acT=setTimeout(async()=>{const list=await sfAuto(q);const dl=document.getElementById('dl-'+inp.id);if(dl)dl.innerHTML=list.slice(0,12).map(n=>`<option value="${esc(n)}"></option>`).join('')},250)}
+async function resolveCmd(i,k){const st=S.setup,p=st.players[i],name=(p.cmdr[k]||'').trim();
+  if(!name){p.cdata[k]=null;setPrev(i,k);save();return}
+  const prev=document.getElementById(`cprev${i}-${k}`);if(prev)prev.innerHTML='<span>Suche Karte …</span>';
+  const c=await sfCard(name);
+  if(c){p.cdata[k]=c;p.cmdr[k]=c.name;const inp=document.getElementById(`cmd${i}-${k}`);if(inp&&document.activeElement!==inp)inp.value=c.name;
+    if(k===0&&!p.colorSet){p.color=ciColor(c.ci)}}
+  else p.cdata[k]={name,art:null,cmc:null,cost:'',ci:[],offline:true};
+  setPrev(i,k);save();
+  if(!document.activeElement||document.activeElement.tagName!=='INPUT')renderSetup()}
+function setPrev(i,k){const el=document.getElementById(`cprev${i}-${k}`);if(!el)return;const c=S.setup.players[i].cdata[k];
+  el.innerHTML=!c?'':c.offline?`<span>Karte nicht gefunden oder offline – Name wird so angezeigt</span>`:`${c.art?`<img src="${c.art}" alt="">`:''}<b>${esc(c.name)}</b><span>${c.cmc!=null?c.cmc+' Mana':''}</span>`}
+
 /* ---------- Setup ---------- */
 const ROTS=[null,0,90,180,270];const rotName=r=>r==null?'automatisch':r===0?'unten':r===90?'links':r===180?'oben':'rechts';
 function renderSetup(){
@@ -439,6 +507,7 @@ function renderSetup(){
       <div class="prow" style="--pc:${c.bg}">
         <div class="prow-top"><input type="text" id="pname${i}" value="${esc(p.name)}" maxlength="18" aria-label="Name Spieler ${i+1}" autocomplete="off"><span class="seat">Platz ${i+1} · ${seatLabel(i,n,st.table)}</span></div>
         <div class="sw-row">${CORDER.map(k=>`<button class="sw" style="--c:${COLORS[k].bg}" data-act="col" data-i="${i}" data-c="${k}" aria-pressed="${k===p.color}" aria-label="${COLORS[k].n}" title="${COLORS[k].n}"></button>`).join('')}</div>
+        ${[0,1].filter(k=>k===0||p.partner).map(k=>`<div class="cmdin"><input type="text" id="cmd${i}-${k}" list="dl-cmd${i}-${k}" value="${esc(p.cmdr[k]||'')}" placeholder="${k?'Partner-Commander':'Commander (optional)'}" autocomplete="off" autocapitalize="words" data-ci="${i}" data-ck="${k}"><datalist id="dl-cmd${i}-${k}"></datalist></div><div class="cprev" id="cprev${i}-${k}"></div>`).join('')}
         <div class="prow-opts"><label class="tog"><input type="checkbox" id="ppart${i}" ${p.partner?'checked':''}> Partner-Commander</label>
           <button class="mini" data-act="rot" data-i="${i}">Ausrichtung: ${rotName(p.rot)}</button></div>
       </div>`}).join('')}</div>
@@ -448,16 +517,23 @@ function renderSetup(){
       <p>Die Zahlen zeigen, wie jedes Feld ausgerichtet ist. Die Zugreihenfolge läuft im Uhrzeigersinn: 1, 2, 3 …</p>
       <label class="tog"><input type="checkbox" id="cmdlife" ${st.cmdLife?'checked':''}> Commander-Schaden zieht Leben mit ab</label>
       <label class="tog"><input type="checkbox" id="sound" ${st.sound?'checked':''}> Töne beim Ausscheiden und Spielende</label>
+      <label class="tog"><input type="checkbox" id="clockopt" ${st.clock?'checked':''}> Spieluhr und Zugzeit anzeigen</label>
+      <label class="tog"><input type="checkbox" id="artopt" ${st.art?'checked':''}> Commander-Bild als Hintergrund</label>
       <label class="s-lab" for="arch">Archenemy</label>
       <select class="sel" id="arch"><option value="-1">Kein Erzfeind</option>${pl.map((p,i)=>`<option value="${i}" ${st.arch===i?'selected':''}>${esc(p.name)} ist Erzfeind (40, Rest 20)</option>`).join('')}</select>
     </aside>
   </div>
   <div class="go-row">${live?`<button class="go sec" data-act="apply" ${sameN?'':'disabled'}>Übernehmen, weiterspielen</button>`:''}<button class="go" data-act="go">${live?'Neues Spiel starten':'Spiel starten'}</button></div>
-  ${live&&!sameN?'<p class="hint">Die Spielerzahl ist anders als im laufenden Spiel. Dafür braucht es ein neues Spiel.</p>':''}`;
+  ${live&&!sameN?'<p class="hint">Die Spielerzahl ist anders als im laufenden Spiel. Dafür braucht es ein neues Spiel.</p>':''}
+  <p class="hint">Commander-Namen und Bilder kommen von Scryfall und brauchen Internet. Ohne Verbindung wird der eingetippte Name angezeigt.</p>`;
+  pl.forEach((p,i)=>[0,1].forEach(k=>setPrev(i,k)));
 }
 function readSetupInputs(){const st=S.setup;for(let i=0;i<st.n;i++){const a=document.getElementById('pname'+i),b=document.getElementById('ppart'+i);if(a)st.players[i].name=a.value.trim()||('Spieler '+(i+1));if(b)st.players[i].partner=b.checked}
   const c=document.getElementById('cmdlife');if(c)st.cmdLife=c.checked;
   const so=document.getElementById('sound');if(so)st.sound=so.checked;
+  const co=document.getElementById('clockopt');if(co)st.clock=co.checked;
+  const ao=document.getElementById('artopt');if(ao)st.art=ao.checked;
+  for(let i=0;i<st.n;i++)for(const k of[0,1]){const c=document.getElementById(`cmd${i}-${k}`);if(c){const v=c.value.trim();if(v!==st.players[i].cmdr[k]){st.players[i].cmdr[k]=v;if(!v)st.players[i].cdata[k]=null}}}
   const ar=document.getElementById('arch');if(ar)st.arch=+ar.value;
   const sc=document.getElementById('startcustom');if(sc&&sc.value){const v=parseInt(sc.value,10);if(v>0)st.start=Math.min(999,v)}}
 elSetup.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||b.disabled)return;readSetupInputs();const st=S.setup;
@@ -465,28 +541,33 @@ elSetup.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!
     case'n':st.n=+b.dataset.v;if(st.table==='head2'&&st.n<4)st.table=st.n>=3?'head1':'long';if(st.table==='head1'&&st.n<3)st.table='long';if(st.arch>=st.n)st.arch=-1;break;
     case'start':st.start=+b.dataset.v;document.getElementById('startcustom').value='';break;
     case'table':st.table=b.dataset.v;break;
-    case'col':st.players[+b.dataset.i].color=b.dataset.c;break;
+    case'col':st.players[+b.dataset.i].color=b.dataset.c;st.players[+b.dataset.i].colorSet=true;break;
     case'rot':{const p=st.players[+b.dataset.i];p.rot=ROTS[(ROTS.indexOf(p.rot)+1)%ROTS.length];break}
     case'apply':applyEdits();return;
     case'go':startGame();return;
   }
   renderSetup();save()});
-elSetup.addEventListener('change',e=>{readSetupInputs();if(e.target.type!=='text')renderSetup();save()});
+elSetup.addEventListener('change',e=>{readSetupInputs();const t=e.target;
+  if(t.dataset&&t.dataset.ci!=null){resolveCmd(+t.dataset.ci,+t.dataset.ck);return}
+  if(t.type!=='text')renderSetup();save()});
+elSetup.addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.ci!=null)onCmdInput(t)});
 
 function applyEdits(){const st=S.setup;if(st.n!==S.players.length)return;
-  S.players.forEach((p,i)=>{const s=st.players[i];if(p.name!==s.name)ev(p.name+' heißt jetzt '+s.name,i);p.name=s.name;p.color=s.color;p.partner=s.partner;p.rot=s.rot});
-  Object.assign(S.cfg,{cmdLife:st.cmdLife,sound:st.sound,table:st.table});
+  S.players.forEach((p,i)=>{const s=st.players[i];if(p.name!==s.name)ev(p.name+' heißt jetzt '+s.name,i);p.name=s.name;p.color=s.color;p.partner=s.partner;p.rot=s.rot;p.cmdr=s.cmdr.slice();p.cdata=s.cdata.map(cmdObj)});
+  Object.assign(S.cfg,{cmdLife:st.cmdLife,sound:st.sound,table:st.table,clock:st.clock,art:st.art});
   S.phase='game';show();save();wake();toast('Übernommen')}
 function startGame(){readSetupInputs();const st=S.setup;
-  S.cfg={start:st.start,cmdLife:st.cmdLife,sound:st.sound,table:st.table,arch:st.arch};
+  S.cfg={start:st.start,cmdLife:st.cmdLife,sound:st.sound,table:st.table,arch:st.arch,clock:st.clock,art:st.art};
   S.players=st.players.slice(0,st.n).map((p,i)=>{const sl=st.arch>=0?(i===st.arch?40:20):st.start;
-    return{id:i,name:p.name,color:p.color,partner:p.partner,rot:p.rot,startLife:sl,life:sl,poison:0,energy:0,exp:0,rad:0,tax1:0,tax2:0,misc:0,cmd:{},elim:null,time:0}});
+    return{id:i,name:p.name,color:p.color,partner:p.partner,rot:p.rot,cmdr:p.cmdr.slice(),cdata:p.cdata.map(cmdObj),custom:[],startLife:sl,life:sl,poison:0,energy:0,exp:0,rad:0,tax1:0,tax2:0,misc:0,cmd:{},elim:null,time:0}});
   S.players.forEach(p=>S.players.forEach(q=>{if(q.id!==p.id)p.cmd[q.id]=[0,0]}));
   S.g=newG();S.hist=[];S.lifeLog=[];undo=[];ui.ov={};ui.fx={};ui.delta={};ui.roll={};ui.rollTop=new Set();
   logLives();ev('Neues Spiel · '+st.n+' Spieler'+(st.arch>=0?' · Archenemy: '+S.players[st.arch].name:' · '+st.start+' Leben'));
   S.phase='game';show();save();wake();if(S.cfg.sound)ac()}
-function newG(){return{turn:1,active:null,first:null,monarch:null,initiative:null,dn:0,storm:0,planar:0,started:Date.now(),turnStart:null,ended:false,endedAt:null,winner:null}}
-function restartSame(){pushUndo();S.players.forEach(p=>{Object.assign(p,{life:p.startLife,poison:0,energy:0,exp:0,rad:0,tax1:0,tax2:0,misc:0,elim:null,time:0});for(const f in p.cmd)p.cmd[f]=[0,0]});
+function cmdObj(c){return c?{...c}:null}
+function cmdName(p,k){const c=p.cdata&&p.cdata[k];const n=(c&&c.name)||(p.cmdr&&p.cmdr[k])||'';return n?shortName(n):''}
+function newG(){return{paused:false,pausedAt:null,turn:1,active:null,first:null,monarch:null,initiative:null,dn:0,storm:0,planar:0,started:Date.now(),turnStart:null,ended:false,endedAt:null,winner:null}}
+function restartSame(){pushUndo();S.players.forEach(p=>{Object.assign(p,{life:p.startLife,poison:0,energy:0,exp:0,rad:0,tax1:0,tax2:0,misc:0,elim:null,time:0});(p.custom||[]).forEach(c=>c.v=0);for(const f in p.cmd)p.cmd[f]=[0,0]});
   S.g=newG();S.lifeLog=[];logLives();ev('Neue Runde');ui.ov={};ui.fx={};ui.delta={};closeModal();update();save();toast('Neue Runde')}
 
 /* ---------- Spielansicht ---------- */
@@ -495,7 +576,7 @@ function panelHTML(id){if(id==null)return'';const p=P(id),c=col(p);return`
  <div class="inner">
   <div class="half minus" data-pid="${id}" data-dir="-1"><span>−</span></div>
   <div class="half plus" data-pid="${id}" data-dir="1"><span>+</span></div>
-  <div class="head"><div class="nameline"><span class="name"></span><span class="badges"></span></div><div class="pchips" data-act="ov" data-pid="${id}" data-ov="ctr"></div></div>
+  <div class="head"><div class="nameline"><span class="name"></span><span class="badges"></span></div><div class="cmdrline" data-act="ov" data-pid="${id}" data-ov="ctr"></div><div class="pchips" data-act="ov" data-pid="${id}" data-ov="ctr"></div></div>
   <div class="life"><span class="num"></span></div><span class="delta"></span>
   <button class="pbtn l" data-act="ov" data-pid="${id}" data-ov="cmd" aria-label="Commander-Schaden">${I.sword}<span>Commander</span></button>
   <button class="pbtn c" data-act="ov" data-pid="${id}" data-ov="fx" aria-label="Aktionen">${I.bolt}<span>Aktion</span></button>
@@ -521,11 +602,11 @@ function rowsCtl(attrs,v,cls){return`<button class="sb" data-rep ${attrs} data-d
 function ovHTML(p,type){
   const close=`<button class="x" data-act="ovclose" data-pid="${p.id}" aria-label="Schließen">${I.x}</button>`;
   if(type==='cmd'){const rows=[];S.players.forEach(q=>{if(q.id===p.id)return;const qc=col(q);(q.partner?[0,1]:[0]).forEach(k=>{const v=p.cmd[q.id][k];
-      rows.push(`<div class="r" style="--dot:${qc.bg}"><div class="lab"><i></i><span>${esc(q.name)}${q.partner?`<small>Commander ${k+1}</small>`:''}</span></div>${rowsCtl(`data-act="cmd" data-pid="${p.id}" data-from="${q.id}" data-k="${k}"`,v,v>=15?' hot':'')}</div>`)})});
+      rows.push(`<div class="r" style="--dot:${qc.bg}"><div class="lab"><i></i><span>${esc(q.name)}${cmdName(q,k)?`<small>${esc(cmdName(q,k))}</small>`:q.partner?`<small>Commander ${k+1}</small>`:''}</span></div>${rowsCtl(`data-act="cmd" data-pid="${p.id}" data-from="${q.id}" data-k="${k}"`,v,v>=15?' hot':'')}</div>`)})});
     return`<div class="ov-h"><div><h3>Commander-Schaden erhalten</h3><p>${S.cfg.cmdLife?'Zieht automatisch Leben ab · ':''}21 von einem Commander = raus · Halten zählt schnell</p></div>${close}</div><div class="rows">${rows.join('')}</div>`}
   if(type==='fx'){const f=fxState(p.id);const opp=S.players.filter(q=>q.id!==p.id&&!deadReason(q));const x=f.amt;
     const tgt=f.target!=null?P(f.target):null;
-    return`<div class="ov-h"><div><h3>Aktion von ${esc(p.name)}</h3><p>Menge einstellen, dann Ziel wählen</p></div>${close}</div>
+    return`<div class="ov-h"><div><h3>Aktion von ${esc(p.name)}</h3><p>Menge einstellen, dann Ziel wählen</p></div><button class="tb" data-act="ov" data-pid="${p.id}" data-ov="pad">Leben eingeben</button>${close}</div>
     <div class="rows">
       <div class="fxsec wide"><h4>Menge</h4><div class="amt"><button class="sb" data-rep data-act="fxamt" data-pid="${p.id}" data-d="-1" aria-label="weniger">−</button><b>${x}</b><button class="sb" data-rep data-act="fxamt" data-pid="${p.id}" data-d="1" aria-label="mehr">+</button>
         ${[1,2,3,5,10].map(v=>`<button class="tb" data-act="fxset" data-pid="${p.id}" data-v="${v}" aria-pressed="${v===x}">${v}</button>`).join('')}</div></div>
@@ -541,8 +622,16 @@ function ovHTML(p,type){
         <button class="tb go2" data-act="fx" data-kind="alllose" data-pid="${p.id}">Alle verlieren ${x}</button>
         <button class="tb go2" data-act="fx" data-kind="allgain" data-pid="${p.id}">Alle erhalten ${x}</button></div>
     </div>`}
-  const rows=CTRS.filter(c=>!c.partner||p.partner).map(c=>{const v=p[c.k]||0;const sub=c.tax?`<small>${v}× gewirkt · +${v*2} Mana</small>`:c.hint?`<small>${c.hint}</small>`:'';
-    return`<div class="r"><div class="lab"><span>${c.n}${sub}</span></div>${rowsCtl(`data-act="ctr" data-pid="${p.id}" data-k="${c.k}"`,c.tax?'+'+v*2:v,c.k==='poison'&&v>=7?' hot':'')}</div>`});
+  if(type==='pad'){const v=ui.pad[p.id]??'';const keys=['1','2','3','4','5','6','7','8','9','±','0','⌫'];
+    return`<div class="ov-h"><div><h3>Leben eingeben</h3><p>Aktuell ${p.life}</p></div>${close}</div>
+    <div class="padv">${v===''?'<span style="opacity:.4">'+p.life+'</span>':esc(v)}</div>
+    <div class="padg">${keys.map(k=>`<button data-act="padkey" data-pid="${p.id}" data-k="${k}">${k}</button>`).join('')}<button class="ok" style="grid-column:1/-1" data-act="padok" data-pid="${p.id}">Übernehmen</button></div>`}
+  const rows=CTRS.filter(c=>!c.partner||p.partner).map(c=>{const v=p[c.k]||0;const tk=c.k==='tax1'?0:c.k==='tax2'?1:null;const cn=tk!=null?cmdName(p,tk):'';const cd=tk!=null&&p.cdata?p.cdata[tk]:null;
+    const n=c.tax?(cn?cn:c.n):c.n;
+    const sub=c.tax?`<small>${v}× gestorben / gewirkt · +${v*2} Mana${cd&&cd.cmc!=null?' · kostet '+(cd.cmc+v*2):''}</small>`:c.hint?`<small>${c.hint}</small>`:'';
+    return`<div class="r"><div class="lab"><span>${esc(n)}${sub}</span></div>${rowsCtl(`data-act="ctr" data-pid="${p.id}" data-k="${c.k}"`,c.tax?'+'+v*2:v,c.k==='poison'&&v>=7?' hot':'')}</div>`});
+  (p.custom||[]).forEach((c,ci)=>rows.push(`<div class="r cust"><div class="lab"><span>${esc(c.name)}<small>eigener Zähler</small></span></div>${rowsCtl(`data-act="cust" data-pid="${p.id}" data-i="${ci}"`,c.v)}<button class="del" data-act="custdel" data-pid="${p.id}" data-i="${ci}" aria-label="Zähler entfernen">${I.x}</button></div>`));
+  rows.push(`<div class="r wide"><div class="addrow" style="grid-column:1/-1"><input type="text" id="custin${p.id}" placeholder="Eigener Zähler, z. B. Schatz" maxlength="20" autocomplete="off"><button class="tb" data-act="custadd" data-pid="${p.id}">Hinzufügen</button></div></div>`);
   rows.push(`<div class="r wide"><div class="lab"><span>Feld drehen<small>Ausrichtung: ${rotOf(p)}°</small></span></div><span></span><span></span><button class="sb" data-act="rotp" data-pid="${p.id}" aria-label="Feld um 90 Grad drehen">${I.rot}</button></div>`);
   return`<div class="ov-h"><div><h3>Marken &amp; Zähler</h3></div>${close}</div><div class="rows">${rows.join('')}</div>`}
 
@@ -550,14 +639,19 @@ function chipsHTML(p){const out=[];
   if(S.cfg.arch===p.id)out.push(`<span class="pchip">Erzfeind</span>`);
   if(p.poison)out.push(`<span class="pchip${p.poison>=7?' warn':''}">Gift ${p.poison}</span>`);
   S.players.forEach(q=>{if(q.id===p.id)return;const a=p.cmd[q.id];const m=Math.max(a[0],q.partner?a[1]:0);if(m)out.push(`<span class="pchip${m>=15?' warn':''}" style="--dot:${col(q).bg}"><i></i>${m}</span>`)});
-  if(p.tax1)out.push(`<span class="pchip">Steuer +${p.tax1*2}</span>`);
-  if(p.partner&&p.tax2)out.push(`<span class="pchip">Steuer² +${p.tax2*2}</span>`);
+  if(p.tax1&&!cmdName(p,0))out.push(`<span class="pchip">Steuer +${p.tax1*2}</span>`);
+  if(p.partner&&p.tax2&&!cmdName(p,1))out.push(`<span class="pchip">Steuer² +${p.tax2*2}</span>`);
+  (p.custom||[]).forEach(c=>{if(c.v)out.push(`<span class="pchip">${esc(c.name)} ${c.v}</span>`)});
   if(p.energy)out.push(`<span class="pchip">Energie ${p.energy}</span>`);
   if(p.exp)out.push(`<span class="pchip">Erfahrung ${p.exp}</span>`);
   if(p.rad)out.push(`<span class="pchip">Rad ${p.rad}</span>`);
   if(p.misc)out.push(`<span class="pchip">Marken ${p.misc}</span>`);
   return out.join('')}
 
+function cmdrHTML(p){const out=[];[0,1].forEach(k=>{if(k===1&&!p.partner)return;const n=cmdName(p,k);if(!n)return;const tax=p[k?'tax2':'tax1']||0;const c=p.cdata[k];
+    const cost=c&&c.cmc!=null?c.cmc+tax*2:null;
+    out.push(`<span class="cmdr" title="${esc(n)}"><span class="cn">${esc(n)}</span>${tax?`<span class="tx">† ${tax}</span>`:''}${cost!=null?`<span class="cost">${cost} Mana</span>`:tax?`<span class="cost">+${tax*2}</span>`:''}</span>`)});
+  return out.join('')}
 function barHTML(){const g=S.g;
   if(ui.assign){const what=ui.assign==='monarch'?'den Monarchen':'die Initiative';
     return`<span class="banner">${ui.assign==='monarch'?I.crown:I.init} Auf den Spieler tippen, der ${what} bekommt</span><button class="bb" data-act="assignnone">Niemand</button><button class="bb" data-act="assigncancel">Abbrechen</button>`}
@@ -570,7 +664,7 @@ function barHTML(){const g=S.g;
   ${g.active!=null?`<button class="bb" data-act="prev" aria-label="Vorheriger Zug">${I.prev}</button>`:''}
   <button class="bb turnb" data-act="next" aria-label="Nächster Zug">${I.next}<span>${g.ended?'Spielende':g.active==null?'Zug starten':'Zug '+g.turn+' · '+esc(P(g.active).name)}</span></button>
   ${g.storm?`<span class="bb on">${I.bolt}${g.storm}</span>`:''}
-  <span class="clock" id="clock"></span>
+  ${S.cfg.clock?`<button class="clock${g.paused?' paused':''}" id="clock" data-act="pause" aria-label="${g.paused?'Uhr fortsetzen':'Uhr pausieren'}"></button>`:''}
   <span class="sp"></span>
   <button class="bb${mon?' on':''}" data-act="monarch" aria-label="Monarch">${I.crown}<span class="t">${mon?esc(mon.name):'Monarch'}</span></button>
   <button class="bb${ini?' on':''}" data-act="initiative" aria-label="Initiative">${I.init}<span class="t">${ini?esc(ini.name):'Initiative'}</span></button>
@@ -585,22 +679,30 @@ function update(){if(S.phase!=='game'||!S.players.length)return;
     el.classList.toggle('dead',!!dr);el.classList.toggle('active',S.g.active===p.id&&!S.g.ended);el.classList.toggle('pick',ui.pick===p.id);el.classList.toggle('shake',!!ui.shake[p.id]);
     const c=col(p);el.style.setProperty('--bg',c.bg);el.style.setProperty('--bg2',c.bg2);el.style.setProperty('--fg',c.fg);
     el.querySelector('.name').textContent=p.name;
+    const art=S.cfg.art&&p.cdata&&p.cdata[0]&&p.cdata[0].art;const inn=el.querySelector('.inner');inn.classList.toggle('art',!!art);el.classList.toggle('hasart',!!art);if(art)inn.style.setProperty('--art',`url("${art}")`);
+    el.querySelector('.cmdrline').innerHTML=cmdrHTML(p);
     el.querySelector('.num').textContent=p.life;
-    const b=[];if(S.g.active===p.id&&!S.g.ended)b.push(`<span class="badge turn">am Zug <span class="ttime"></span></span>`);if(S.g.monarch===p.id)b.push(`<span class="badge">${I.crown}Monarch</span>`);if(S.g.initiative===p.id)b.push(`<span class="badge">${I.init}Initiative</span>`);
+    const b=[];if(S.g.active===p.id&&!S.g.ended)b.push(`<span class="badge turn">am Zug${S.cfg.clock?' <span class="ttime"></span>':''}</span>`);if(S.g.monarch===p.id)b.push(`<span class="badge">${I.crown}Monarch</span>`);if(S.g.initiative===p.id)b.push(`<span class="badge">${I.init}Initiative</span>`);
     el.querySelector('.badges').innerHTML=b.join('');
     el.querySelector('.pchips').innerHTML=chipsHTML(p);
     const dl=el.querySelector('.delta'),dv=ui.delta[p.id];dl.classList.toggle('on',!!(dv&&dv.v));if(dv)dl.textContent=(dv.v>0?'+':'−')+Math.abs(dv.v);
     el.querySelector('.deadov small').textContent=dr||'';
     const rv=ui.roll[p.id],rov=el.querySelector('.rollov');rov.classList.toggle('on',rv!=null);rov.classList.toggle('top',ui.rollTop.has(p.id));if(rv!=null)rov.querySelector('b').textContent=rv;
     const ov=el.querySelector('.ov');const t=ui.ov[p.id];ov.classList.toggle('on',!!t);
-    if(t){const sc=ov.querySelector('.rows')?.scrollTop||0;ov.innerHTML=ovHTML(p,t);const r=ov.querySelector('.rows');if(r)r.scrollTop=sc}else if(ov.innerHTML)ov.innerHTML='';
+    if(t&&ov.contains(document.activeElement)&&document.activeElement.tagName==='INPUT'){}
+    else if(t){const sc=ov.querySelector('.rows')?.scrollTop||0;ov.innerHTML=ovHTML(p,t);const r=ov.querySelector('.rows');if(r)r.scrollTop=sc}else if(ov.innerHTML)ov.innerHTML='';
     const as=el.querySelector('.assignov');as.classList.toggle('on',!!ui.assign);as.textContent=ui.assign?'Hier tippen':'';
   });
   tickClock();
   if(ui.modal==='hist'||ui.modal==='stats')renderModal()}
 
-function tickClock(){if(!S.g||S.phase!=='game')return;const c=document.getElementById('clock');const end=S.g.ended?S.g.endedAt:Date.now();if(c)c.textContent=fmtT(end-S.g.started);
-  const tt=elGame.querySelector('.panel.active .ttime');if(tt&&S.g.turnStart)tt.textContent=fmtT(Date.now()-S.g.turnStart)}
+const nowG=()=>S.g.paused&&S.g.pausedAt?S.g.pausedAt:Date.now();
+function tickClock(){if(!S.g||S.phase!=='game')return;const c=document.getElementById('clock');const end=S.g.ended?S.g.endedAt:nowG();
+  if(c)c.innerHTML=(S.g.paused?'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>':'')+fmtT(end-S.g.started);
+  const tt=elGame.querySelector('.panel.active .ttime');if(tt&&S.g.turnStart)tt.textContent=fmtT(nowG()-S.g.turnStart)}
+function togglePause(){const g=S.g;if(g.ended)return;const now=Date.now();
+  if(g.paused){const d=now-(g.pausedAt||now);g.started+=d;if(g.turnStart)g.turnStart+=d;g.paused=false;g.pausedAt=null;toast('Uhr läuft weiter')}
+  else{g.paused=true;g.pausedAt=now;toast('Uhr pausiert')}update();save()}
 setInterval(tickClock,1000);
 
 /* ---------- Eingabe: Tippen = 1 Schritt, Halten = schnell ---------- */
@@ -625,11 +727,12 @@ elGame.addEventListener('contextmenu',e=>e.preventDefault());
 function runAct(b){const a=b.dataset.act,pid=+b.dataset.pid,d=+b.dataset.d;
   if(a==='cmd')changeCmd(pid,+b.dataset.from,+b.dataset.k,d);
   else if(a==='ctr')changeCtr(pid,b.dataset.k,d);
+  else if(a==='cust'){const c=P(pid).custom[+b.dataset.i];if(!c)return;const nv=Math.max(0,c.v+d);if(nv===c.v)return;pushUndo('cu'+pid+b.dataset.i);c.v=nv;addHist({pid,k:'ev',text:P(pid).name+': '+c.name+' → '+nv});update();save()}
   else if(a==='fxamt'){const f=fxState(pid);f.amt=Math.max(1,Math.min(999,f.amt+d));update()}}
 
 elGame.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||b.hasAttribute('data-rep')||b.disabled)return;const a=b.dataset.act,pid=b.dataset.pid!=null?+b.dataset.pid:null;
   switch(a){
-    case'ov':ui.ov[pid]=ui.ov[pid]===b.dataset.ov?null:b.dataset.ov;update();break;
+    case'ov':ui.ov[pid]=ui.ov[pid]===b.dataset.ov?null:b.dataset.ov;if(b.dataset.ov==='pad')ui.pad[pid]='';update();break;
     case'ovclose':ui.ov[pid]=null;update();break;
     case'fxset':fxState(pid).amt=+b.dataset.v;update();break;
     case'fxtgt':{const f=fxState(pid),t=+b.dataset.t;f.target=f.target===t?null:t;update();break}
@@ -637,6 +740,11 @@ elGame.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b
     case'fxck':fxState(pid).ck=+b.dataset.k;update();break;
     case'fxlink':fxState(pid).link=!fxState(pid).link;update();break;
     case'fx':runFx(pid,b.dataset.kind);break;
+    case'padkey':{let v=ui.pad[pid]??'';const k=b.dataset.k;if(k==='⌫')v=v.slice(0,-1);else if(k==='±')v=v.startsWith('-')?v.slice(1):'-'+v;else if(v.replace('-','').length<4)v+=k;ui.pad[pid]=v;update();break}
+    case'padok':{const v=parseInt(ui.pad[pid],10);ui.pad[pid]='';ui.ov[pid]=null;if(!isNaN(v)&&v!==P(pid).life){pushUndo();changeLife(pid,v-P(pid).life)}else update();break}
+    case'custadd':{const inp=document.getElementById('custin'+pid);const n=inp&&inp.value.trim();if(!n){inp&&inp.focus();break}pushUndo();P(pid).custom.push({name:n,v:0});inp.blur();update();save();break}
+    case'custdel':{pushUndo();P(pid).custom.splice(+b.dataset.i,1);update();save();break}
+    case'pause':togglePause();break;
     case'rotp':{const p=P(pid);p.rot=(rotOf(p)+90)%360;S.setup.players[pid].rot=p.rot;relayout();update();save();break}
     case'undo':doUndo();break;
     case'next':if(S.g.ended)openModal('end');else stepTurn(1);break;
@@ -650,7 +758,7 @@ elGame.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b
   }});
 
 /* ---------- Auswertung ---------- */
-function playTime(p){let t=p.time||0;if(S.g.active===p.id&&S.g.turnStart&&!S.g.ended)t+=Date.now()-S.g.turnStart;return t}
+function playTime(p){let t=p.time||0;if(S.g.active===p.id&&S.g.turnStart&&!S.g.ended)t+=nowG()-S.g.turnStart;return t}
 function cmdDealt(p){let s=0;S.players.forEach(q=>{if(q.id!==p.id){const a=q.cmd[p.id];s+=a[0]+a[1]}});return s}
 function chartSVG(){const log=S.lifeLog.slice();if(!log.length)return'';
   const end=S.g.ended?S.g.endedAt:Date.now();log.push({t:end,l:S.players.map(p=>p.life)});
@@ -664,13 +772,24 @@ function chartSVG(){const log=S.lifeLog.slice();if(!log.length)return'';
     const c=LINE[p.color]||'#ccc';s+=`<path d="${d}" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"/>`;
     const last=log[log.length-1];s+=`<circle cx="${x(last.t)}" cy="${y(last.l[i])}" r="3.5" fill="${c}"/>`});
   return s+'</svg>'}
-function statsHTML(){const g=S.g;const end=g.ended?g.endedAt:Date.now();
-  const tbl=`<div class="tblwrap"><table class="t"><thead><tr><th>Spieler</th><th>Leben</th><th>Zeit am Zug</th><th>Cmd-Schaden ausgeteilt</th><th>Ausgeschieden</th></tr></thead><tbody>${S.players.map(p=>`<tr><td><span class="dot" style="--dot:${col(p).bg}"></span>${esc(p.name)}</td><td>${p.life}</td><td>${fmtT(playTime(p))}</td><td>${cmdDealt(p)}</td><td>${p.elim?`Zug ${p.elim.turn}${p.elim.by!=null&&P(p.elim.by)?' · durch '+esc(P(p.elim.by).name):''}`:'–'}</td></tr>`).join('')}</tbody></table></div>`;
+function statsHTML(){const g=S.g;const end=g.ended?g.endedAt:nowG();
+  const tbl=`<div class="tblwrap"><table class="t"><thead><tr><th>Spieler</th><th>Leben</th><th>Zeit am Zug</th><th>Cmd-Schaden ausgeteilt</th><th>Ausgeschieden</th></tr></thead><tbody>${S.players.map(p=>`<tr><td><span class="dot" style="--dot:${col(p).bg}"></span>${esc(p.name)}${cmdName(p,0)?` <small style="color:var(--muted)">${esc([0,1].map(k=>cmdName(p,k)).filter(Boolean).join(' + '))}</small>`:''}</td><td>${p.life}</td><td>${fmtT(playTime(p))}</td><td>${cmdDealt(p)}</td><td>${p.elim?`Zug ${p.elim.turn}${p.elim.by!=null&&P(p.elim.by)?' · durch '+esc(P(p.elim.by).name):''}`:'–'}</td></tr>`).join('')}</tbody></table></div>`;
   const mx=`<div class="tblwrap"><table class="t"><thead><tr><th>erhalten ↓ / von →</th>${S.players.map(q=>`<th><span class="dot" style="--dot:${col(q).bg}"></span>${esc(q.name.slice(0,6))}</th>`).join('')}</tr></thead><tbody>${S.players.map(p=>`<tr><td><span class="dot" style="--dot:${col(p).bg}"></span>${esc(p.name)}</td>${S.players.map(q=>{if(q.id===p.id)return'<td>–</td>';const a=p.cmd[q.id];const v=q.partner?a[0]+' / '+a[1]:a[0];return`<td class="${Math.max(a[0],a[1])>=15?'hot':''}">${v}</td>`}).join('')}</tr>`).join('')}</tbody></table></div>`;
   return`<div class="kpis"><div class="kpi"><small>Spieldauer</small><b>${fmtT(end-g.started)}</b></div><div class="kpi"><small>Runde</small><b>${g.turn}</b></div><div class="kpi"><small>Noch im Spiel</small><b>${alive().length} / ${S.players.length}</b></div></div>
   <div class="grp"><h4>Lebensverlauf</h4><div class="chart">${chartSVG()}<div class="legend">${S.players.map(p=>`<span style="--dot:${LINE[p.color]}"><i></i>${esc(p.name)}</span>`).join('')}</div></div></div>
   <div class="grp"><h4>Spieler</h4>${tbl}</div>
   <div class="grp"><h4>Commander-Schaden</h4>${mx}</div>`}
+
+function archiveHTML(){const a=loadArch();if(!a.length)return'<p class="hint">Noch keine beendeten Spiele. Sobald ein Spiel einen Gewinner hat, landet es hier.</p>';
+  const tally=(keyFn)=>{const m={};a.forEach(gm=>gm.players.forEach(p=>{const k=keyFn(p);if(!k)return;const e=m[k]||(m[k]={k,games:0,wins:0,place:0});e.games++;e.place+=p.place;if(p.place===1)e.wins++}));return Object.values(m).sort((x,y)=>y.wins-x.wins||y.wins/y.games-x.wins/x.games)};
+  const tbl=(rows,label)=>`<div class="tblwrap"><table class="t"><thead><tr><th>${label}</th><th>Spiele</th><th>Siege</th><th>Quote</th><th>Ø Platz</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.k)}</td><td>${r.games}</td><td>${r.wins}</td><td>${Math.round(r.wins/r.games*100)} %</td><td>${(r.place/r.games).toFixed(1)}</td></tr>`).join('')}</tbody></table></div>`;
+  const avg=a.reduce((s,g)=>s+g.dur,0)/a.length;
+  const cm=tally(p=>p.cmdr);
+  return`<div class="kpis"><div class="kpi"><small>Spiele</small><b>${a.length}</b></div><div class="kpi"><small>Ø Dauer</small><b>${fmtT(avg)}</b></div><div class="kpi"><small>Ø Runden</small><b>${(a.reduce((s,g)=>s+g.turns,0)/a.length).toFixed(1)}</b></div></div>
+  <div class="grp"><h4>Spieler</h4>${tbl(tally(p=>p.name),'Spieler')}</div>
+  ${cm.length?`<div class="grp"><h4>Commander</h4>${tbl(cm,'Commander')}</div>`:''}
+  <div class="grp"><h4>Letzte Spiele</h4><div class="arch-list">${a.slice().reverse().slice(0,30).map(g=>{const d=new Date(g.date);return`<div class="arch-item"><span><b>${esc(g.winner||'Unentschieden')}</b> gewinnt${(()=>{const w=g.players.find(p=>p.place===1);return w&&w.cmdr?' mit '+esc(w.cmdr):''})()}</span><small>${d.toLocaleDateString('de-DE')} · ${fmtT(g.dur)} · ${g.turns} Runden · ${g.players.map(p=>esc(p.name)).join(', ')}</small></div>`}).join('')}</div></div>
+  <button class="mbtn${ui.archConfirm?' warn':''}" data-act="archclear">${I.reset}<span>${ui.archConfirm?'Wirklich alles löschen? Nochmal tippen':'Archiv leeren'}</span></button>`}
 
 /* ---------- Modal ---------- */
 function openModal(t){ui.modal=t;ui.confirm=null;renderModal()}
@@ -689,6 +808,9 @@ function renderModal(){const t=ui.modal;if(!t)return closeModal();const X=`<butt
     ${STANDALONE?'':`<button class="mbtn" data-act="fs">${I.full}<span>Vollbild an/aus<small>Auf dem iPad klappt das nur in der Safari-Version</small></span></button>`}
     <label class="tog"><input type="checkbox" id="m-cmdlife" ${S.cfg.cmdLife?'checked':''}> Commander-Schaden zieht Leben mit ab</label>
     <label class="tog"><input type="checkbox" id="m-sound" ${S.cfg.sound?'checked':''}> Töne beim Ausscheiden und Spielende</label>
+    <label class="tog"><input type="checkbox" id="m-clock" ${S.cfg.clock?'checked':''}> Spieluhr und Zugzeit anzeigen</label>
+    <label class="tog"><input type="checkbox" id="m-art" ${S.cfg.art?'checked':''}> Commander-Bild als Hintergrund</label>
+    <button class="mbtn" data-act="archive">${I.stats}<span>Archiv &amp; Bilanz<small>Alle beendeten Spiele auf diesem Gerät</small></span></button>
     <p class="hint">Rechte Hälfte tippen +1, linke Hälfte −1, halten in 10er-Schritten. In den Zähler-Feldern zählt Halten schnell hoch. „Zurück“ macht jede Aktion rückgängig, am Mac auch ⌘Z.</p>`;
   else if(t==='tools'){const d=ui.die,pc=ui.planar;body=`<div class="card-h"><h2>Würfel &amp; Werkzeuge</h2>${X}</div>
     <div class="grp"><h4>Würfeln</h4><div class="dice">${[4,6,8,10,12,20].map(s=>`<button data-act="die" data-s="${s}">W${s}</button>`).join('')}<button data-act="die" data-s="coin">Münze</button></div>
@@ -702,8 +824,9 @@ function renderModal(){const t=ui.modal;if(!t)return closeModal();const X=`<butt
   else if(t==='hist'){body=`<div class="card-h"><h2>Verlauf</h2>${X}</div>
     <div class="hist">${S.hist.length?S.hist.slice().reverse().map(histLine).join(''):'<p class="hint">Noch keine Einträge.</p>'}</div>`}
   else if(t==='stats'){body=`<div class="card-h"><h2>Übersicht</h2>${X}</div>${statsHTML()}`}
+  else if(t==='archive'){body=`<div class="card-h"><h2>Archiv</h2>${X}</div>${archiveHTML()}`}
   else if(t==='end'){const w=S.g.winner!=null?P(S.g.winner):null;const c=w?col(w):COLORS.C;body=`<div class="card-h"><h2>Spielende</h2>${X}</div>
-    <div class="winner" style="--bg:${c.bg};--bg2:${c.bg2};--fg:${c.fg}"><small>${w?'Gewonnen hat':'Ergebnis'}</small><b>${w?esc(w.name):'Unentschieden'}</b></div>
+    <div class="winner" style="--bg:${c.bg};--bg2:${c.bg2};--fg:${c.fg}"><small>${w?'Gewonnen hat':'Ergebnis'}</small><b>${w?esc(w.name):'Unentschieden'}</b>${w&&cmdName(w,0)?`<small>mit ${esc([0,1].map(k=>cmdName(w,k)).filter(Boolean).join(' + '))}</small>`:''}</div>
     ${statsHTML()}
     <div class="mrow"><button class="mbtn" data-act="restart2">${I.reset}<span>Neue Runde<small>Gleiche Spieler</small></span></button><button class="mbtn" data-act="close">${I.undo}<span>Weiterspielen<small>Zum Korrigieren „Zurück“ nutzen</small></span></button></div>`}
   const sc=elModal.querySelector('.card')?.scrollTop||0;
@@ -713,6 +836,8 @@ elModal.addEventListener('click',e=>{if(e.target===elModal)return closeModal();c
     case'close':closeModal();break;
     case'restart':if(ui.confirm==='restart')restartSame();else{ui.confirm='restart';renderModal()}break;
     case'restart2':restartSame();break;
+    case'archive':ui.archConfirm=false;openModal('archive');break;
+    case'archclear':if(ui.archConfirm){saveArch([]);ui.archConfirm=false;toast('Archiv geleert')}else ui.archConfirm=true;renderModal();break;
     case'setup':closeModal();S.players.forEach((p,i)=>Object.assign(S.setup.players[i],{name:p.name,color:p.color,partner:p.partner,rot:p.rot}));S.setup.n=S.players.length;S.setup.table=S.cfg.table;S.phase='setup';show();save();break;
     case'fs':fullscreen();break;
     case'die':rollDie(b.dataset.s==='coin'?'coin':+b.dataset.s);break;
@@ -721,12 +846,13 @@ elModal.addEventListener('click',e=>{if(e.target===elModal)return closeModal();c
     case'planar':rollPlanar();break;
     case'storm':S.g.storm=Math.max(0,S.g.storm+ +b.dataset.d);renderModal();update();save();break;
   }});
-elModal.addEventListener('change',e=>{if(e.target.id==='m-cmdlife'){S.cfg.cmdLife=S.setup.cmdLife=e.target.checked;save()}if(e.target.id==='m-sound'){S.cfg.sound=S.setup.sound=e.target.checked;if(e.target.checked)ac();save()}});
+elModal.addEventListener('change',e=>{if(e.target.id==='m-clock'){S.cfg.clock=S.setup.clock=e.target.checked;update();save()}if(e.target.id==='m-art'){S.cfg.art=S.setup.art=e.target.checked;update();save()}if(e.target.id==='m-cmdlife'){S.cfg.cmdLife=S.setup.cmdLife=e.target.checked;save()}if(e.target.id==='m-sound'){S.cfg.sound=S.setup.sound=e.target.checked;if(e.target.checked)ac();save()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(ui.modal)closeModal();else if(ui.assign){ui.assign=null;update()}else{ui.ov={};update()}}
   if((e.metaKey||e.ctrlKey)&&e.key==='z'&&S.phase==='game'&&!ui.modal){e.preventDefault();doUndo()}});
 
 function show(){const g=S.phase==='game'&&S.players.length;elSetup.hidden=!!g;elGame.hidden=!g;document.body.classList.toggle('ingame',!!g);
   if(g)buildGame();else{if(ro)ro.disconnect();renderSetup();window.scrollTo(0,0)}}
+if('serviceWorker' in navigator&&location.protocol==='https:'&&/github\.io$|netlify|vercel/.test(location.hostname)){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 show();
 window.__tafel={get S(){return S},ui};
 })();
