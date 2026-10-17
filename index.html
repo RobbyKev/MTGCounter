@@ -207,6 +207,13 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .r .del{width:max(32px,8cqmin);height:max(32px,8cqmin);border-radius:8px;background:rgba(0,0,0,.25);display:grid;place-items:center}
 .r .del svg{width:60%;height:60%}
 .r.cust{grid-template-columns:minmax(0,1fr) auto auto auto auto}
+@container (max-width:420px){
+  .r,.r.cust{grid-template-columns:auto minmax(0,1fr) auto;row-gap:1cqmin}
+  .r .lab{grid-column:1/-1}
+  .r .lab span{white-space:normal}
+  .r.cust .del{grid-column:1/-1;justify-self:end}
+  .ov-h p{display:none}
+}
 .amt b{font-family:var(--f-num);font-size:max(30px,11cqmin);min-width:max(50px,14cqmin);text-align:center;font-variant-numeric:tabular-nums}
 
 /* ---------- Leiste ---------- */
@@ -311,7 +318,9 @@ const CTRS=[
   {k:'rad',n:'Strahlung (Rad)'},
   {k:'misc',n:'Sonstige Marken'}
 ];
-const TABLES={long:'Liegt: lange Seiten',head1:'Liegt: Kopfende links',head2:'Liegt: beide Kopfenden',upright:'Steht aufrecht (MacBook)'};
+const TABLES={long:'Liegt: lange Seiten',head1:'Liegt: Kopfende links',head2:'Liegt: beide Kopfenden',upright:'Stehend'};
+const FS_OK=!STANDALONE_EARLY()&&!!(document.fullscreenEnabled||document.webkitFullscreenEnabled);
+function STANDALONE_EARLY(){return!!(navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches))}
 const HASTOUCH=('ontouchstart' in window)||navigator.maxTouchPoints>0;
 const I={
   menu:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
@@ -666,7 +675,7 @@ function ovHTML(p,type){
     return`<div class="ov-h"><div><h3>Commander-Schaden erhalten</h3><p>${S.cfg.cmdLife?'Zieht automatisch Leben ab · ':''}21 von einem Commander = raus · Halten zählt schnell</p></div>${close}</div><div class="rows">${rows.join('')}</div>`}
   if(type==='fx'){const f=fxState(p.id);const opp=S.players.filter(q=>q.id!==p.id&&!deadReason(q));const x=f.amt;
     const tgt=f.target!=null?P(f.target):null;
-    return`<div class="ov-h"><div><h3>Aktion von ${esc(p.name)}</h3><p>Menge einstellen, dann Ziel wählen</p></div><button class="tb" data-act="ov" data-pid="${p.id}" data-ov="pad">Leben eingeben</button>${close}</div>
+    return`<div class="ov-h"><div><h3>Aktion</h3><p>Menge einstellen, dann Ziel wählen</p></div><button class="tb" data-act="ov" data-pid="${p.id}" data-ov="pad">Leben eingeben</button>${close}</div>
     <div class="rows">
       <div class="fxsec wide"><h4>Menge</h4><div class="amt"><button class="sb" data-rep data-act="fxamt" data-pid="${p.id}" data-d="-1" aria-label="weniger">−</button><b>${x}</b><button class="sb" data-rep data-act="fxamt" data-pid="${p.id}" data-d="1" aria-label="mehr">+</button>
         ${[1,2,3,5,10].map(v=>`<button class="tb" data-act="fxset" data-pid="${p.id}" data-v="${v}" aria-pressed="${v===x}">${v}</button>`).join('')}</div></div>
@@ -745,7 +754,8 @@ function barHTML(){const g=S.g;
   <button class="bb${ini?' on':''}" data-act="initiative" aria-label="Initiative">${I.init}<span class="t">${ini?esc(ini.name):'Initiative'}</span></button>
   <button class="bb${g.dn?' on':''}" data-act="dn" aria-label="${dnLabel}">${dnIcon}<span class="t">${dnLabel}</span></button>
   <button class="bb" data-act="stats" aria-label="Übersicht">${I.stats}<span class="t">Übersicht</span></button>
-  <button class="bb" data-act="hist" aria-label="Verlauf">${I.hist}<span class="t">Verlauf</span></button>`}
+  <button class="bb" data-act="hist" aria-label="Verlauf">${I.hist}<span class="t">Verlauf</span></button>
+  ${FS_OK?`<button class="bb" data-act="fs" aria-label="Vollbild">${I.full}</button>`:''}`}
 
 function update(){if(S.phase!=='game'||!S.players.length)return;
   const bar=$('#bar');if(bar){const sl=bar.scrollLeft;bar.innerHTML=barHTML();bar.scrollLeft=sl;tickClock()}
@@ -824,6 +834,7 @@ elGame.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b
     case'custadd':{const inp=document.getElementById('custin'+pid);const n=inp&&inp.value.trim();if(!n){inp&&inp.focus();break}pushUndo();P(pid).custom.push({name:n,v:0});inp.blur();update();save();break}
     case'custdel':{pushUndo();P(pid).custom.splice(+b.dataset.i,1);update();save();break}
     case'pause':togglePause();break;
+    case'fs':fullscreen();break;
     case'rotp':{const p=P(pid);p.rot=(rotOf(p)+90)%360;S.setup.players[pid].rot=p.rot;relayout();update();save();break}
     case'undo':doUndo();break;
     case'next':if(S.g.ended)openModal('end');else stepTurn(1);break;
@@ -893,7 +904,7 @@ function renderModal(){const t=ui.modal;if(!t)return closeModal();const X=`<butt
     <label class="tog"><input type="checkbox" id="m-art" ${S.cfg.art?'checked':''}> Commander-Bild als Hintergrund</label>
     <button class="mbtn" data-act="archive">${I.stats}<span>Archiv &amp; Bilanz<small>Alle beendeten Spiele auf diesem Gerät</small></span></button>
     <p class="hint">Rechte Hälfte tippen +1, linke Hälfte −1, halten in 10er-Schritten. In den Zähler-Feldern zählt Halten schnell hoch. „Zurück“ macht jede Aktion rückgängig.</p>
-    ${HASTOUCH?'':`<p class="hint">Tastatur am Mac: <span class="kbd">1</span>–<span class="kbd">6</span> Spieler wählen · <span class="kbd">↑</span> <span class="kbd">↓</span> Leben ±1 (mit <span class="kbd">⇧</span> ±10) · <span class="kbd">C</span> Commander · <span class="kbd">M</span> Marken · <span class="kbd">A</span> Aktion · <span class="kbd">Leertaste</span> nächster Zug · <span class="kbd">⌘Z</span> zurück · <span class="kbd">Esc</span> schließen</p>`}`;
+    ${HASTOUCH?'':`<p class="hint">Tastatur am Mac: <span class="kbd">1</span>–<span class="kbd">6</span> Spieler wählen · <span class="kbd">↑</span> <span class="kbd">↓</span> Leben ±1 (mit <span class="kbd">⇧</span> ±10) · <span class="kbd">C</span> Commander · <span class="kbd">M</span> Marken · <span class="kbd">A</span> Aktion · <span class="kbd">Leertaste</span> nächster Zug · <span class="kbd">⌘Z</span> zurück · <span class="kbd">F</span> Vollbild · <span class="kbd">Esc</span> schließen</p>`}`;
   else if(t==='tools'){const d=ui.die,pc=ui.planar;body=`<div class="card-h"><h2>Würfel &amp; Werkzeuge</h2>${X}</div>
     <div class="grp"><h4>Würfeln</h4><div class="dice">${[4,6,8,10,12,20].map(s=>`<button data-act="die" data-s="${s}">W${s}</button>`).join('')}<button data-act="die" data-s="coin">Münze</button></div>
     <div class="dieout" id="dieout">${d?`<b>${d.v}</b><small>${d.label}</small>`:'<small>Würfel wählen</small>'}</div></div>
@@ -935,6 +946,7 @@ document.addEventListener('keydown',e=>{
     if(/^[1-6]$/.test(k)&&+k<=S.players.length){ui.sel=ui.sel===+k-1?null:+k-1;update();e.preventDefault();return}
     if(ui.sel!=null&&(k==='ArrowUp'||k==='ArrowDown'||k==='+'||k==='-')){const d=(k==='ArrowUp'||k==='+'?1:-1)*(e.shiftKey?10:1);pushUndo('life'+ui.sel);changeLife(ui.sel,d);e.preventDefault();return}
     if(ui.sel!=null&&/^[cma]$/i.test(k)){const t={c:'cmd',m:'ctr',a:'fx'}[k.toLowerCase()];ui.ov[ui.sel]=ui.ov[ui.sel]===t?null:t;update();e.preventDefault();return}
+    if(k==='f'||k==='F'){fullscreen();e.preventDefault();return}
     if(k===' '&&S.cfg.turns){e.preventDefault();if(!S.g.ended)stepTurn(1);return}
   }
   if(e.key==='Escape'){if(ui.sel!=null&&!ui.modal&&!Object.values(ui.ov).some(Boolean)){ui.sel=null;update();return}if(ui.modal)closeModal();else if(ui.assign){ui.assign=null;update()}else{ui.ov={};update()}}
