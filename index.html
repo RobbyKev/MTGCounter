@@ -283,6 +283,12 @@ table.t .dot{width:10px;height:10px;margin-right:6px;vertical-align:middle}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:14px;height:4px;border-radius:2px;background:var(--dot)}
 
+.startp{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:40;display:grid;gap:10px;justify-items:center;padding:18px;border-radius:22px;background:rgba(14,15,18,.92);border:1px solid #2f3239;box-shadow:0 20px 60px rgba(0,0,0,.6);width:min(440px,calc(100vw - 32px))}
+.startp .big{width:100%;min-height:96px;border-radius:16px;background:var(--brass);color:#1a1408;font-weight:700;font-size:22px;display:grid;place-items:center;gap:4px;padding:10px;font-family:var(--f-title);letter-spacing:.03em;animation:pulse 2.2s ease-in-out infinite}
+.startp .big .flip{transform:rotate(180deg);opacity:.75;font-size:.8em}
+.startp .row2{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%}
+.startp .row2 button{flex:1 1 120px;min-height:48px;border-radius:12px;background:#22252c;font-weight:600;font-size:15px;padding:0 10px}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(201,164,92,.5)}50%{box-shadow:0 0 0 10px rgba(201,164,92,0)}}
 #toast{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:60;background:#000c;color:#fff;padding:12px 20px;border-radius:12px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;text-align:center;max-width:80vw}
 #toast.on{opacity:1}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -368,7 +374,7 @@ function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.setup)
 let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}},250)}
 
 let S=migrate(load()||fresh());
-const ui={cardK:{},cardEn:{},pad:{},archConfirm:false,ov:{},fx:{},delta:{},assign:null,modal:null,roll:{},rollTop:new Set(),pick:null,die:null,planar:null,confirm:null,shake:{}};
+const ui={startPrompt:false,cardK:{},cardEn:{},pad:{},archConfirm:false,ov:{},fx:{},delta:{},assign:null,modal:null,roll:{},rollTop:new Set(),pick:null,die:null,planar:null,confirm:null,shake:{}};
 let undo=[],undoKey=null,undoT=0;
 let wl=null;
 
@@ -492,14 +498,17 @@ function stepTurn(dir){pushUndo();const g=S.g,n=S.players.length,ord=[...Array(n
   if(dir<0&&rel(nx)>=rel(cur))g.turn=Math.max(1,g.turn-1);
   sfx('turn');setActive(nx);ev((dir>0?'Zug ':'Zurück zu Zug ')+g.turn+' – '+P(nx).name,nx);update();save()}
 
-function pickStart(){closeModal();const order=alive();if(order.length<2)return;pushUndo();
+function pickStart(){closeModal();ui.startPrompt=false;const order=alive();if(order.length<2){update();return}pushUndo();
   const steps=order.length*3+rnd(order.length);let i=0,delay=70;
   const step=()=>{ui.pick=order[i%order.length];update();if(S.cfg.sound)tone([[880,.04,'square',.04]]);i++;
     if(i<steps){delay=Math.min(delay*1.1,320);setTimeout(step,delay)}
-    else{const w=order[(steps-1)%order.length];setTimeout(()=>{ui.pick=null;setActive(w);S.g.first=w;S.g.turn=1;ev('Startspieler ausgelost: '+P(w).name,w);update();save();toast(P(w).name+' beginnt')},900)}};
+    else{const w=order[(steps-1)%order.length];setTimeout(()=>{setStarter(w,'ausgelost');if(S.cfg.turns)ui.pick=null;else setTimeout(()=>{ui.pick=null;update()},2500);update()},900)}};
   step()}
-function rollAll(){closeModal();const ids=alive();ui.roll={};let max=0;ids.forEach(id=>{const v=rnd(20)+1;ui.roll[id]=v;if(v>max)max=v});ui.rollTop=new Set(ids.filter(id=>ui.roll[id]===max));
-  ev('Alle würfeln W20: '+ids.map(id=>P(id).name+' '+ui.roll[id]).join(', '));update();save();clearTimeout(rollAll.t);rollAll.t=setTimeout(()=>{ui.roll={};ui.rollTop=new Set();update()},6000)}
+function setStarter(w,how){setActive(w);S.g.first=w;S.g.turn=1;ev('Startspieler '+how+': '+P(w).name,w);sfx('turn');save();toast(P(w).name+' beginnt')}
+function rollAll(fromPrompt){closeModal();ui.startPrompt=false;const ids=alive();ui.roll={};let max=0;ids.forEach(id=>{const v=rnd(20)+1;ui.roll[id]=v;if(v>max)max=v});ui.rollTop=new Set(ids.filter(id=>ui.roll[id]===max));
+  ev('Alle würfeln W20: '+ids.map(id=>P(id).name+' '+ui.roll[id]).join(', '));
+  if(fromPrompt===true){if(ui.rollTop.size===1){pushUndo();const w=[...ui.rollTop][0];setTimeout(()=>{setStarter(w,'mit der höchsten Zahl');update()},1500)}else{setTimeout(()=>{toast('Gleichstand – nochmal würfeln');ui.startPrompt=true;update()},2200)}}
+  update();save();clearTimeout(rollAll.t);rollAll.t=setTimeout(()=>{ui.roll={};ui.rollTop=new Set();update()},6000)}
 function rollDie(sides){const label=sides==='coin'?'Münze':'W'+sides;const final=sides==='coin'?(rnd(2)?'Kopf':'Zahl'):rnd(sides)+1;let n=0;
   const tick=()=>{const out=document.getElementById('dieout');if(!out)return;const v=n<9?(sides==='coin'?(n%2?'Kopf':'Zahl'):rnd(sides)+1):final;out.innerHTML='<b>'+v+'</b><small>'+label+'</small>';if(n++<9)setTimeout(tick,45+n*8);else{ui.die={label,v:final};ev(label+': '+final);save()}};tick()}
 function rollPlanar(){const cost=S.g.planar||0;const r=rnd(6);const res=r===0?'Planeswalk':r===1?'Chaos':'Nichts';S.g.planar=cost+1;ui.planar={res,cost};
@@ -631,12 +640,12 @@ function startGame(){readSetupInputs();const st=S.setup;
   S.players.forEach(p=>S.players.forEach(q=>{if(q.id!==p.id)p.cmd[q.id]=[0,0]}));
   S.g=newG();S.hist=[];S.lifeLog=[];undo=[];ui.ov={};ui.fx={};ui.delta={};ui.roll={};ui.rollTop=new Set();
   logLives();ev('Neues Spiel · '+st.n+' Spieler'+(st.arch>=0?' · Archenemy: '+S.players[st.arch].name:' · '+st.start+' Leben'));
-  S.phase='game';show();save();wake();if(S.cfg.sound)ac()}
+  ui.startPrompt=true;S.phase='game';show();save();wake();if(S.cfg.sound||S.cfg.sfx)ac()}
 function cmdObj(c){return c?{...c}:null}
 function cmdName(p,k){const c=p.cdata&&p.cdata[k];const n=(c&&(c.nameDe||c.name))||(p.cmdr&&p.cmdr[k])||'';return n?shortName(n):''}
 function newG(){return{paused:false,pausedAt:null,turn:1,active:null,first:null,monarch:null,initiative:null,dn:0,storm:0,planar:0,started:Date.now(),turnStart:null,ended:false,endedAt:null,winner:null}}
 function restartSame(){pushUndo();S.players.forEach(p=>{Object.assign(p,{life:p.startLife,poison:0,energy:0,exp:0,rad:0,tax1:0,tax2:0,misc:0,elim:null,time:0});(p.custom||[]).forEach(c=>c.v=0);for(const f in p.cmd)p.cmd[f]=[0,0]});
-  S.g=newG();S.lifeLog=[];logLives();ev('Neue Runde');ui.ov={};ui.fx={};ui.delta={};closeModal();update();save();toast('Neue Runde')}
+  S.g=newG();S.lifeLog=[];logLives();ev('Neue Runde');ui.ov={};ui.fx={};ui.delta={};ui.startPrompt=true;closeModal();update();save()}
 
 /* ---------- Spielansicht ---------- */
 function panelHTML(id){if(id==null)return'';const p=P(id),c=col(p);return`
@@ -737,6 +746,7 @@ function cmdrHTML(p){const out=[];[0,1].forEach(k=>{if(k===1&&!p.partner)return;
     out.push(`<span class="cmdr" title="${esc(n)}" data-act="card" data-pid="${p.id}" data-k="${k}"><span class="cn">${esc(n)}</span>${tax?`<span class="tx">† ${tax}</span>`:''}${cost!=null?`<span class="cost">${cost} Mana</span>`:tax?`<span class="cost">+${tax*2}</span>`:''}</span>`)});
   return out.join('')}
 function barHTML(){const g=S.g;
+  if(ui.assign==='start')return`<span class="banner">${I.next} Auf den Spieler tippen, der anfängt</span><button class="bb" data-act="assigncancel">Abbrechen</button>`;
   if(ui.assign){const what=ui.assign==='monarch'?'den Monarchen':'die Initiative';
     return`<span class="banner">${ui.assign==='monarch'?I.crown:I.init} Auf den Spieler tippen, der ${what} bekommt</span><button class="bb" data-act="assignnone">Niemand</button><button class="bb" data-act="assigncancel">Abbrechen</button>`}
   const mon=g.monarch!=null?P(g.monarch):null,ini=g.initiative!=null?P(g.initiative):null;
@@ -779,6 +789,12 @@ function update(){if(S.phase!=='game'||!S.players.length)return;
     const as=el.querySelector('.assignov');as.classList.toggle('on',!!ui.assign);as.textContent=ui.assign?'Hier tippen':'';
   });
   tickClock();
+  let sp=document.getElementById('startp');
+  if(ui.startPrompt&&!S.g.ended&&alive().length>1){if(!sp){sp=document.createElement('div');sp.id='startp';sp.className='startp';elGame.appendChild(sp)}
+    const up=layout(S.players.length,S.cfg.table).upright;
+    sp.innerHTML=`<button class="big" data-act="sp-pick">${up?'':'<span class="flip">Startspieler auslosen</span>'}<span>Startspieler auslosen</span></button>
+      <div class="row2"><button data-act="sp-roll">Alle würfeln W20</button><button data-act="sp-choose">Selbst wählen</button><button data-act="sp-skip">Überspringen</button></div>`}
+  else if(sp)sp.remove();
   if(ui.modal==='hist'||ui.modal==='stats')renderModal()}
 
 const nowG=()=>S.g.paused&&S.g.pausedAt?S.g.pausedAt:Date.now();
@@ -840,9 +856,13 @@ elGame.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b
     case'next':if(S.g.ended)openModal('end');else stepTurn(1);break;
     case'prev':stepTurn(-1);break;
     case'monarch':case'initiative':ui.assign=a;update();break;
-    case'assign':{pushUndo();const k=ui.assign;S.g[k]=pid;ev((k==='monarch'?'Monarch: ':'Initiative: ')+P(pid).name,pid);ui.assign=null;update();save();break}
+    case'assign':{pushUndo();const k=ui.assign;if(k==='start'){ui.assign=null;setStarter(pid,'gewählt');update();break}S.g[k]=pid;ev((k==='monarch'?'Monarch: ':'Initiative: ')+P(pid).name,pid);ui.assign=null;update();save();break}
     case'assignnone':{pushUndo();const k=ui.assign;S.g[k]=null;ev(k==='monarch'?'Kein Monarch mehr':'Initiative entfernt');ui.assign=null;update();save();break}
-    case'assigncancel':ui.assign=null;update();break;
+    case'assigncancel':if(ui.assign==='start')ui.startPrompt=true;ui.assign=null;update();break;
+    case'sp-pick':pickStart();break;
+    case'sp-roll':rollAll(true);break;
+    case'sp-choose':ui.startPrompt=false;ui.assign='start';update();break;
+    case'sp-skip':ui.startPrompt=false;update();break;
     case'dn':pushUndo();S.g.dn=(S.g.dn+1)%3;if(S.g.dn)ev(S.g.dn===1?'Es wird Tag':'Es wird Nacht');update();save();break;
     case'menu':case'tools':case'hist':case'stats':openModal(a);break;
   }});
