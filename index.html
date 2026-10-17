@@ -89,6 +89,12 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 @media (orientation:portrait){.side{width:27%}}
 .center{flex:1;min-width:0;display:grid;grid-template-rows:minmax(0,1fr) auto minmax(0,1fr);gap:6px}
 .row{display:flex;gap:6px;min-height:0}
+.center.up{grid-template-rows:none}
+.panel.kbsel{box-shadow:0 0 0 3px #fff,0 0 0 6px rgba(0,0,0,.5)}
+.panel.kbsel.active{box-shadow:0 0 0 3px #fff,0 0 0 6px var(--brass)}
+.kbd{display:inline-block;min-width:22px;padding:1px 6px;border-radius:5px;background:#2a2d34;border:1px solid #3a3e47;font-size:12px;text-align:center;color:var(--ink)}
+.tog small{display:block;color:var(--muted);font-size:13px;line-height:1.4}
+.tog.top{align-items:flex-start}.tog.top input{margin-top:2px}
 .panel{flex:1;min-width:0;position:relative;border-radius:16px;overflow:hidden;background:radial-gradient(120% 120% at 50% 45%,var(--bg) 0%,var(--bg2) 100%);color:var(--fg);transition:box-shadow .25s,filter .3s}
 .inner{position:absolute;left:50%;top:50%;width:100%;height:100%;transform:translate(-50%,-50%);container-type:size}
 .panel.active{box-shadow:0 0 0 3px var(--brass),0 0 28px rgba(201,164,92,.35)}
@@ -305,7 +311,8 @@ const CTRS=[
   {k:'rad',n:'Strahlung (Rad)'},
   {k:'misc',n:'Sonstige Marken'}
 ];
-const TABLES={long:'Nur lange Seiten',head1:'Kopfende links',head2:'Beide Kopfenden'};
+const TABLES={long:'Liegt: lange Seiten',head1:'Liegt: Kopfende links',head2:'Liegt: beide Kopfenden',upright:'Steht aufrecht (MacBook)'};
+const HASTOUCH=('ontouchstart' in window)||navigator.maxTouchPoints>0;
 const I={
   menu:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
   dice:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/></svg>',
@@ -338,9 +345,9 @@ const fmtT=ms=>{const s=Math.max(0,Math.floor(ms/1000));const h=Math.floor(s/360
 const elSetup=$('#setup'),elGame=$('#game'),elModal=$('#modal'),elToast=$('#toast');
 const STANDALONE=!!(navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches));
 
-function fresh(){return{phase:'setup',setup:{n:4,start:40,cmdLife:true,sound:true,clock:true,art:true,table:'long',arch:-1,players:Array.from({length:6},(_,i)=>newSetupPlayer(i))},cfg:null,players:[],g:null,hist:[],lifeLog:[]}}
+function fresh(){return{phase:'setup',setup:{n:4,start:40,cmdLife:true,sound:true,sfx:true,turns:true,clock:true,art:true,table:(('ontouchstart' in window)||navigator.maxTouchPoints>0)?'long':'upright',arch:-1,players:Array.from({length:6},(_,i)=>newSetupPlayer(i))},cfg:null,players:[],g:null,hist:[],lifeLog:[]}}
 function newSetupPlayer(i){return{name:'Spieler '+(i+1),color:CORDER[i],partner:false,rot:null,cmdr:['',''],cdata:[null,null]}}
-function migrate(s){const st=s.setup;if(st.clock==null)st.clock=true;if(st.art==null)st.art=true;
+function migrate(s){const st=s.setup;if(st.sfx==null)st.sfx=true;if(st.turns==null)st.turns=true;if(s.cfg){if(s.cfg.sfx==null)s.cfg.sfx=true;if(s.cfg.turns==null)s.cfg.turns=true}if(st.clock==null)st.clock=true;if(st.art==null)st.art=true;
   st.players.forEach((p,i)=>{if(!p.cmdr)p.cmdr=['',''];if(!p.cdata)p.cdata=[null,null]});
   if(s.cfg){if(s.cfg.clock==null)s.cfg.clock=true;if(s.cfg.art==null)s.cfg.art=true}
   (s.players||[]).forEach(p=>{if(!p.cmdr)p.cmdr=['',''];if(!p.cdata)p.cdata=[null,null];if(!p.custom)p.custom=[]});
@@ -358,6 +365,7 @@ let wl=null;
 
 /* ---------- Tischlayout ---------- */
 function layout(n,table){
+  if(table==='upright'){const cols=n<=3?n:(n===4?2:3);const rows=[];for(let i=0;i<n;i+=cols)rows.push([...Array(Math.min(cols,n-i)).keys()].map(x=>x+i));return{upright:true,rows,top:[],bottom:[],left:null,right:null}}
   const heads=n>=4&&table==='head2'?2:(n>=3&&table!=='long'?1:0);
   const m=n-heads,t=Math.floor(m/2),b=m-t;
   const top=[...Array(t).keys()];let k=t;
@@ -369,6 +377,7 @@ function layout(n,table){
 function autoRot(id,L){if(L.top.includes(id))return 180;if(id===L.left)return 90;if(id===L.right)return 270;return 0}
 function rotOf(p){return p.rot!=null?p.rot:autoRot(p.id,layout(S.players.length,S.cfg.table))}
 function seatLabel(i,n,table){const L=layout(n,table);
+  if(L.upright){const r=L.rows.findIndex(x=>x.includes(i));return(L.rows.length>1?(r?'unten ':'oben '):'')+(L.rows[r].length===1?'':['links','Mitte','rechts'][L.rows[r].length===2?L.rows[r].indexOf(i)*2:L.rows[r].indexOf(i)])}
   if(i===L.left)return'Kopfende links';if(i===L.right)return'Kopfende rechts';
   const row=L.top.includes(i)?L.top:L.bottom,pos=row.indexOf(i),side=L.top.includes(i)?'oben':'unten';
   const names=row.length===1?['']:row.length===2?['links','rechts']:['links','Mitte','rechts'];return(side+' '+names[pos]).trim()}
@@ -404,7 +413,18 @@ let AC=null;
 function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){return null}}if(AC.state==='suspended')AC.resume();return AC}
 function tone(seq){if(!S.cfg||!S.cfg.sound)return;const a=ac();if(!a)return;let t=a.currentTime+.02;
   seq.forEach(([f,d,type,v])=>{const o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(v||.16,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.02);t+=d*.75})}
-window.addEventListener('pointerdown',()=>{if(S.cfg&&S.cfg.sound)ac()},{once:true,capture:true});
+window.addEventListener('pointerdown',()=>{if(S.cfg&&(S.cfg.sound||S.cfg.sfx))ac()},{once:true,capture:true});
+let sfxT=0;
+function noise(a,t,dur,vol,freq){const n=a.createBuffer(1,Math.floor(a.sampleRate*dur),a.sampleRate),d=n.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);
+  const src=a.createBufferSource();src.buffer=n;const f=a.createBiquadFilter();f.type='lowpass';f.frequency.value=freq;const g=a.createGain();g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);src.connect(f);f.connect(g);g.connect(a.destination);src.start(t)}
+function osc(a,t,type,f0,f1,dur,vol){const o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f0,t);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+dur+.02)}
+function sfx(kind){if(!S.cfg||!S.cfg.sfx)return;const now=performance.now();if(now-sfxT<90)return;sfxT=now;const a=ac();if(!a)return;const t=a.currentTime+.01;
+  if(kind==='dmg'){osc(a,t,'sine',150,55,.18,.35);noise(a,t,.09,.25,900)}
+  else if(kind==='big'){osc(a,t,'sine',120,40,.35,.45);noise(a,t,.2,.35,700)}
+  else if(kind==='heal'){osc(a,t,'sine',660,null,.16,.12);osc(a,t+.08,'sine',990,null,.22,.1)}
+  else if(kind==='cmd'){osc(a,t,'square',420,180,.12,.06);osc(a,t,'triangle',1250,900,.25,.08);noise(a,t,.06,.2,4000)}
+  else if(kind==='poison'){osc(a,t,'sine',260,620,.09,.14);osc(a,t+.1,'sine',320,760,.09,.12)}
+  else if(kind==='turn'){osc(a,t,'triangle',880,null,.06,.07);osc(a,t+.07,'triangle',1320,null,.09,.06)}}
 
 /* ---------- Auswerten nach jeder Änderung ---------- */
 function afterChange(by){
@@ -428,13 +448,14 @@ function archiveGame(){const g=S.g;const id='g'+g.started;const a=loadArch().fil
 function unarchive(){const id='g'+S.g.started;saveArch(loadArch().filter(x=>x.id!==id))}
 
 /* ---------- Aktionen ---------- */
-function changeLife(pid,d){const p=P(pid);p.life+=d;bumpDelta(pid,d);addHist({pid,k:'life',d,res:p.life});afterChange(null);update();save()}
+function changeLife(pid,d){const p=P(pid);p.life+=d;sfx(d<=-10?'big':d<0?'dmg':'heal');bumpDelta(pid,d);addHist({pid,k:'life',d,res:p.life});afterChange(null);update();save()}
 function changeCmd(pid,from,k,d){const p=P(pid);const a=p.cmd[from];const nv=Math.max(0,a[k]+d);const real=nv-a[k];if(!real)return;pushUndo('cmd'+pid+from+k);a[k]=nv;
   addHist({pid,k:'cmd',sub:from+'-'+k,from,ck:k,d:real,res:nv});
   if(S.cfg.cmdLife){p.life-=real;bumpDelta(pid,-real)}
+  if(real>0)sfx('cmd');
   afterChange(from);update();save()}
 function changeCtr(pid,key,d){const p=P(pid);const nv=Math.max(0,(p[key]||0)+d);const real=nv-(p[key]||0);if(!real)return;pushUndo('ctr'+pid+key);p[key]=nv;addHist({pid,k:key,d:real,res:nv});
-  if(key==='poison')afterChange(null);update();save()}
+  if(key==='poison'){if(real>0)sfx('poison');afterChange(null)}update();save()}
 
 function fxState(pid){return ui.fx[pid]||(ui.fx[pid]={amt:1,target:null,cmd:false,ck:0,link:false})}
 function runFx(pid,kind){const me=P(pid),f=fxState(pid),x=f.amt;const opp=alive().filter(i=>i!==pid);pushUndo();
@@ -448,6 +469,7 @@ function runFx(pid,kind){const me=P(pid),f=fxState(pid),x=f.amt;const opp=alive(
   else if(kind==='opp'){opp.forEach(i=>hit(i,-x));msg=`${me.name}: jeder Gegner verliert ${x}`}
   else if(kind==='alllose'){alive().forEach(i=>hit(i,-x));msg=`${me.name}: alle Spieler verlieren ${x}`}
   else if(kind==='allgain'){alive().forEach(i=>hit(i,x));msg=`${me.name}: alle Spieler erhalten ${x}`}
+  sfx(kind==='allgain'?'heal':(kind==='dmg'&&f.cmd)?'cmd':x>=10?'big':'dmg');
   ev(msg,pid);afterChange(pid);ui.ov[pid]=null;update();save();toast(msg)}
 
 function setActive(nx){const g=S.g,now=nowG();if(g.active!=null&&g.turnStart&&!g.ended){P(g.active).time+=now-g.turnStart}g.active=nx;g.turnStart=g.ended?null:now;g.storm=0;g.planar=0}
@@ -459,7 +481,7 @@ function stepTurn(dir){pushUndo();const g=S.g,n=S.players.length,ord=[...Array(n
   if(nx==null)return;
   if(dir>0&&rel(nx)<=rel(cur))g.turn++;
   if(dir<0&&rel(nx)>=rel(cur))g.turn=Math.max(1,g.turn-1);
-  setActive(nx);ev((dir>0?'Zug ':'Zurück zu Zug ')+g.turn+' – '+P(nx).name,nx);update();save()}
+  sfx('turn');setActive(nx);ev((dir>0?'Zug ':'Zurück zu Zug ')+g.turn+' – '+P(nx).name,nx);update();save()}
 
 function pickStart(){closeModal();const order=alive();if(order.length<2)return;pushUndo();
   const steps=order.length*3+rnd(order.length);let i=0,delay=70;
@@ -505,6 +527,7 @@ const shortName=n=>{const s=n.split(' // ')[0];return s.length>22?s.split(',')[0
 let acT=null;
 async function onCmdInput(inp){const q=inp.value.trim();clearTimeout(acT);if(q.length<2)return;
   acT=setTimeout(async()=>{let list=await sfAuto(q);
+    const put=()=>{const dl=document.getElementById('dl-'+inp.id);if(dl)dl.innerHTML=list.slice(0,14).map(n=>`<option value="${esc(n)}"></option>`).join('')};put();
     if(list.length<4&&q.length>=3){const de=await sfSearchDe(q);de.slice(0,10).forEach(c=>{const pn=c.printed_name||(c.card_faces&&c.card_faces[0].printed_name);if(pn){deMap[pn.toLowerCase()]=c.name;if(!list.includes(pn))list.push(pn)}})}
     const dl=document.getElementById('dl-'+inp.id);if(dl)dl.innerHTML=list.slice(0,14).map(n=>`<option value="${esc(n)}"></option>`).join('')},300)}
 async function resolveCmd(i,k){const st=S.setup,p=st.players[i],name=(p.cmdr[k]||'').trim();
@@ -526,7 +549,7 @@ function renderSetup(){
   const sameN=live&&S.players.length===n;
   const pl=st.players.slice(0,n);
   const seat=i=>{if(i==null)return'';const c=COLORS[pl[i].color];const r=pl[i].rot!=null?pl[i].rot:autoRot(i,L);return`<div class="map-seat" style="--bg:${c.bg};--fg:${c.fg};--r:${r}deg"><span>${i+1}</span></div>`};
-  const tableOk=k=>k==='long'||(k==='head1'&&n>=3)||(k==='head2'&&n>=4);
+  const tableOk=k=>k==='long'||k==='upright'||(k==='head1'&&n>=3)||(k==='head2'&&n>=4);
   elSetup.innerHTML=`
   <div class="s-head"><h1>Commander-Tafel</h1>${live?`<p class="live">Ein Spiel läuft. Namen, Farben, Ausrichtung, Tischform und Optionen kannst du übernehmen, ohne dass Leben oder Zähler verloren gehen.</p>`:`<p>Lebenspunkte, Commander-Schaden, Gift, Steuer und alles andere für euren Spieleabend. Das Gerät liegt in der Mitte, jedes Feld zeigt zu seinem Spieler.</p>`}</div>
   <div class="s-sec"><span class="s-lab">Spieler</span><div class="chips-row">${[2,3,4,5,6].map(k=>`<button class="ch" data-act="n" data-v="${k}" aria-pressed="${k===n}">${k}</button>`).join('')}</div></div>
@@ -544,13 +567,16 @@ function renderSetup(){
       </div>`}).join('')}</div>
     <aside class="map">
       <span class="s-lab">Sitzordnung</span>
-      <div class="map-box">${L.left!=null?`<div class="map-side">${seat(L.left)}</div>`:''}<div class="map-center"><div class="map-row">${L.top.map(seat).join('')}</div><div class="map-mid"></div><div class="map-row">${L.bottom.map(seat).join('')}</div></div>${L.right!=null?`<div class="map-side">${seat(L.right)}</div>`:''}</div>
+      <div class="map-box">${L.upright?`<div class="map-center" style="grid-template-rows:repeat(${L.rows.length},1fr) 8px">${L.rows.map(r=>`<div class="map-row">${r.map(seat).join('')}</div>`).join('')}<div class="map-mid"></div></div>`:L.left!=null?`<div class="map-side">${seat(L.left)}</div>`:''}<div class="map-center"><div class="map-row">${L.top.map(seat).join('')}</div><div class="map-mid"></div><div class="map-row">${L.bottom.map(seat).join('')}</div></div>${!L.upright&&L.right!=null?`<div class="map-side">${seat(L.right)}</div>`:''}</div>
       <p>Die Zahlen zeigen, wie jedes Feld ausgerichtet ist. Die Zugreihenfolge läuft im Uhrzeigersinn: 1, 2, 3 …</p>
-      <label class="tog"><input type="checkbox" id="cmdlife" ${st.cmdLife?'checked':''}> Commander-Schaden zieht Leben mit ab</label>
+      <label class="tog top"><input type="checkbox" id="cmdlife" ${st.cmdLife?'checked':''}><span>Commander-Schaden auch vom Leben abziehen<small>Empfohlen. Trägst du 5 Commander-Schaden ein, sinkt das Leben automatisch um 5. Aus: Leben und Commander-Schaden musst du getrennt eintragen.</small></span></label>
       <label class="tog"><input type="checkbox" id="sound" ${st.sound?'checked':''}> Töne beim Ausscheiden und Spielende</label>
+      <label class="tog"><input type="checkbox" id="sfxopt" ${st.sfx?'checked':''}> Töne bei Schaden, Heilung, Gift und Zugwechsel</label>
+      <label class="tog"><input type="checkbox" id="turnsopt" ${st.turns?'checked':''}> Züge und Runden mitzählen</label>
       <label class="tog"><input type="checkbox" id="clockopt" ${st.clock?'checked':''}> Spieluhr und Zugzeit anzeigen</label>
       <label class="tog"><input type="checkbox" id="artopt" ${st.art?'checked':''}> Commander-Bild als Hintergrund</label>
-      <label class="s-lab" for="arch">Archenemy</label>
+      <label class="s-lab" for="arch">Archenemy (Sonderspielmodus)</label>
+      <p>Einer spielt allein gegen alle anderen, die ein Team bilden. Der Erzfeind startet mit 40 Leben, alle anderen mit 20. Für normales Commander einfach auf „Kein Erzfeind“ lassen.</p>
       <select class="sel" id="arch"><option value="-1">Kein Erzfeind</option>${pl.map((p,i)=>`<option value="${i}" ${st.arch===i?'selected':''}>${esc(p.name)} ist Erzfeind (40, Rest 20)</option>`).join('')}</select>
     </aside>
   </div>
@@ -563,13 +589,15 @@ function readSetupInputs(){const st=S.setup;for(let i=0;i<st.n;i++){const a=docu
   const c=document.getElementById('cmdlife');if(c)st.cmdLife=c.checked;
   const so=document.getElementById('sound');if(so)st.sound=so.checked;
   const co=document.getElementById('clockopt');if(co)st.clock=co.checked;
+  const sx=document.getElementById('sfxopt');if(sx)st.sfx=sx.checked;
+  const tu=document.getElementById('turnsopt');if(tu)st.turns=tu.checked;
   const ao=document.getElementById('artopt');if(ao)st.art=ao.checked;
   for(let i=0;i<st.n;i++)for(const k of[0,1]){const c=document.getElementById(`cmd${i}-${k}`);if(c){const v=c.value.trim();if(v!==st.players[i].cmdr[k]){st.players[i].cmdr[k]=v;if(!v)st.players[i].cdata[k]=null}}}
   const ar=document.getElementById('arch');if(ar)st.arch=+ar.value;
   const sc=document.getElementById('startcustom');if(sc&&sc.value){const v=parseInt(sc.value,10);if(v>0)st.start=Math.min(999,v)}}
 elSetup.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||b.disabled)return;readSetupInputs();const st=S.setup;
   switch(b.dataset.act){
-    case'n':st.n=+b.dataset.v;if(st.table==='head2'&&st.n<4)st.table=st.n>=3?'head1':'long';if(st.table==='head1'&&st.n<3)st.table='long';if(st.arch>=st.n)st.arch=-1;break;
+    case'n':st.n=+b.dataset.v;if(st.table==='upright'){if(st.arch>=st.n)st.arch=-1;break}if(st.table==='head2'&&st.n<4)st.table=st.n>=3?'head1':'long';if(st.table==='head1'&&st.n<3)st.table='long';if(st.arch>=st.n)st.arch=-1;break;
     case'start':st.start=+b.dataset.v;document.getElementById('startcustom').value='';break;
     case'table':st.table=b.dataset.v;break;
     case'col':st.players[+b.dataset.i].color=b.dataset.c;st.players[+b.dataset.i].colorSet=true;break;
@@ -585,10 +613,10 @@ elSetup.addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.ci
 
 function applyEdits(){const st=S.setup;if(st.n!==S.players.length)return;
   S.players.forEach((p,i)=>{const s=st.players[i];if(p.name!==s.name)ev(p.name+' heißt jetzt '+s.name,i);p.name=s.name;p.color=s.color;p.partner=s.partner;p.rot=s.rot;p.cmdr=s.cmdr.slice();p.cdata=s.cdata.map(cmdObj)});
-  Object.assign(S.cfg,{cmdLife:st.cmdLife,sound:st.sound,table:st.table,clock:st.clock,art:st.art});
+  Object.assign(S.cfg,{cmdLife:st.cmdLife,sound:st.sound,sfx:st.sfx,turns:st.turns,table:st.table,clock:st.clock,art:st.art});
   S.phase='game';show();save();wake();toast('Übernommen')}
 function startGame(){readSetupInputs();const st=S.setup;
-  S.cfg={start:st.start,cmdLife:st.cmdLife,sound:st.sound,table:st.table,arch:st.arch,clock:st.clock,art:st.art};
+  S.cfg={start:st.start,cmdLife:st.cmdLife,sound:st.sound,sfx:st.sfx,turns:st.turns,table:st.table,arch:st.arch,clock:st.clock,art:st.art};
   S.players=st.players.slice(0,st.n).map((p,i)=>{const sl=st.arch>=0?(i===st.arch?40:20):st.start;
     return{id:i,name:p.name,color:p.color,partner:p.partner,rot:p.rot,cmdr:p.cmdr.slice(),cdata:p.cdata.map(cmdObj),custom:[],startLife:sl,life:sl,poison:0,energy:0,exp:0,rad:0,tax1:0,tax2:0,misc:0,cmd:{},elim:null,time:0}});
   S.players.forEach(p=>S.players.forEach(q=>{if(q.id!==p.id)p.cmd[q.id]=[0,0]}));
@@ -620,7 +648,8 @@ function panelHTML(id){if(id==null)return'';const p=P(id),c=col(p);return`
 </div>`}
 let ro=null;
 function buildGame(){const L=layout(S.players.length,S.cfg.table);
-  elGame.innerHTML=`${L.left!=null?`<div class="side">${panelHTML(L.left)}</div>`:''}<div class="center"><div class="row">${L.top.map(panelHTML).join('')}</div><div class="barwrap"><div class="bar" id="bar"></div></div><div class="row">${L.bottom.map(panelHTML).join('')}</div></div>${L.right!=null?`<div class="side">${panelHTML(L.right)}</div>`:''}`;
+  if(L.upright)elGame.innerHTML=`<div class="center up" style="grid-template-rows:repeat(${L.rows.length},minmax(0,1fr)) auto">${L.rows.map(r=>`<div class="row">${r.map(panelHTML).join('')}</div>`).join('')}<div class="barwrap"><div class="bar" id="bar"></div></div></div>`;
+  else elGame.innerHTML=`${L.left!=null?`<div class="side">${panelHTML(L.left)}</div>`:''}<div class="center"><div class="row">${L.top.map(panelHTML).join('')}</div><div class="barwrap"><div class="bar" id="bar"></div></div><div class="row">${L.bottom.map(panelHTML).join('')}</div></div>${L.right!=null?`<div class="side">${panelHTML(L.right)}</div>`:''}`;
   if(ro)ro.disconnect();
   ro=new ResizeObserver(es=>es.forEach(e=>sizePanel(e.target)));
   elGame.querySelectorAll('.panel').forEach(el=>{sizePanel(el);ro.observe(el)});
@@ -707,8 +736,8 @@ function barHTML(){const g=S.g;
   <button class="bb" data-act="tools" aria-label="Würfel und Werkzeuge">${I.dice}<span class="t">Würfel</span></button>
   <button class="bb" data-act="undo" aria-label="Rückgängig">${I.undo}<span class="t">Zurück</span></button>
   <span class="sp"></span>
-  ${g.active!=null?`<button class="bb" data-act="prev" aria-label="Vorheriger Zug">${I.prev}</button>`:''}
-  <button class="bb turnb" data-act="next" aria-label="Nächster Zug">${I.next}<span>${g.ended?'Spielende':g.active==null?'Zug starten':'Zug '+g.turn+' · '+esc(P(g.active).name)}</span></button>
+  ${S.cfg.turns&&g.active!=null?`<button class="bb" data-act="prev" aria-label="Vorheriger Zug">${I.prev}</button>`:''}
+  ${S.cfg.turns?`<button class="bb turnb" data-act="next" aria-label="Nächster Zug">${I.next}<span>${g.ended?'Spielende':g.active==null?'Zug starten':'Zug '+g.turn+' · '+esc(P(g.active).name)}</span></button>`:''}
   ${g.storm?`<span class="bb on">${I.bolt}${g.storm}</span>`:''}
   ${S.cfg.clock?`<button class="clock${g.paused?' paused':''}" id="clock" data-act="pause" aria-label="${g.paused?'Uhr fortsetzen':'Uhr pausieren'}"></button>`:''}
   <span class="sp"></span>
@@ -722,13 +751,13 @@ function update(){if(S.phase!=='game'||!S.players.length)return;
   const bar=$('#bar');if(bar){const sl=bar.scrollLeft;bar.innerHTML=barHTML();bar.scrollLeft=sl;tickClock()}
   S.players.forEach(p=>{const el=elGame.querySelector(`.panel[data-pid="${p.id}"]`);if(!el)return;
     const dr=deadReason(p);
-    el.classList.toggle('dead',!!dr);el.classList.toggle('active',S.g.active===p.id&&!S.g.ended);el.classList.toggle('pick',ui.pick===p.id);el.classList.toggle('shake',!!ui.shake[p.id]);
+    el.classList.toggle('dead',!!dr);el.classList.toggle('active',S.cfg.turns&&S.g.active===p.id&&!S.g.ended);el.classList.toggle('kbsel',ui.sel===p.id);el.classList.toggle('pick',ui.pick===p.id);el.classList.toggle('shake',!!ui.shake[p.id]);
     const c=col(p);el.style.setProperty('--bg',c.bg);el.style.setProperty('--bg2',c.bg2);el.style.setProperty('--fg',c.fg);
     el.querySelector('.name').textContent=p.name;
     const art=S.cfg.art&&p.cdata&&p.cdata[0]&&p.cdata[0].art;const inn=el.querySelector('.inner');inn.classList.toggle('art',!!art);el.classList.toggle('hasart',!!art);if(art)inn.style.setProperty('--art',`url("${art}")`);
     el.querySelector('.cmdrline').innerHTML=cmdrHTML(p);
     el.querySelector('.num').textContent=p.life;
-    const b=[];if(S.g.active===p.id&&!S.g.ended)b.push(`<span class="badge turn">am Zug${S.cfg.clock?' <span class="ttime"></span>':''}</span>`);if(S.g.monarch===p.id)b.push(`<span class="badge">${I.crown}Monarch</span>`);if(S.g.initiative===p.id)b.push(`<span class="badge">${I.init}Initiative</span>`);
+    const b=[];if(S.cfg.turns&&S.g.active===p.id&&!S.g.ended)b.push(`<span class="badge turn">am Zug${S.cfg.clock?' <span class="ttime"></span>':''}</span>`);if(S.g.monarch===p.id)b.push(`<span class="badge">${I.crown}Monarch</span>`);if(S.g.initiative===p.id)b.push(`<span class="badge">${I.init}Initiative</span>`);
     el.querySelector('.badges').innerHTML=b.join('');
     el.querySelector('.pchips').innerHTML=chipsHTML(p);
     const dl=el.querySelector('.delta'),dv=ui.delta[p.id];dl.classList.toggle('on',!!(dv&&dv.v));if(dv)dl.textContent=(dv.v>0?'+':'−')+Math.abs(dv.v);
@@ -825,7 +854,7 @@ function chartSVG(){const log=S.lifeLog.slice();if(!log.length)return'';
 function statsHTML(){const g=S.g;const end=g.ended?g.endedAt:nowG();
   const tbl=`<div class="tblwrap"><table class="t"><thead><tr><th>Spieler</th><th>Leben</th><th>Zeit am Zug</th><th>Cmd-Schaden ausgeteilt</th><th>Ausgeschieden</th></tr></thead><tbody>${S.players.map(p=>`<tr><td><span class="dot" style="--dot:${col(p).bg}"></span>${esc(p.name)}${cmdName(p,0)?` <small style="color:var(--muted)">${esc([0,1].map(k=>cmdName(p,k)).filter(Boolean).join(' + '))}</small>`:''}</td><td>${p.life}</td><td>${fmtT(playTime(p))}</td><td>${cmdDealt(p)}</td><td>${p.elim?`Zug ${p.elim.turn}${p.elim.by!=null&&P(p.elim.by)?' · durch '+esc(P(p.elim.by).name):''}`:'–'}</td></tr>`).join('')}</tbody></table></div>`;
   const mx=`<div class="tblwrap"><table class="t"><thead><tr><th>erhalten ↓ / von →</th>${S.players.map(q=>`<th><span class="dot" style="--dot:${col(q).bg}"></span>${esc(q.name.slice(0,6))}</th>`).join('')}</tr></thead><tbody>${S.players.map(p=>`<tr><td><span class="dot" style="--dot:${col(p).bg}"></span>${esc(p.name)}</td>${S.players.map(q=>{if(q.id===p.id)return'<td>–</td>';const a=p.cmd[q.id];const v=q.partner?a[0]+' / '+a[1]:a[0];return`<td class="${Math.max(a[0],a[1])>=15?'hot':''}">${v}</td>`}).join('')}</tr>`).join('')}</tbody></table></div>`;
-  return`<div class="kpis"><div class="kpi"><small>Spieldauer</small><b>${fmtT(end-g.started)}</b></div><div class="kpi"><small>Runde</small><b>${g.turn}</b></div><div class="kpi"><small>Noch im Spiel</small><b>${alive().length} / ${S.players.length}</b></div></div>
+  return`<div class="kpis"><div class="kpi"><small>Spieldauer</small><b>${fmtT(end-g.started)}</b></div>${S.cfg.turns?`<div class="kpi"><small>Runde</small><b>${g.turn}</b></div>`:''}<div class="kpi"><small>Noch im Spiel</small><b>${alive().length} / ${S.players.length}</b></div></div>
   <div class="grp"><h4>Lebensverlauf</h4><div class="chart">${chartSVG()}<div class="legend">${S.players.map(p=>`<span style="--dot:${LINE[p.color]}"><i></i>${esc(p.name)}</span>`).join('')}</div></div></div>
   <div class="grp"><h4>Spieler</h4>${tbl}</div>
   <div class="grp"><h4>Commander-Schaden</h4>${mx}</div>`}
@@ -856,12 +885,15 @@ function renderModal(){const t=ui.modal;if(!t)return closeModal();const X=`<butt
     <button class="mbtn${ui.confirm==='restart'?' warn':''}" data-act="restart">${I.reset}<span>${ui.confirm==='restart'?'Wirklich? Nochmal tippen zum Zurücksetzen':'Neue Runde, gleiche Spieler'}<small>Alle zurück auf ihr Startleben, Zähler auf 0</small></span></button>
     <button class="mbtn" data-act="setup">${I.users}<span>Spieler &amp; Einstellungen ändern<small>Namen, Farben, Tischform – Spiel läuft weiter</small></span></button>
     ${STANDALONE?'':`<button class="mbtn" data-act="fs">${I.full}<span>Vollbild an/aus<small>Auf dem iPad klappt das nur in der Safari-Version</small></span></button>`}
-    <label class="tog"><input type="checkbox" id="m-cmdlife" ${S.cfg.cmdLife?'checked':''}> Commander-Schaden zieht Leben mit ab</label>
+    <label class="tog top"><input type="checkbox" id="m-cmdlife" ${S.cfg.cmdLife?'checked':''}><span>Commander-Schaden auch vom Leben abziehen<small>An: 5 Commander-Schaden senken das Leben automatisch um 5.</small></span></label>
     <label class="tog"><input type="checkbox" id="m-sound" ${S.cfg.sound?'checked':''}> Töne beim Ausscheiden und Spielende</label>
+    <label class="tog"><input type="checkbox" id="m-sfx" ${S.cfg.sfx?'checked':''}> Töne bei Schaden, Heilung, Gift und Zugwechsel</label>
+    <label class="tog"><input type="checkbox" id="m-turns" ${S.cfg.turns?'checked':''}> Züge und Runden mitzählen</label>
     <label class="tog"><input type="checkbox" id="m-clock" ${S.cfg.clock?'checked':''}> Spieluhr und Zugzeit anzeigen</label>
     <label class="tog"><input type="checkbox" id="m-art" ${S.cfg.art?'checked':''}> Commander-Bild als Hintergrund</label>
     <button class="mbtn" data-act="archive">${I.stats}<span>Archiv &amp; Bilanz<small>Alle beendeten Spiele auf diesem Gerät</small></span></button>
-    <p class="hint">Rechte Hälfte tippen +1, linke Hälfte −1, halten in 10er-Schritten. In den Zähler-Feldern zählt Halten schnell hoch. „Zurück“ macht jede Aktion rückgängig, am Mac auch ⌘Z.</p>`;
+    <p class="hint">Rechte Hälfte tippen +1, linke Hälfte −1, halten in 10er-Schritten. In den Zähler-Feldern zählt Halten schnell hoch. „Zurück“ macht jede Aktion rückgängig.</p>
+    ${HASTOUCH?'':`<p class="hint">Tastatur am Mac: <span class="kbd">1</span>–<span class="kbd">6</span> Spieler wählen · <span class="kbd">↑</span> <span class="kbd">↓</span> Leben ±1 (mit <span class="kbd">⇧</span> ±10) · <span class="kbd">C</span> Commander · <span class="kbd">M</span> Marken · <span class="kbd">A</span> Aktion · <span class="kbd">Leertaste</span> nächster Zug · <span class="kbd">⌘Z</span> zurück · <span class="kbd">Esc</span> schließen</p>`}`;
   else if(t==='tools'){const d=ui.die,pc=ui.planar;body=`<div class="card-h"><h2>Würfel &amp; Werkzeuge</h2>${X}</div>
     <div class="grp"><h4>Würfeln</h4><div class="dice">${[4,6,8,10,12,20].map(s=>`<button data-act="die" data-s="${s}">W${s}</button>`).join('')}<button data-act="die" data-s="coin">Münze</button></div>
     <div class="dieout" id="dieout">${d?`<b>${d.v}</b><small>${d.label}</small>`:'<small>Würfel wählen</small>'}</div></div>
@@ -896,8 +928,16 @@ elModal.addEventListener('click',e=>{if(e.target===elModal)return closeModal();c
     case'planar':rollPlanar();break;
     case'storm':S.g.storm=Math.max(0,S.g.storm+ +b.dataset.d);renderModal();update();save();break;
   }});
-elModal.addEventListener('change',e=>{if(e.target.id==='m-clock'){S.cfg.clock=S.setup.clock=e.target.checked;update();save()}if(e.target.id==='m-art'){S.cfg.art=S.setup.art=e.target.checked;update();save()}if(e.target.id==='m-cmdlife'){S.cfg.cmdLife=S.setup.cmdLife=e.target.checked;save()}if(e.target.id==='m-sound'){S.cfg.sound=S.setup.sound=e.target.checked;if(e.target.checked)ac();save()}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(ui.modal)closeModal();else if(ui.assign){ui.assign=null;update()}else{ui.ov={};update()}}
+elModal.addEventListener('change',e=>{if(e.target.id==='m-sfx'){S.cfg.sfx=S.setup.sfx=e.target.checked;if(e.target.checked){ac();sfx('heal')}save()}if(e.target.id==='m-turns'){S.cfg.turns=S.setup.turns=e.target.checked;update();save()}if(e.target.id==='m-clock'){S.cfg.clock=S.setup.clock=e.target.checked;update();save()}if(e.target.id==='m-art'){S.cfg.art=S.setup.art=e.target.checked;update();save()}if(e.target.id==='m-cmdlife'){S.cfg.cmdLife=S.setup.cmdLife=e.target.checked;save()}if(e.target.id==='m-sound'){S.cfg.sound=S.setup.sound=e.target.checked;if(e.target.checked)ac();save()}});
+document.addEventListener('keydown',e=>{
+  if(S.phase==='game'&&!ui.modal&&!(document.activeElement&&/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))&&!e.metaKey&&!e.ctrlKey&&!e.altKey){
+    const k=e.key;
+    if(/^[1-6]$/.test(k)&&+k<=S.players.length){ui.sel=ui.sel===+k-1?null:+k-1;update();e.preventDefault();return}
+    if(ui.sel!=null&&(k==='ArrowUp'||k==='ArrowDown'||k==='+'||k==='-')){const d=(k==='ArrowUp'||k==='+'?1:-1)*(e.shiftKey?10:1);pushUndo('life'+ui.sel);changeLife(ui.sel,d);e.preventDefault();return}
+    if(ui.sel!=null&&/^[cma]$/i.test(k)){const t={c:'cmd',m:'ctr',a:'fx'}[k.toLowerCase()];ui.ov[ui.sel]=ui.ov[ui.sel]===t?null:t;update();e.preventDefault();return}
+    if(k===' '&&S.cfg.turns){e.preventDefault();if(!S.g.ended)stepTurn(1);return}
+  }
+  if(e.key==='Escape'){if(ui.sel!=null&&!ui.modal&&!Object.values(ui.ov).some(Boolean)){ui.sel=null;update();return}if(ui.modal)closeModal();else if(ui.assign){ui.assign=null;update()}else{ui.ov={};update()}}
   if((e.metaKey||e.ctrlKey)&&e.key==='z'&&S.phase==='game'&&!ui.modal){e.preventDefault();doUndo()}});
 
 function show(){const g=S.phase==='game'&&S.players.length;elSetup.hidden=!!g;elGame.hidden=!g;document.body.classList.toggle('ingame',!!g);
