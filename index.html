@@ -15,7 +15,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=Cinzel:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=Cinzel:wght@600;700&family=Cormorant+Garamond:wght@600;700&family=VT323&display=swap">
 <style>
 /* Layout: Spieltisch von oben – lange Seiten oben (180°) und unten, optional Kopfenden links (90°) und rechts (270°), Werkzeugleiste in der Mitte. Bewusst nur dunkles Thema. */
 :root{
@@ -83,6 +83,50 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .go.sec{background:var(--chip);color:var(--ink)}
 .go-row{display:flex;gap:10px;flex-wrap:wrap}
 .go-row .go{flex:1 1 220px}
+
+/* ---------- Start & Schritte ---------- */
+.scr{display:grid;gap:18px}
+.home{min-height:calc(100dvh - 80px);display:grid;align-content:center;justify-items:stretch;gap:14px;max-width:460px;width:100%;margin:0 auto}
+.brand{text-align:center;display:grid;justify-items:center;gap:6px;margin-bottom:14px}
+.brand .logo{width:92px;height:92px;border-radius:24px;background:#1f5384;color:#c9a45c;display:grid;place-items:center;font-family:var(--f-num);font-weight:700;font-size:54px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.brand h1{margin:6px 0 0;font-family:var(--f-title);font-size:clamp(28px,6vw,40px);letter-spacing:.04em;color:var(--brass)}
+.brand p{margin:0;color:var(--muted)}
+.bigbtn{display:grid;gap:3px;text-align:left;padding:18px 20px;border-radius:16px;background:var(--chip);font-size:20px;font-weight:600}
+.bigbtn small{font-size:14px;font-weight:400;color:var(--muted)}
+.bigbtn.pri{background:var(--brass);color:#1a1408} .bigbtn.pri small{color:rgba(26,20,8,.7)}
+.homerow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bigbtn.sm{font-size:16px;padding:14px;display:flex;align-items:center;gap:10px;justify-content:center;text-align:center}
+.bigbtn.sm svg{width:20px;height:20px}
+.ver{text-align:center;margin-top:10px}
+.stephead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.back{height:44px;padding:0 14px;border-radius:10px;background:var(--chip);font-weight:600}
+.steps{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.steps span{padding:6px 10px;border-radius:99px;font-size:13px;color:var(--muted);background:var(--chip)}
+.steps span.on{background:var(--brass);color:#1a1408;font-weight:600} .steps span.done{color:var(--ink)}
+.sh2{margin:4px 0 0;font-family:var(--f-title);font-size:clamp(24px,4vw,32px);letter-spacing:.02em}
+.tiles{display:grid;gap:10px}
+.tiles.fmt{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+.tiles.cnt{grid-template-columns:repeat(5,minmax(0,1fr))}
+.tile{display:grid;gap:4px;align-content:start;text-align:left;padding:16px;border-radius:16px;background:var(--chip);border:2px solid transparent;min-height:96px}
+.tile b{font-family:var(--f-num);font-size:40px;line-height:1;color:var(--brass)}
+.tile span{font-weight:600;font-size:17px} .tile small{color:var(--muted);font-size:13px;line-height:1.35}
+.tile[aria-pressed="true"]{border-color:var(--brass)}
+.tiles.cnt .tile{text-align:center;justify-items:center;min-height:0;padding:14px 6px}
+.more summary{cursor:pointer;color:var(--muted);font-weight:600;min-height:44px;display:flex;align-items:center}
+.more{display:grid;gap:8px}
+.tog.small{min-height:36px;font-size:14px}
+.linkbtn{color:var(--brass);text-decoration:underline;font-size:inherit;padding:0}
+.setgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:14px;align-items:start}
+.setbox{display:grid;gap:10px;padding:16px;border-radius:16px;background:var(--chip)}
+.setbox h3{margin:0;font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.setbox .ch{background:rgba(0,0,0,.18)} .setbox .ch[aria-pressed="true"]{background:var(--brass);color:#1a1408}
+.setbox .map-box{max-width:340px}
+button.map-seat{cursor:pointer;border:0}
+:root[data-skin="light"] .setbox .ch{background:#fff} :root[data-skin="light"] .tile,:root[data-skin="light"] .bigbtn,:root[data-skin="light"] .back,:root[data-skin="light"] .steps span,:root[data-skin="light"] .setbox{background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+:root[data-skin="light"] .bigbtn.pri,:root[data-skin="light"] .steps span.on{background:var(--brass);color:#fff}
+:root[data-skin="terminal"] .tile,:root[data-skin="terminal"] .bigbtn,:root[data-skin="terminal"] .setbox{border-radius:4px;background:#030c07;box-shadow:inset 0 0 0 1px #1d5a38}
+:root[data-skin="terminal"] .bigbtn.pri{background:#39ff88;color:#000}
+@media (max-width:560px){.tiles.cnt{grid-template-columns:repeat(3,1fr)}}
 
 /* ---------- Spiel ---------- */
 #game{position:fixed;inset:0;padding:calc(env(safe-area-inset-top,0px) + 6px) calc(env(safe-area-inset-right,0px) + 6px) calc(env(safe-area-inset-bottom,0px) + 6px) calc(env(safe-area-inset-left,0px) + 6px);display:flex;gap:6px;background:var(--table);user-select:none;-webkit-user-select:none;overflow:hidden}
@@ -292,6 +336,119 @@ table.t .dot{width:10px;height:10px;margin-right:6px;vertical-align:middle}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(201,164,92,.5)}50%{box-shadow:0 0 0 10px rgba(201,164,92,0)}}
 #toast{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:60;background:#000c;color:#fff;padding:12px 20px;border-radius:12px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;text-align:center;max-width:80vw}
 #toast.on{opacity:1}
+
+
+/* ================= Design: Pergament & Foliant ================= */
+:root[data-skin="parchment"]{--table:#2a1d12;--ink:#f1e4c6;--muted:#bfa77f;--brass:#c9973f;--chip:#3d2b1b;--line:#5a4128}
+:root[data-skin="parchment"] body{background:radial-gradient(120% 90% at 50% 40%,#3a2818 0%,#22170d 100%)}
+:root[data-skin="parchment"] #game{background:radial-gradient(120% 90% at 50% 45%,#3b2918 0%,#1e140b 100%)}
+:root[data-skin="parchment"] .s-head h1{color:#e3c27a}
+:root[data-skin="parchment"] .prow{background:#34251a} :root[data-skin="parchment"] .prow input[type=text],:root[data-skin="parchment"] .cmdin input,:root[data-skin="parchment"] .num-in,:root[data-skin="parchment"] .sel{background:#f1e4c6;color:#2b1d10;border-color:#8a6a3e}
+:root[data-skin="parchment"] .map-box{background:#22170d;border-color:#5a4128}
+:root[data-skin="parchment"] .panel{border-radius:6px;border:3px solid color-mix(in srgb,var(--pc) 65%,#3a2510);
+  background:radial-gradient(ellipse at 50% 42%,#f5ead0 0%,#ead8af 58%,#d2b583 88%,#b8935c 100%);
+  box-shadow:inset 0 0 5cqmin rgba(90,55,15,.45),0 3px 12px rgba(0,0,0,.5)}
+:root[data-skin="parchment"] .inner::before{content:"";position:absolute;inset:2cqmin;border:1px solid rgba(60,38,12,.55);outline:1px solid rgba(60,38,12,.3);outline-offset:-.9cqmin;border-radius:3px;pointer-events:none;z-index:0}
+:root[data-skin="parchment"] .inner.art{background:none}
+:root[data-skin="parchment"] .inner.art::after{content:"";position:absolute;inset:9cqmin 7cqmin;background:var(--art) center 30%/cover;filter:sepia(.8) contrast(.95);opacity:.28;pointer-events:none;z-index:0;
+  -webkit-mask-image:radial-gradient(ellipse at center,#000 35%,transparent 72%);mask-image:radial-gradient(ellipse at center,#000 35%,transparent 72%)}
+:root[data-skin="parchment"] .panel.active{box-shadow:inset 0 0 5cqmin rgba(90,55,15,.45),0 0 0 3px #e3c27a,0 0 24px rgba(227,194,122,.45)}
+:root[data-skin="parchment"] .num{font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;color:#2b1d10;text-shadow:0 1px 0 rgba(255,255,255,.35);letter-spacing:-.02em}
+:root[data-skin="parchment"] .name,:root[data-skin="parchment"] .ov-h h3{color:#2b1d10}
+:root[data-skin="parchment"] .half span{color:#5a3e1f;opacity:.4} :root[data-skin="parchment"] .half.press{background:rgba(90,55,15,.08)}
+:root[data-skin="parchment"] .pbtn,:root[data-skin="parchment"] .sb,:root[data-skin="parchment"] .tb,:root[data-skin="parchment"] .x,:root[data-skin="parchment"] .padg button{background:rgba(90,55,15,.13);color:#2b1d10}
+:root[data-skin="parchment"] .badge,:root[data-skin="parchment"] .pchip,:root[data-skin="parchment"] .cmdr{background:rgba(90,55,15,.14);color:#2b1d10} :root[data-skin="parchment"] .badge.turn{background:#7a1f12;color:#f5ead0}
+:root[data-skin="parchment"] .cmdr .cost{background:#2b1d10;color:#f5ead0}
+:root[data-skin="parchment"] .r,:root[data-skin="parchment"] .fxsec,:root[data-skin="parchment"] .padv{background:rgba(90,55,15,.08)}
+:root[data-skin="parchment"] .ov{background:#ead8af;color:#2b1d10} :root[data-skin="parchment"] .addrow input{background:#f7eedb;color:#2b1d10}
+:root[data-skin="parchment"] .deadov{background:rgba(234,216,175,.6);color:#5a1a10} :root[data-skin="parchment"] .panel.dead{filter:grayscale(.7) sepia(.4) brightness(.85)}
+:root[data-skin="parchment"] .rollov{background:rgba(234,216,175,.75);color:#2b1d10}
+:root[data-skin="parchment"] .bb,:root[data-skin="parchment"] .bb.turnb{background:#3d2b1b;color:#f1e4c6;border:1px solid #5a4128} :root[data-skin="parchment"] .bb.on{background:#c9973f;color:#2b1d10}
+:root[data-skin="parchment"] .card{--ink:#2b1d10;--muted:#6e5638;--line:#c9b083;--chip:#e3cfa3;background:#efe2c3;color:#2b1d10;border-color:#8a6a3e}
+:root[data-skin="parchment"] .card .x,:root[data-skin="parchment"] .mbtn,:root[data-skin="parchment"] .dice button,:root[data-skin="parchment"] .stepper .sb{background:#e3cfa3;color:#2b1d10} :root[data-skin="parchment"] .mbtn svg{color:#7a1f12}
+:root[data-skin="parchment"] .dieout,:root[data-skin="parchment"] .kpi,:root[data-skin="parchment"] .chart,:root[data-skin="parchment"] .arch-item{background:#e6d4ab} :root[data-skin="parchment"] .card-h h2{color:#7a1f12}
+:root[data-skin="parchment"] .startp{background:rgba(42,29,18,.95);border-color:#5a4128} :root[data-skin="parchment"] .startp .row2 button{background:#3d2b1b}
+
+/* ================= Design: Commander-Farben ================= */
+:root[data-skin="identity"] .panel{background:var(--idg);background-size:240% 240%;animation:idshift 14s ease-in-out infinite alternate;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.14),inset 0 0 7cqmin rgba(255,255,255,.07)}
+:root[data-skin="identity"] .panel.active{box-shadow:inset 0 0 0 2px rgba(255,255,255,.3),0 0 0 3px var(--brass),0 0 30px var(--glow)}
+:root[data-skin="identity"] .num{text-shadow:0 0 3cqmin var(--glow),0 2px 14px rgba(0,0,0,.45)}
+:root[data-skin="identity"] .pips{display:inline-flex;gap:.8cqmin} :root[data-skin="identity"] .pips i{width:max(10px,3cqmin);height:max(10px,3cqmin);border-radius:50%;background:var(--c);box-shadow:0 0 0 1px rgba(255,255,255,.6),0 0 1.5cqmin var(--c)}
+@keyframes idshift{0%{background-position:0% 30%}100%{background-position:100% 70%}}
+
+/* ================= Design: Terminal ================= */
+:root[data-skin="terminal"]{--table:#020604;--ink:#7dffb0;--muted:#3f9e68;--brass:#39ff88;--chip:#071a10;--line:#123322;--f-num:"VT323",ui-monospace,Menlo,monospace;--f-title:"VT323",ui-monospace,monospace;--f-ui:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+:root[data-skin="terminal"] body{font-family:var(--f-ui)}
+:root[data-skin="terminal"] .panel{background:#030a06;border-radius:4px;box-shadow:inset 0 0 0 1px var(--fg),0 0 14px color-mix(in srgb,var(--fg) 45%,transparent)}
+:root[data-skin="terminal"] .panel.active{box-shadow:inset 0 0 0 2px var(--fg),0 0 0 2px #39ff88,0 0 26px rgba(57,255,136,.5)}
+:root[data-skin="terminal"] .inner::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:5;background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,.28) 3px);mix-blend-mode:multiply}
+:root[data-skin="terminal"] .num{font-weight:400;font-size:min(50cqh,34cqw);text-shadow:0 0 2cqmin color-mix(in srgb,var(--fg) 70%,transparent)}
+:root[data-skin="terminal"] .num::before{content:">";opacity:.35;font-size:.45em;vertical-align:.45em;margin-right:.12em}
+:root[data-skin="terminal"] .name{letter-spacing:.08em;text-transform:uppercase}
+:root[data-skin="terminal"] .half span{opacity:.45}
+:root[data-skin="terminal"] .pbtn,:root[data-skin="terminal"] .sb,:root[data-skin="terminal"] .tb,:root[data-skin="terminal"] .x,:root[data-skin="terminal"] .padg button,:root[data-skin="terminal"] .badge,:root[data-skin="terminal"] .pchip,:root[data-skin="terminal"] .cmdr{background:transparent;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--fg) 60%,transparent);border-radius:3px}
+:root[data-skin="terminal"] .badge.turn{background:var(--fg);color:#020604} :root[data-skin="terminal"] .tb[aria-pressed="true"],:root[data-skin="terminal"] .tb.go2{background:var(--fg);color:#020604}
+:root[data-skin="terminal"] .r,:root[data-skin="terminal"] .fxsec,:root[data-skin="terminal"] .padv{background:rgba(255,255,255,.03);border-radius:3px}
+:root[data-skin="terminal"] .ov{background:#020a05} :root[data-skin="terminal"] .addrow input{background:#000;color:var(--fg);box-shadow:inset 0 0 0 1px var(--fg)}
+:root[data-skin="terminal"] .bb,:root[data-skin="terminal"] .bb.turnb{background:#000;color:#7dffb0;box-shadow:inset 0 0 0 1px #1d5a38;border-radius:3px;font-family:var(--f-ui)} :root[data-skin="terminal"] .bb.on{background:#39ff88;color:#000}
+:root[data-skin="terminal"] .card{background:#020a05;border-color:#1d5a38;border-radius:4px} :root[data-skin="terminal"] .card .x,:root[data-skin="terminal"] .mbtn,:root[data-skin="terminal"] .dice button,:root[data-skin="terminal"] .stepper .sb{background:#000;box-shadow:inset 0 0 0 1px #1d5a38}
+:root[data-skin="terminal"] .dieout,:root[data-skin="terminal"] .kpi,:root[data-skin="terminal"] .chart,:root[data-skin="terminal"] .arch-item{background:#000;box-shadow:inset 0 0 0 1px #123322}
+:root[data-skin="terminal"] .prow{background:#030c07;border-radius:4px} :root[data-skin="terminal"] .prow input[type=text],:root[data-skin="terminal"] .cmdin input,:root[data-skin="terminal"] .num-in,:root[data-skin="terminal"] .sel{background:#000;color:#7dffb0;border-color:#1d5a38}
+:root[data-skin="terminal"] .ch{border-radius:3px} :root[data-skin="terminal"] .map-box{background:#000}
+:root[data-skin="terminal"] .startp{background:rgba(0,0,0,.95);border-color:#1d5a38;border-radius:6px} :root[data-skin="terminal"] .startp .big{background:#39ff88;color:#000;font-family:var(--f-num);font-size:30px}
+:root[data-skin="terminal"] .panel.glitch .num{animation:glitch .38s steps(2,end)}
+@keyframes glitch{0%{transform:translate(0);text-shadow:3px 0 #ff2a6d,-3px 0 #05d9e8}25%{transform:translate(-4px,2px) skewX(8deg)}50%{transform:translate(4px,-2px) skewX(-6deg);text-shadow:-4px 0 #ff2a6d,4px 0 #05d9e8}75%{transform:translate(-2px,0)}100%{transform:none}}
+
+/* ================= Design: Hell & minimal ================= */
+:root[data-skin="light"]{--table:#ebe9e4;--ink:#1a1b1e;--muted:#67655f;--brass:#9a7426;--chip:#dedbd3;--line:#d6d2c9;color-scheme:light}
+:root[data-skin="light"] .prow{background:#fff}
+:root[data-skin="light"] .prow input[type=text],:root[data-skin="light"] .cmdin input,:root[data-skin="light"] .num-in,:root[data-skin="light"] .sel{background:#fff;border-color:#cfcac0;color:var(--ink)}
+:root[data-skin="light"] .map-box{background:#fff;border-color:#d6d2c9} :root[data-skin="light"] .map-mid{background:#dedbd3}
+:root[data-skin="light"] .s-head p.live{background:#fff8e6;border-color:#e6d6ae}
+:root[data-skin="light"] .s-head h1,:root[data-skin="light"] .card-h h2{font-family:var(--f-ui);font-weight:600;letter-spacing:0;color:var(--ink)}
+:root[data-skin="light"] .go.sec{background:#dedbd3}
+:root[data-skin="light"] .bb,:root[data-skin="light"] .bb.turnb{background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.08)} :root[data-skin="light"] .bb:active{background:#eceae5} :root[data-skin="light"] .bb.on{background:var(--brass);color:#fff}
+:root[data-skin="light"] .card{background:#fbfaf7;border-color:#dcd8cf} :root[data-skin="light"] .card .x,:root[data-skin="light"] .mbtn,:root[data-skin="light"] .dice button,:root[data-skin="light"] .stepper .sb{background:#efece6} :root[data-skin="light"] .mbtn.warn{background:#f6dcd5}
+:root[data-skin="light"] .dieout,:root[data-skin="light"] .kpi,:root[data-skin="light"] .chart,:root[data-skin="light"] .arch-item{background:#f1efea}
+:root[data-skin="light"] #modal{background:rgba(30,28,24,.35)}
+:root[data-skin="light"] .startp{background:rgba(255,255,255,.96);border-color:#dcd8cf;box-shadow:0 20px 50px rgba(0,0,0,.18)} :root[data-skin="light"] .startp .row2 button{background:#efece6}
+:root[data-skin="light"] .panel{background:var(--pbg);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--bg) 55%,transparent)}
+:root[data-skin="light"] .panel.active{box-shadow:inset 0 0 0 2px var(--bg),0 0 0 3px var(--brass)}
+:root[data-skin="light"] .num{font-weight:600;text-shadow:none;color:var(--fg)}
+:root[data-skin="light"] .name{font-family:var(--f-ui);font-weight:600;letter-spacing:.01em}
+:root[data-skin="light"] .ov-h h3{font-family:var(--f-ui);font-weight:600}
+:root[data-skin="light"] .half span{opacity:.35} :root[data-skin="light"] .half.press{background:rgba(0,0,0,.05)}
+:root[data-skin="light"] .sb,:root[data-skin="light"] .tb,:root[data-skin="light"] .padg button,:root[data-skin="light"] .pbtn,:root[data-skin="light"] .x{background:rgba(0,0,0,.07)}
+:root[data-skin="light"] .r,:root[data-skin="light"] .fxsec,:root[data-skin="light"] .padv{background:rgba(0,0,0,.04)}
+:root[data-skin="light"] .badge,:root[data-skin="light"] .pchip,:root[data-skin="light"] .cmdr{background:rgba(0,0,0,.07)} :root[data-skin="light"] .badge.turn{background:var(--brass);color:#fff}
+:root[data-skin="light"] .pchip.warn{background:var(--danger);color:#fff}
+:root[data-skin="light"] .deadov{background:rgba(255,255,255,.55)} :root[data-skin="light"] .panel.dead{filter:grayscale(1) opacity(.75)}
+:root[data-skin="light"] .rollov{background:rgba(255,255,255,.75)} :root[data-skin="light"] .assignov{background:rgba(255,255,255,.6);border-color:rgba(0,0,0,.35)}
+:root[data-skin="light"] .addrow input{background:#fff;color:#17181a}
+:root[data-skin="light"] .kbd{background:#efece6;border-color:#d6d2c9}
+
+/* ================= Design: Kartenrahmen ================= */
+:root[data-skin="card"] .panel{border-radius:14px;border:5px solid #0c0c0e;background:linear-gradient(160deg,var(--bg),var(--bg2))}
+:root[data-skin="card"] .panel.active{box-shadow:0 0 0 3px var(--brass),0 0 26px rgba(201,164,92,.4)}
+:root[data-skin="card"] .inner.art{background:none}
+:root[data-skin="card"] .inner::after{content:"";position:absolute;left:4cqmin;right:4cqmin;top:15cqmin;bottom:calc(max(42px,12cqmin) + 8.5cqmin);border-radius:1.4cqmin;z-index:0;pointer-events:none;
+  background:radial-gradient(circle at 50% 38%,rgba(255,255,255,.12),rgba(0,0,0,.42));box-shadow:inset 0 0 0 .5cqmin rgba(0,0,0,.5),0 0 0 .45cqmin rgba(255,255,255,.22)}
+:root[data-skin="card"] .inner.art::after{background:linear-gradient(rgba(0,0,0,.12),rgba(0,0,0,.38)),var(--art) center 30%/cover no-repeat}
+:root[data-skin="card"] .inner::before{content:"";position:absolute;left:3cqmin;right:3cqmin;bottom:2.4cqmin;height:calc(max(42px,12cqmin) + 2.2cqmin);border-radius:1.6cqmin;z-index:1;pointer-events:none;
+  background:linear-gradient(#efe6cf,#d9cba7);box-shadow:0 0 0 .45cqmin rgba(0,0,0,.5)}
+:root[data-skin="card"] .half{z-index:1} :root[data-skin="card"] .life,:root[data-skin="card"] .delta{z-index:2}
+:root[data-skin="card"] .head{top:3cqmin;left:3cqmin;right:3cqmin;padding:1.2cqmin 2.6cqmin;z-index:3;justify-items:stretch;color:#1b170e;
+  background:linear-gradient(#f3ebd8,#d8caa5);border-radius:1.6cqmin;box-shadow:0 0 0 .45cqmin rgba(0,0,0,.5)}
+:root[data-skin="card"] .nameline{justify-content:space-between;flex-wrap:nowrap}
+:root[data-skin="card"] .name{font-size:max(14px,5cqmin)}
+:root[data-skin="card"] .badge,:root[data-skin="card"] .pchip,:root[data-skin="card"] .cmdr{background:rgba(0,0,0,.1)} :root[data-skin="card"] .badge.turn{background:#1b170e;color:#f3ebd8}
+:root[data-skin="card"] .cmdr .cost{background:#1b170e;color:#f3ebd8} :root[data-skin="card"] .pchip.warn{background:var(--danger);color:#fff}
+:root[data-skin="card"] .pchips,:root[data-skin="card"] .cmdrline{justify-content:flex-start;max-width:100%}
+:root[data-skin="card"] .pbtn{background:rgba(0,0,0,.09);color:#1b170e;bottom:3.6cqmin;z-index:2} :root[data-skin="card"] .pbtn.l{left:4.5cqmin} :root[data-skin="card"] .pbtn.r{right:4.5cqmin}
+:root[data-skin="card"] .num{color:#fff;text-shadow:0 0 1.2cqmin rgba(0,0,0,.85),0 .6cqmin 2.4cqmin rgba(0,0,0,.6)}
+:root[data-skin="card"] .delta{color:#fff;text-shadow:0 0 1cqmin rgba(0,0,0,.8)}
+:root[data-skin="card"] .half span{color:#fff;opacity:.45}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -334,6 +491,13 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
+const VERSION='1.4';
+const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal'};
+const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#3b2a4d',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(170,120,220,.5)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
+function idColors(p){const s=new Set();(p.cdata||[]).forEach(c=>c&&(c.ci||[]).forEach(x=>s.add(x)));const o=['W','U','B','R','G'].filter(x=>s.has(x));if(o.length)return o;if(isCmd()&&p.cdata&&p.cdata[0]&&p.cdata[0].full)return['C'];return null}
+const skin=()=>S.setup.skin||'classic';
+function applySkin(){document.documentElement.dataset.skin=skin();const m=document.querySelector('meta[name=theme-color]');if(m)m.content={light:'#ebe9e4',parchment:'#2a1d12',terminal:'#020604'}[skin()]||'#101215'}
+function mixHex(a,b,t){const p=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));const x=p(a),y=p(b);return'#'+x.map((v,i)=>Math.round(v+(y[i]-v)*t).toString(16).padStart(2,'0')).join('')}
 const TABLES={long:'Liegt: lange Seiten',head1:'Liegt: Kopfende links',head2:'Liegt: beide Kopfenden',upright:'Stehend'};
 const FS_OK=!STANDALONE_EARLY()&&!!(document.fullscreenEnabled||document.webkitFullscreenEnabled);
 function STANDALONE_EARLY(){return!!(navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches))}
@@ -370,9 +534,9 @@ const fmtT=ms=>{const s=Math.max(0,Math.floor(ms/1000));const h=Math.floor(s/360
 const elSetup=$('#setup'),elGame=$('#game'),elModal=$('#modal'),elToast=$('#toast');
 const STANDALONE=!!(navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches));
 
-function fresh(){return{phase:'setup',setup:{n:4,start:40,cmdLife:true,sound:true,sfx:true,turns:true,clock:true,art:true,table:(('ontouchstart' in window)||navigator.maxTouchPoints>0)?'long':'upright',arch:-1,players:Array.from({length:6},(_,i)=>newSetupPlayer(i))},cfg:null,players:[],g:null,hist:[],lifeLog:[]}}
+function fresh(){return{phase:'setup',setup:{skin:'classic',n:4,start:40,cmdLife:true,sound:true,sfx:true,turns:true,clock:true,art:true,table:(('ontouchstart' in window)||navigator.maxTouchPoints>0)?'long':'upright',arch:-1,players:Array.from({length:6},(_,i)=>newSetupPlayer(i))},cfg:null,players:[],g:null,hist:[],lifeLog:[]}}
 function newSetupPlayer(i){return{name:'Spieler '+(i+1),color:CORDER[i],partner:false,rot:null,cmdr:['',''],cdata:[null,null]}}
-function migrate(s){const st=s.setup;if(!st.fmt)st.fmt='commander';if(st.match==null)st.match=true;if(s.cfg&&!s.cfg.fmt)Object.assign(s.cfg,{fmt:'commander',cmd:true,dmg:true});if(s.g&&!s.match)s.match=null;if(st.sfx==null)st.sfx=true;if(st.turns==null)st.turns=true;if(s.cfg){if(s.cfg.sfx==null)s.cfg.sfx=true;if(s.cfg.turns==null)s.cfg.turns=true}if(st.clock==null)st.clock=true;if(st.art==null)st.art=true;
+function migrate(s){const st=s.setup;if(!st.skin)st.skin='classic';if(!st.fmt)st.fmt='commander';if(st.match==null)st.match=true;if(s.cfg&&!s.cfg.fmt)Object.assign(s.cfg,{fmt:'commander',cmd:true,dmg:true});if(s.g&&!s.match)s.match=null;if(st.sfx==null)st.sfx=true;if(st.turns==null)st.turns=true;if(s.cfg){if(s.cfg.sfx==null)s.cfg.sfx=true;if(s.cfg.turns==null)s.cfg.turns=true}if(st.clock==null)st.clock=true;if(st.art==null)st.art=true;
   st.players.forEach((p,i)=>{if(!p.cmdr)p.cmdr=['',''];if(!p.cdata)p.cdata=[null,null]});
   if(s.cfg){if(s.cfg.clock==null)s.cfg.clock=true;if(s.cfg.art==null)s.cfg.art=true}
   (s.players||[]).forEach(p=>{if(!p.cmdr)p.cmdr=['',''];if(!p.cdata)p.cdata=[null,null];if(!p.custom)p.custom=[]});
@@ -384,7 +548,7 @@ function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.setup)
 let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}},250)}
 
 let S=migrate(load()||fresh());
-const ui={startPrompt:false,cardK:{},cardEn:{},pad:{},archConfirm:false,ov:{},fx:{},delta:{},assign:null,modal:null,roll:{},rollTop:new Set(),pick:null,die:null,planar:null,confirm:null,shake:{}};
+const ui={scr:'home',back:null,setBack:'home',startPrompt:false,cardK:{},cardEn:{},pad:{},archConfirm:false,ov:{},fx:{},delta:{},assign:null,modal:null,roll:{},rollTop:new Set(),pick:null,die:null,planar:null,confirm:null,shake:{}};
 let undo=[],undoKey=null,undoT=0;
 let wl=null;
 
@@ -437,13 +601,28 @@ function bumpDelta(pid,d){const o=ui.delta[pid]||(ui.delta[pid]={v:0});o.v+=d;cl
 let AC=null;
 function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){return null}}if(AC.state==='suspended')AC.resume();return AC}
 function tone(seq){if(!S.cfg||!S.cfg.sound)return;const a=ac();if(!a)return;let t=a.currentTime+.02;
-  seq.forEach(([f,d,type,v])=>{const o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(v||.16,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.02);t+=d*.75})}
+  const sk=skin();seq.forEach(([f,d,type,v])=>{const o=a.createOscillator(),g=a.createGain();o.type=sk==='terminal'?'square':sk==='parchment'?'triangle':(type||'sine');if(sk==='terminal')v=(v||.16)*.4;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(v||.16,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.02);t+=d*.75})}
 window.addEventListener('pointerdown',()=>{if(S.cfg&&(S.cfg.sound||S.cfg.sfx))ac()},{once:true,capture:true});
 let sfxT=0;
-function noise(a,t,dur,vol,freq){const n=a.createBuffer(1,Math.floor(a.sampleRate*dur),a.sampleRate),d=n.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);
-  const src=a.createBufferSource();src.buffer=n;const f=a.createBiquadFilter();f.type='lowpass';f.frequency.value=freq;const g=a.createGain();g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);src.connect(f);f.connect(g);g.connect(a.destination);src.start(t)}
+function noise(a,t,dur,vol,freq,ftype){const n=a.createBuffer(1,Math.floor(a.sampleRate*dur),a.sampleRate),d=n.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);
+  const src=a.createBufferSource();src.buffer=n;const f=a.createBiquadFilter();f.type=ftype||'lowpass';f.frequency.value=freq;const g=a.createGain();g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);src.connect(f);f.connect(g);g.connect(a.destination);src.start(t)}
 function osc(a,t,type,f0,f1,dur,vol){const o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f0,t);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+dur+.02)}
-function sfx(kind){if(!S.cfg||!S.cfg.sfx)return;const now=performance.now();if(now-sfxT<90)return;sfxT=now;const a=ac();if(!a)return;const t=a.currentTime+.01;
+function sfx(kind){if(!S.cfg||!S.cfg.sfx)return;const now=performance.now();if(now-sfxT<90)return;sfxT=now;const a=ac();if(!a)return;const t=a.currentTime+.01;const sk=skin();
+  if(sk==='parchment'){
+    if(kind==='dmg'||kind==='big'){const v=kind==='big'?.5:.32;noise(a,t,.05,v,1400,'bandpass');osc(a,t,'sine',kind==='big'?120:190,90,.09,v*.8);if(kind==='big'){noise(a,t+.11,.05,v*.8,1100,'bandpass');osc(a,t+.11,'sine',110,80,.1,.3)}}
+    else if(kind==='heal'){osc(a,t,'triangle',523,null,.35,.12);osc(a,t+.05,'triangle',784,null,.4,.07)}
+    else if(kind==='cmd'){noise(a,t,.05,.4,900,'bandpass');osc(a,t,'sine',140,70,.12,.35);noise(a,t+.09,.05,.35,1200,'bandpass')}
+    else if(kind==='poison'){osc(a,t,'sine',240,520,.1,.12);osc(a,t+.12,'sine',300,640,.1,.1)}
+    else if(kind==='turn'){noise(a,t,.22,.18,2200,'highpass');noise(a,t+.05,.16,.12,3500,'highpass')}
+    return}
+  if(sk==='terminal'){
+    if(kind==='dmg'){osc(a,t,'square',220,110,.07,.06);osc(a,t+.07,'square',110,null,.05,.05)}
+    else if(kind==='big'){[440,330,220,110].forEach((f,i)=>osc(a,t+i*.05,'square',f,null,.05,.06))}
+    else if(kind==='heal'){osc(a,t,'square',660,null,.05,.05);osc(a,t+.06,'square',990,null,.07,.05)}
+    else if(kind==='cmd'){[880,660,440,220].forEach((f,i)=>osc(a,t+i*.035,'sawtooth',f,null,.04,.05))}
+    else if(kind==='poison'){osc(a,t,'sawtooth',300,900,.14,.05)}
+    else if(kind==='turn'){osc(a,t,'square',1200,null,.03,.05);osc(a,t+.05,'square',1600,null,.03,.04)}
+    return}
   if(kind==='dmg'){osc(a,t,'sine',150,55,.18,.35);noise(a,t,.09,.25,900)}
   else if(kind==='big'){osc(a,t,'sine',120,40,.35,.45);noise(a,t,.2,.35,700)}
   else if(kind==='heal'){osc(a,t,'sine',660,null,.16,.12);osc(a,t+.08,'sine',990,null,.22,.1)}
@@ -473,7 +652,8 @@ function archiveGame(){const g=S.g;const id='g'+g.started;const a=loadArch().fil
 function unarchive(){const id='g'+S.g.started;saveArch(loadArch().filter(x=>x.id!==id))}
 
 /* ---------- Aktionen ---------- */
-function changeLife(pid,d){const p=P(pid);p.life+=d;sfx(d<=-10?'big':d<0?'dmg':'heal');bumpDelta(pid,d);addHist({pid,k:'life',d,res:p.life});afterChange(null);update();save()}
+function glitch(pid){if(skin()!=='terminal')return;const el=elGame.querySelector(`.panel[data-pid="${pid}"]`);if(!el)return;el.classList.remove('glitch');void el.offsetWidth;el.classList.add('glitch');clearTimeout(el._gt);el._gt=setTimeout(()=>el.classList.remove('glitch'),420)}
+function changeLife(pid,d){const p=P(pid);p.life+=d;if(d<0)glitch(pid);sfx(d<=-10?'big':d<0?'dmg':'heal');bumpDelta(pid,d);addHist({pid,k:'life',d,res:p.life});afterChange(null);update();save()}
 function changeCmd(pid,from,k,d){const p=P(pid);const a=p.cmd[from];const nv=Math.max(0,a[k]+d);const real=nv-a[k];if(!real)return;pushUndo('cmd'+pid+from+k);a[k]=nv;
   addHist({pid,k:'cmd',sub:from+'-'+k,from,ck:k,d:real,res:nv});
   if(S.cfg.cmdLife){p.life-=real;bumpDelta(pid,-real)}
@@ -484,7 +664,7 @@ function changeCtr(pid,key,d){const p=P(pid);const nv=Math.max(0,(p[key]||0)+d);
 
 function fxState(pid){return ui.fx[pid]||(ui.fx[pid]={amt:1,target:null,cmd:false,ck:0,link:false})}
 function runFx(pid,kind){const me=P(pid),f=fxState(pid),x=f.amt;const opp=alive().filter(i=>i!==pid);pushUndo();
-  const hit=(id,d)=>{const q=P(id);q.life+=d;bumpDelta(id,d);addHist({pid:id,k:'life',sub:'fx',d,res:q.life})};
+  const hit=(id,d)=>{const q=P(id);q.life+=d;if(d<0)glitch(id);bumpDelta(id,d);addHist({pid:id,k:'life',sub:'fx',d,res:q.life})};
   let msg='';
   if(kind==='dmg'){const t=f.target;if(t==null||!P(t))return;hit(t,-x);
     if(f.cmd&&isDmg()){const k=me.partner?f.ck:0;P(t).cmd[pid][k]+=x;addHist({pid:t,k:'cmd',sub:pid+'-'+k,from:pid,ck:k,d:x,res:P(t).cmd[pid][k]})}
@@ -573,50 +753,71 @@ function setPrev(i,k){const el=document.getElementById(`cprev${i}-${k}`);if(!el)
 /* ---------- Setup ---------- */
 const ROTS=[null,0,90,180,270];const rotName=r=>r==null?'automatisch':r===0?'unten':r===90?'links':r===180?'oben':'rechts';
 function renderSetup(){
-  const st=S.setup,n=st.n,L=layout(n,st.table),live=!!(S.g&&S.players.length);
-  const sameN=live&&S.players.length===n;
-  const pl=st.players.slice(0,n);
-  const seat=i=>{if(i==null)return'';const c=COLORS[pl[i].color];const r=pl[i].rot!=null?pl[i].rot:autoRot(i,L);return`<div class="map-seat" style="--bg:${c.bg};--fg:${c.fg};--r:${r}deg"><span>${i+1}</span></div>`};
-  const fc=fmtCmdSetup(st),fd=fmtDmgSetup(st);
-  const tableOk=k=>k==='long'||k==='upright'||(k==='head1'&&n>=3)||(k==='head2'&&n>=4);
-  elSetup.innerHTML=`
-  <div class="s-head"><h1>Commander-Tafel</h1>${live?`<p class="live">Ein Spiel läuft. Namen, Farben, Ausrichtung, Tischform und Optionen kannst du übernehmen, ohne dass Leben oder Zähler verloren gehen.</p>`:`<p>Lebenspunkte, Commander-Schaden, Gift, Steuer und alles andere für euren Spieleabend. Das Gerät liegt in der Mitte, jedes Feld zeigt zu seinem Spieler.</p>`}</div>
-  <div class="s-sec"><span class="s-lab">Format</span><div class="chips-row">${Object.keys(FORMATS).map(k=>`<button class="ch txt" data-act="fmt" data-v="${k}" aria-pressed="${k===st.fmt}">${FORMATS[k].n}</button>`).join('')}</div><p class="hint">${FORMATS[st.fmt].hint}${st.fmt==='custom'?'':''}</p>
-    ${st.fmt==='custom'?`<label class="tog"><input type="checkbox" id="customcmd" ${st.customCmd?'checked':''}> Mit Commandern (Commander-Schaden, Steuer)</label>`:''}
-    ${n===2&&!fmtCmdSetup(st)?`<label class="tog top"><input type="checkbox" id="matchopt" ${st.match?'checked':''}><span>Als Match spielen (Best-of-3)<small>Wer zuerst 2 Spiele gewinnt, gewinnt das Match. Nach jedem Spiel darf der Verlierer anfangen.</small></span></label>`:''}</div>
-  <div class="s-sec"><span class="s-lab">Spieler</span><div class="chips-row">${[2,3,4,5,6].map(k=>`<button class="ch" data-act="n" data-v="${k}" aria-pressed="${k===n}">${k}</button>`).join('')}</div></div>
-  <div class="s-sec"><span class="s-lab">Startleben</span><div class="chips-row">${[20,25,30,40].map(k=>`<button class="ch" data-act="start" data-v="${k}" aria-pressed="${k===st.start}">${k}</button>`).join('')}
-    <input class="num-in" id="startcustom" type="number" inputmode="numeric" min="1" max="999" value="${[20,25,30,40].includes(st.start)?'':st.start}" placeholder="eig." aria-label="Eigenes Startleben"></div></div>
-  <div class="s-sec"><span class="s-lab">Tischform</span><div class="chips-row">${Object.keys(TABLES).map(k=>`<button class="ch txt" data-act="table" data-v="${k}" aria-pressed="${k===st.table}" ${tableOk(k)?'':'disabled'}>${TABLES[k]}</button>`).join('')}</div></div>
-  <div class="s-grid">
-    <div class="plist">${pl.map((p,i)=>{const c=COLORS[p.color];return`
+  const st=S.setup,n=st.n,live=!!(S.g&&S.players.length);
+  const scr=ui.scr||'home';const fc=fmtCmdSetup(st),fd=fmtDmgSetup(st);
+  const steps=(cur)=>`<div class="stephead">${ui.back==='game'&&cur===3?`<button class="back" data-act="resume">‹ Zurück zum Spiel</button>`:`<button class="back" data-act="nav" data-to="${['home','fmt','count'][cur-1]}">‹ Zurück</button>`}
+    <div class="steps">${['Format','Spieler','Namen'].map((s,i)=>`<span class="${i+1===cur?'on':i+1<cur?'done':''}">${i+1} ${s}</span>`).join('')}</div></div>`;
+  let h='';
+  if(scr==='home'){
+    h=`<div class="home">
+      <div class="brand"><div class="logo">40</div><h1>Commander-Tafel</h1><p>Life Counter für Magic</p></div>
+      ${live?`<button class="bigbtn pri" data-act="resume">Weiterspielen<small>${esc(FORMATS[S.cfg.fmt]?FORMATS[S.cfg.fmt].n:'Commander')} · ${S.players.length} Spieler${S.g.ended?' · beendet':''}</small></button>`:''}
+      <button class="bigbtn${live?'':' pri'}" data-act="nav" data-to="fmt">Neues Spiel<small>Format, Spieler und Commander wählen</small></button>
+      <div class="homerow"><button class="bigbtn sm" data-act="archive">${I.stats}Archiv</button><button class="bigbtn sm" data-act="nav" data-to="settings">${I.menu}Einstellungen</button></div>
+      <p class="hint ver">Version ${VERSION}</p></div>`}
+  else if(scr==='fmt'){
+    h=`${steps(1)}<h2 class="sh2">Was spielt ihr?</h2>
+      <div class="tiles fmt">${Object.keys(FORMATS).map(k=>{const F=FORMATS[k],l=fmtLife(k,n);return`<button class="tile" data-act="fmt" data-v="${k}" aria-pressed="${k===st.fmt}"><b>${l||'?'}</b><span>${F.n}</span><small>${F.hint}</small></button>`}).join('')}</div>`}
+  else if(scr==='count'){
+    const lifes=[20,25,30,40];
+    h=`${steps(2)}<h2 class="sh2">Wie viele spielen mit?</h2>
+      <div class="tiles cnt">${[2,3,4,5,6].map(k=>`<button class="tile" data-act="n" data-v="${k}" aria-pressed="${k===n}"><b>${k}</b><span>Spieler</span></button>`).join('')}</div>
+      <div class="s-sec"><span class="s-lab">Startleben</span><div class="chips-row">${lifes.map(k=>`<button class="ch" data-act="start" data-v="${k}" aria-pressed="${k===st.start}">${k}</button>`).join('')}
+        <input class="num-in" id="startcustom" type="number" inputmode="numeric" min="1" max="999" value="${lifes.includes(st.start)?'':st.start}" placeholder="eig." aria-label="Eigenes Startleben"></div></div>
+      ${st.fmt==='custom'?`<label class="tog"><input type="checkbox" id="customcmd" ${st.customCmd?'checked':''}> Mit Commandern (Commander-Schaden, Steuer)</label>`:''}
+      ${n===2&&!fc?`<label class="tog top"><input type="checkbox" id="matchopt" ${st.match?'checked':''}><span>Als Match spielen (Best-of-3)<small>Wer zuerst 2 Spiele gewinnt, gewinnt das Match. Danach darf der Verlierer anfangen.</small></span></label>`:''}
+      ${n>=3&&fc?`<details class="more"><summary>Archenemy (Sonderspielmodus)</summary><p class="hint">Einer spielt allein gegen alle anderen. Der Erzfeind startet mit 40 Leben, alle anderen mit 20.</p>
+        <select class="sel" id="arch"><option value="-1">Kein Erzfeind</option>${st.players.slice(0,n).map((p,i)=>`<option value="${i}" ${st.arch===i?'selected':''}>${esc(p.name)} ist Erzfeind</option>`).join('')}</select></details>`:''}
+      <div class="go-row"><button class="go" data-act="nav" data-to="players">Weiter</button></div>`}
+  else if(scr==='players'){
+    const sameN=live&&S.players.length===n&&S.cfg.fmt===st.fmt;
+    h=`${steps(3)}<h2 class="sh2">Wer spielt?</h2>
+      <div class="plist">${st.players.slice(0,n).map((p,i)=>{const c=COLORS[p.color];return`
       <div class="prow" style="--pc:${c.bg}">
         <div class="prow-top"><input type="text" id="pname${i}" value="${esc(p.name)}" maxlength="18" aria-label="Name Spieler ${i+1}" autocomplete="off"><span class="seat">Platz ${i+1} · ${seatLabel(i,n,st.table)}</span></div>
         <div class="sw-row">${CORDER.map(k=>`<button class="sw" style="--c:${COLORS[k].bg}" data-act="col" data-i="${i}" data-c="${k}" aria-pressed="${k===p.color}" aria-label="${COLORS[k].n}" title="${COLORS[k].n}"></button>`).join('')}</div>
         ${!fc?'':[0,1].filter(k=>k===0||p.partner).map(k=>`<div class="cmdin"><input type="text" id="cmd${i}-${k}" list="dl-cmd${i}-${k}" value="${esc(p.cmdr[k]||'')}" placeholder="${k?'Partner-Commander':'Commander (optional)'}" autocomplete="off" autocapitalize="words" data-ci="${i}" data-ck="${k}"><datalist id="dl-cmd${i}-${k}"></datalist></div><div class="cprev" id="cprev${i}-${k}"></div>`).join('')}
-        <div class="prow-opts">${fc?`<label class="tog"><input type="checkbox" id="ppart${i}" ${p.partner?'checked':''}> Partner-Commander</label>`:''}
-          <button class="mini" data-act="rot" data-i="${i}">Ausrichtung: ${rotName(p.rot)}</button></div>
+        ${fc?`<label class="tog small"><input type="checkbox" id="ppart${i}" ${p.partner?'checked':''}> Partner-Commander</label>`:''}
       </div>`}).join('')}</div>
-    <aside class="map">
-      <span class="s-lab">Sitzordnung</span>
-      <div class="map-box">${L.upright?`<div class="map-center" style="grid-template-rows:repeat(${L.rows.length},1fr) 8px">${L.rows.map(r=>`<div class="map-row">${r.map(seat).join('')}</div>`).join('')}<div class="map-mid"></div></div>`:L.left!=null?`<div class="map-side">${seat(L.left)}</div>`:''}<div class="map-center"><div class="map-row">${L.top.map(seat).join('')}</div><div class="map-mid"></div><div class="map-row">${L.bottom.map(seat).join('')}</div></div>${!L.upright&&L.right!=null?`<div class="map-side">${seat(L.right)}</div>`:''}</div>
-      <p>Die Zahlen zeigen, wie jedes Feld ausgerichtet ist. Die Zugreihenfolge läuft im Uhrzeigersinn: 1, 2, 3 …</p>
-      ${!fd?'':`<label class="tog top"><input type="checkbox" id="cmdlife" ${st.cmdLife?'checked':''}><span>Commander-Schaden auch vom Leben abziehen<small>Empfohlen. Trägst du 5 Commander-Schaden ein, sinkt das Leben automatisch um 5. Aus: Leben und Commander-Schaden musst du getrennt eintragen.</small></span></label>`}
-      <label class="tog"><input type="checkbox" id="sound" ${st.sound?'checked':''}> Töne beim Ausscheiden und Spielende</label>
-      <label class="tog"><input type="checkbox" id="sfxopt" ${st.sfx?'checked':''}> Töne bei Schaden, Heilung, Gift und Zugwechsel</label>
-      <label class="tog"><input type="checkbox" id="turnsopt" ${st.turns?'checked':''}> Züge und Runden mitzählen</label>
-      <label class="tog"><input type="checkbox" id="clockopt" ${st.clock?'checked':''}> Spieluhr und Zugzeit anzeigen</label>
-      ${fc?`<label class="tog"><input type="checkbox" id="artopt" ${st.art?'checked':''}> Commander-Bild als Hintergrund</label>`:''}
-      ${st.n<3?'':`<label class="s-lab" for="arch">Archenemy (Sonderspielmodus)</label>
-      <p>Einer spielt allein gegen alle anderen, die ein Team bilden. Der Erzfeind startet mit 40 Leben, alle anderen mit 20. Für normales Commander einfach auf „Kein Erzfeind“ lassen.</p>
-      <select class="sel" id="arch"><option value="-1">Kein Erzfeind</option>${pl.map((p,i)=>`<option value="${i}" ${st.arch===i?'selected':''}>${esc(p.name)} ist Erzfeind (40, Rest 20)</option>`).join('')}</select>`}
-    </aside>
-  </div>
-  <div class="go-row">${live?`<button class="go sec" data-act="apply" ${sameN?'':'disabled'}>Übernehmen, weiterspielen</button>`:''}<button class="go" data-act="go">${live?'Neues Spiel starten':'Spiel starten'}</button></div>
-  ${live&&!sameN?'<p class="hint">Die Spielerzahl ist anders als im laufenden Spiel. Dafür braucht es ein neues Spiel.</p>':''}
-  <p class="hint">Commander-Namen und Bilder kommen von Scryfall und brauchen Internet. Ohne Verbindung wird der eingetippte Name angezeigt.</p>`;
-  pl.forEach((p,i)=>[0,1].forEach(k=>setPrev(i,k)));
+      <div class="go-row">${sameN?`<button class="go sec" data-act="apply">Übernehmen, weiterspielen</button>`:''}<button class="go" data-act="go">${live?'Neues Spiel starten':'Spiel starten'}</button></div>
+      <p class="hint">Tischform, Ausrichtung und Design findest du unter <button class="linkbtn" data-act="nav" data-to="settings">Einstellungen</button>.${fc?' Commander-Namen und Bilder kommen von Scryfall und brauchen Internet.':''}</p>`}
+  else if(scr==='settings'){
+    const L=layout(n,st.table),pl=st.players.slice(0,n);
+    const seat=i=>{if(i==null)return'';const c=COLORS[pl[i].color];const r=pl[i].rot!=null?pl[i].rot:autoRot(i,L);return`<button class="map-seat" data-act="rot" data-i="${i}" style="--bg:${c.bg};--fg:${c.fg};--r:${r}deg" aria-label="Platz ${i+1} drehen"><span>${i+1}</span></button>`};
+    const tableOk=k=>k==='long'||k==='upright'||(k==='head1'&&n>=3)||(k==='head2'&&n>=4);
+    h=`<div class="stephead">${ui.back==='game'?`<button class="back" data-act="resume">‹ Zurück zum Spiel</button>`:`<button class="back" data-act="nav" data-to="${ui.setBack||'home'}">‹ Zurück</button>`}</div>
+      <h2 class="sh2">Einstellungen</h2>
+      <div class="setgrid">
+      <section class="setbox"><h3>Design</h3><div class="chips-row">${Object.keys(SKINS).map(k=>`<button class="ch txt" data-act="skin" data-v="${k}" aria-pressed="${k===skin()}">${SKINS[k]}</button>`).join('')}</div></section>
+      <section class="setbox"><h3>Tischform</h3><div class="chips-row">${Object.keys(TABLES).map(k=>`<button class="ch txt" data-act="table" data-v="${k}" aria-pressed="${k===st.table}" ${tableOk(k)?'':'disabled'}>${TABLES[k]}</button>`).join('')}</div>
+        <div class="map-box">${L.upright?`<div class="map-center" style="grid-template-rows:repeat(${L.rows.length},1fr) 8px">${L.rows.map(r=>`<div class="map-row">${r.map(seat).join('')}</div>`).join('')}<div class="map-mid"></div></div>`:`${L.left!=null?`<div class="map-side">${seat(L.left)}</div>`:''}<div class="map-center"><div class="map-row">${L.top.map(seat).join('')}</div><div class="map-mid"></div><div class="map-row">${L.bottom.map(seat).join('')}</div></div>${L.right!=null?`<div class="map-side">${seat(L.right)}</div>`:''}`}</div>
+        <p class="hint">Tippe auf einen Platz, um sein Feld zu drehen. Die Zugreihenfolge läuft im Uhrzeigersinn: 1, 2, 3 …</p></section>
+      <section class="setbox"><h3>Spiel</h3>
+        <label class="tog"><input type="checkbox" id="turnsopt" ${st.turns?'checked':''}> Züge und Runden mitzählen</label>
+        <label class="tog"><input type="checkbox" id="clockopt" ${st.clock?'checked':''}> Spieluhr und Zugzeit anzeigen</label>
+        <label class="tog top"><input type="checkbox" id="cmdlife" ${st.cmdLife?'checked':''}><span>Commander-Schaden auch vom Leben abziehen<small>Nur bei Commander. 5 Commander-Schaden senken das Leben automatisch um 5.</small></span></label>
+        <label class="tog"><input type="checkbox" id="artopt" ${st.art?'checked':''}> Commander-Bild im Spielerfeld</label></section>
+      <section class="setbox"><h3>Töne</h3>
+        <label class="tog"><input type="checkbox" id="sound" ${st.sound?'checked':''}> Beim Ausscheiden und Spielende</label>
+        <label class="tog"><input type="checkbox" id="sfxopt" ${st.sfx?'checked':''}> Bei Schaden, Heilung, Gift und Zugwechsel</label></section>
+      </div>
+      <p class="hint ver">Version ${VERSION}</p>`}
+  elSetup.innerHTML=`<div class="scr scr-${scr}">${h}</div>`;
+  if(scr==='players')st.players.slice(0,n).forEach((p,i)=>[0,1].forEach(k=>setPrev(i,k)));
 }
+function applyLive(){if(!(S.g&&S.players.length))return;const st=S.setup;Object.assign(S.cfg,{cmdLife:st.cmdLife,sound:st.sound,sfx:st.sfx,turns:st.turns,table:st.table,clock:st.clock,art:st.art});
+  if(st.n===S.players.length)S.players.forEach((p,i)=>p.rot=st.players[i].rot)}
+function goScr(s){ui.scr=s;renderSetup();save();window.scrollTo(0,0)}
 function fmtCmdSetup(st){return st.fmt==='custom'?!!st.customCmd:FORMATS[st.fmt].cmd}
 function fmtDmgSetup(st){return st.fmt==='custom'?!!st.customCmd:FORMATS[st.fmt].dmg}
 function readSetupInputs(){const st=S.setup;const cc=document.getElementById('customcmd');if(cc)st.customCmd=cc.checked;const mo=document.getElementById('matchopt');if(mo)st.match=mo.checked;for(let i=0;i<st.n;i++){const a=document.getElementById('pname'+i),b=document.getElementById('ppart'+i);if(a)st.players[i].name=a.value.trim()||('Spieler '+(i+1));if(b)st.players[i].partner=b.checked}
@@ -631,25 +832,29 @@ function readSetupInputs(){const st=S.setup;const cc=document.getElementById('cu
   const sc=document.getElementById('startcustom');if(sc&&sc.value){const v=parseInt(sc.value,10);if(v>0)st.start=Math.min(999,v)}}
 elSetup.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||b.disabled)return;readSetupInputs();const st=S.setup;
   switch(b.dataset.act){
-    case'fmt':st.fmt=b.dataset.v;{const l=fmtLife(st.fmt,st.n);if(l)st.start=l}if(st.fmt!=='commander'&&st.fmt!=='custom')st.arch=-1;break;
+    case'nav':if(b.dataset.to==='settings'&&ui.scr!=='settings'){ui.setBack=ui.scr||'home'}goScr(b.dataset.to);return;
+    case'resume':applyLive();ui.back=null;ui.scr='home';S.phase='game';show();save();wake();return;
+    case'archive':ui.archConfirm=false;openModal('archive');return;
+    case'skin':st.skin=b.dataset.v;applySkin();break;
+    case'fmt':st.fmt=b.dataset.v;{const l=fmtLife(st.fmt,st.n);if(l)st.start=l}if(st.fmt!=='commander'&&st.fmt!=='custom')st.arch=-1;goScr('count');return;
     case'n':st.n=+b.dataset.v;{const l=fmtLife(st.fmt,st.n);if(l&&st.fmt==='brawl')st.start=l}if(st.table==='upright'){if(st.arch>=st.n)st.arch=-1;break}if(st.table==='head2'&&st.n<4)st.table=st.n>=3?'head1':'long';if(st.table==='head1'&&st.n<3)st.table='long';if(st.arch>=st.n)st.arch=-1;break;
     case'start':st.start=+b.dataset.v;document.getElementById('startcustom').value='';break;
-    case'table':st.table=b.dataset.v;break;
+    case'table':st.table=b.dataset.v;applyLive();break;
     case'col':st.players[+b.dataset.i].color=b.dataset.c;st.players[+b.dataset.i].colorSet=true;break;
-    case'rot':{const p=st.players[+b.dataset.i];p.rot=ROTS[(ROTS.indexOf(p.rot)+1)%ROTS.length];break}
+    case'rot':{const p=st.players[+b.dataset.i];const L=layout(st.n,st.table);const cur=p.rot!=null?p.rot:autoRot(+b.dataset.i,L);p.rot=(cur+90)%360;applyLive();break}
     case'apply':applyEdits();return;
     case'go':startGame();return;
   }
   renderSetup();save()});
 elSetup.addEventListener('change',e=>{readSetupInputs();const t=e.target;
   if(t.dataset&&t.dataset.ci!=null){resolveCmd(+t.dataset.ci,+t.dataset.ck);return}
-  if(t.type!=='text')renderSetup();save()});
+  if(t.type!=='text'){applyLive();renderSetup()}save()});
 elSetup.addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.ci!=null)onCmdInput(t)});
 
 function applyEdits(){const st=S.setup;if(st.n!==S.players.length)return;
   S.players.forEach((p,i)=>{const s=st.players[i];if(p.name!==s.name)ev(p.name+' heißt jetzt '+s.name,i);p.name=s.name;p.color=s.color;p.partner=s.partner;p.rot=s.rot;p.cmdr=s.cmdr.slice();p.cdata=s.cdata.map(cmdObj)});
   Object.assign(S.cfg,{cmdLife:st.cmdLife,sound:st.sound,sfx:st.sfx,turns:st.turns,table:st.table,clock:st.clock,art:st.art});
-  S.phase='game';show();save();wake();toast('Übernommen')}
+  ui.back=null;ui.scr='home';S.phase='game';show();save();wake();toast('Übernommen')}
 function startGame(){readSetupInputs();const st=S.setup;
   const fcmd=fmtCmdSetup(st),fdmg=fmtDmgSetup(st);if(st.n<3)st.arch=-1;
   S.cfg={fmt:st.fmt,cmd:fcmd,dmg:fdmg,start:st.start,cmdLife:st.cmdLife,sound:st.sound,sfx:st.sfx,turns:st.turns,table:st.table,arch:st.arch,clock:st.clock,art:st.art};
@@ -659,7 +864,7 @@ function startGame(){readSetupInputs();const st=S.setup;
   S.match=(st.n===2&&st.match&&!fcmd)?{game:1,results:[]}:null;
   S.g=newG();S.hist=[];S.lifeLog=[];undo=[];ui.ov={};ui.fx={};ui.delta={};ui.roll={};ui.rollTop=new Set();
   logLives();ev(FORMATS[st.fmt].n+' · '+st.n+' Spieler'+(S.match?' · Match Best-of-3':'')+(st.arch>=0?' · Archenemy: '+S.players[st.arch].name:' · '+st.start+' Leben'));
-  ui.startPrompt=true;S.phase='game';show();save();wake();if(S.cfg.sound||S.cfg.sfx)ac()}
+  ui.startPrompt=true;ui.back=null;ui.scr='home';S.phase='game';show();save();wake();if(S.cfg.sound||S.cfg.sfx)ac()}
 function cmdObj(c){return c?{...c}:null}
 function cmdName(p,k){const c=p.cdata&&p.cdata[k];const n=(c&&(c.nameDe||c.name))||(p.cmdr&&p.cmdr[k])||'';return n?shortName(n):''}
 const mWins=id=>S.match?S.match.results.filter(r=>r.winner===id).length:0;
@@ -795,9 +1000,16 @@ function update(){if(S.phase!=='game'||!S.players.length)return;
   S.players.forEach(p=>{const el=elGame.querySelector(`.panel[data-pid="${p.id}"]`);if(!el)return;
     const dr=deadReason(p);
     el.classList.toggle('dead',!!dr);el.classList.toggle('active',S.cfg.turns&&S.g.active===p.id&&!S.g.ended);el.classList.toggle('kbsel',ui.sel===p.id);el.classList.toggle('pick',ui.pick===p.id);el.classList.toggle('shake',!!ui.shake[p.id]);
-    const c=col(p);el.style.setProperty('--bg',c.bg);el.style.setProperty('--bg2',c.bg2);el.style.setProperty('--fg',c.fg);
-    el.querySelector('.name').textContent=p.name;
-    const art=isCmd()&&S.cfg.art&&p.cdata&&p.cdata[0]&&p.cdata[0].art;const inn=el.querySelector('.inner');inn.classList.toggle('art',!!art);el.classList.toggle('hasart',!!art);if(art)inn.style.setProperty('--art',`url("${art}")`);
+    const c=col(p),sk=skin();const art=!['light','terminal','identity'].includes(sk)&&isCmd()&&S.cfg.art&&p.cdata&&p.cdata[0]&&p.cdata[0].art;
+    el.style.setProperty('--bg',c.bg);
+    if(sk==='light'){el.style.setProperty('--pbg',mixHex(c.bg,'#ffffff',.84));el.style.setProperty('--bg2',mixHex(c.bg,'#ffffff',.9));el.style.setProperty('--fg','#17181a')}
+    else if(sk==='parchment'){el.style.setProperty('--pc',c.bg);el.style.setProperty('--bg2','#ead8af');el.style.setProperty('--fg','#2b1d10')}
+    else if(sk==='terminal'){const nf=mixHex(c.bg,'#ffffff',.45);el.style.setProperty('--fg',p.color==='B'?'#c9a6ff':p.color==='C'?'#cfe3ea':nf);el.style.setProperty('--bg2','#020a05')}
+    else if(sk==='identity'){const ids=idColors(p);let g,glow;if(ids){const cs=ids.map(x=>ID_COL[x]);g=cs.length===1?`radial-gradient(120% 120% at 30% 25%,${mixHex(cs[0],'#ffffff',.18)},${cs[0]} 45%,${mixHex(cs[0],'#000000',.55)})`:`linear-gradient(125deg,${cs.map((x,i)=>x+' '+Math.round(i/(cs.length-1)*100)+'%').join(',')})`;glow=ID_GLOW[ids[0]]}else{g=`radial-gradient(120% 120% at 30% 25%,${c.bg},${c.bg2})`;glow='rgba(255,255,255,.3)'}
+      el.style.setProperty('--idg',g);el.style.setProperty('--glow',glow);el.style.setProperty('--bg2',ids?mixHex(ID_COL[ids[0]],'#000000',.55):c.bg2);el.style.setProperty('--fg',ids&&ids.length===1&&ids[0]==='W'?'#fffaf0':'#f7f3ea')}
+    else{el.style.setProperty('--bg2',c.bg2);el.style.setProperty('--fg',art&&sk==='classic'?'#f7f3ea':c.fg)}
+    el.querySelector('.name').innerHTML=esc(p.name)+(sk==='identity'&&idColors(p)&&isCmd()?` <span class="pips">${idColors(p).map(x=>`<i style="--c:${ID_COL[x]}"></i>`).join('')}</span>`:'');
+    const inn=el.querySelector('.inner');inn.classList.toggle('art',!!art);el.classList.toggle('hasart',!!art);if(art)inn.style.setProperty('--art',`url("${art}")`);
     el.querySelector('.cmdrline').innerHTML=cmdrHTML(p);
     el.querySelector('.num').textContent=p.life;
     const b=[];if(S.cfg.turns&&S.g.active===p.id&&!S.g.ended)b.push(`<span class="badge turn">am Zug${S.cfg.clock?' <span class="ttime"></span>':''}</span>`);if(S.g.monarch===p.id)b.push(`<span class="badge">${I.crown}Monarch</span>`);if(S.match&&mWins(p.id))b.push(`<span class="badge">${'●'.repeat(mWins(p.id))} ${mWins(p.id)===1?'1 Sieg':'2 Siege'}</span>`);if(S.g.initiative===p.id)b.push(`<span class="badge">${I.init}Initiative</span>`);
@@ -941,14 +1153,10 @@ function histLine(h){const t=new Date(h.t);const tm=String(t.getHours()).padStar
 function renderModal(){const t=ui.modal;if(!t)return closeModal();const X=`<button class="x" data-act="close" aria-label="Schließen">${I.x}</button>`;let body='';
   if(t==='menu')body=`<div class="card-h"><h2>Menü</h2>${X}</div>
     <button class="mbtn${ui.confirm==='restart'?' warn':''}" data-act="restart">${I.reset}<span>${ui.confirm==='restart'?'Wirklich? Nochmal tippen zum Zurücksetzen':'Neue Runde, gleiche Spieler'}<small>Alle zurück auf ihr Startleben, Zähler auf 0</small></span></button>
-    <button class="mbtn" data-act="setup">${I.users}<span>Spieler &amp; Einstellungen ändern<small>Namen, Farben, Tischform – Spiel läuft weiter</small></span></button>
+    <div class="mrow"><button class="mbtn" data-act="setup">${I.users}<span>Spieler ändern<small>Namen, Farben, Commander</small></span></button>
+    <button class="mbtn" data-act="settings">${I.menu}<span>Einstellungen<small>Design, Tischform, Töne</small></span></button></div>
+    <button class="mbtn" data-act="home">${I.reset}<span>Zum Startbildschirm<small>Neues Spiel, Archiv – dieses Spiel bleibt gespeichert</small></span></button>
     ${STANDALONE?'':`<button class="mbtn" data-act="fs">${I.full}<span>Vollbild an/aus<small>Auf dem iPad klappt das nur in der Safari-Version</small></span></button>`}
-    <label class="tog top"><input type="checkbox" id="m-cmdlife" ${S.cfg.cmdLife?'checked':''}><span>Commander-Schaden auch vom Leben abziehen<small>An: 5 Commander-Schaden senken das Leben automatisch um 5.</small></span></label>
-    <label class="tog"><input type="checkbox" id="m-sound" ${S.cfg.sound?'checked':''}> Töne beim Ausscheiden und Spielende</label>
-    <label class="tog"><input type="checkbox" id="m-sfx" ${S.cfg.sfx?'checked':''}> Töne bei Schaden, Heilung, Gift und Zugwechsel</label>
-    <label class="tog"><input type="checkbox" id="m-turns" ${S.cfg.turns?'checked':''}> Züge und Runden mitzählen</label>
-    <label class="tog"><input type="checkbox" id="m-clock" ${S.cfg.clock?'checked':''}> Spieluhr und Zugzeit anzeigen</label>
-    <label class="tog"><input type="checkbox" id="m-art" ${S.cfg.art?'checked':''}> Commander-Bild als Hintergrund</label>
     <button class="mbtn" data-act="archive">${I.stats}<span>Archiv &amp; Bilanz<small>Alle beendeten Spiele auf diesem Gerät</small></span></button>
     <p class="hint">Rechte Hälfte tippen +1, linke Hälfte −1, halten in 10er-Schritten. In den Zähler-Feldern zählt Halten schnell hoch. „Zurück“ macht jede Aktion rückgängig.</p>
     ${HASTOUCH?'':`<p class="hint">Tastatur am Mac: <span class="kbd">1</span>–<span class="kbd">6</span> Spieler wählen · <span class="kbd">↑</span> <span class="kbd">↓</span> Leben ±1 (mit <span class="kbd">⇧</span> ±10) · <span class="kbd">C</span> Commander · <span class="kbd">M</span> Marken · <span class="kbd">A</span> Aktion · <span class="kbd">Leertaste</span> nächster Zug · <span class="kbd">⌘Z</span> zurück · <span class="kbd">F</span> Vollbild · <span class="kbd">Esc</span> schließen</p>`}`;
@@ -977,9 +1185,11 @@ elModal.addEventListener('click',e=>{if(e.target===elModal)return closeModal();c
     case'restart':if(ui.confirm==='restart')restartSame();else{ui.confirm='restart';renderModal()}break;
     case'restart2':restartSame();break;
     case'archive':ui.archConfirm=false;openModal('archive');break;
+    case'skin':S.setup.skin=b.dataset.v;applySkin();update();renderModal();save();break;
     case'archfmt':ui.archFmt=b.dataset.v;renderModal();break;
     case'archclear':if(ui.archConfirm){saveArch([]);ui.archConfirm=false;toast('Archiv geleert')}else ui.archConfirm=true;renderModal();break;
-    case'setup':closeModal();S.players.forEach((p,i)=>Object.assign(S.setup.players[i],{name:p.name,color:p.color,partner:p.partner,rot:p.rot}));S.setup.n=S.players.length;S.setup.table=S.cfg.table;S.phase='setup';show();save();break;
+    case'setup':case'settings':case'home':{closeModal();S.players.forEach((p,i)=>Object.assign(S.setup.players[i],{name:p.name,color:p.color,partner:p.partner,rot:p.rot}));S.setup.n=S.players.length;S.setup.table=S.cfg.table;if(S.cfg.fmt)S.setup.fmt=S.cfg.fmt;
+      const a=b.dataset.act;ui.scr=a==='setup'?'players':a;ui.back=a==='home'?null:'game';S.phase='setup';show();save();break}
     case'fs':fullscreen();break;
     case'die':rollDie(b.dataset.s==='coin'?'coin':+b.dataset.s);break;
     case'startp':pickStart();break;
@@ -1000,7 +1210,7 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){if(ui.sel!=null&&!ui.modal&&!Object.values(ui.ov).some(Boolean)){ui.sel=null;update();return}if(ui.modal)closeModal();else if(ui.assign){ui.assign=null;update()}else{ui.ov={};update()}}
   if((e.metaKey||e.ctrlKey)&&e.key==='z'&&S.phase==='game'&&!ui.modal){e.preventDefault();doUndo()}});
 
-function show(){const g=S.phase==='game'&&S.players.length;elSetup.hidden=!!g;elGame.hidden=!g;document.body.classList.toggle('ingame',!!g);
+function show(){applySkin();const g=S.phase==='game'&&S.players.length;elSetup.hidden=!!g;elGame.hidden=!g;document.body.classList.toggle('ingame',!!g);
   if(g)buildGame();else{if(ro)ro.disconnect();renderSetup();window.scrollTo(0,0)}}
 if('serviceWorker' in navigator&&location.protocol==='https:'&&/github\.io$|pages\.dev$|netlify|vercel/.test(location.hostname)){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 show();
