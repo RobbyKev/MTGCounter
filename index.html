@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mana-font@1.18.0/css/mana.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=Cinzel:wght@600;700&family=Cormorant+Garamond:wght@600;700&family=VT323&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=Cinzel:wght@600;700&family=Cormorant+Garamond:wght@600;700&family=VT323&family=Great+Vibes&display=swap">
 <style>
 /* Layout: Spieltisch von oben – lange Seiten oben (180°) und unten, optional Kopfenden links (90°) und rechts (270°), Werkzeugleiste in der Mitte. Bewusst nur dunkles Thema. */
 :root{
@@ -349,6 +349,8 @@ button.map-seat{cursor:pointer;border:0}
 .rulings{margin-top:12px;display:grid;gap:8px}.rulings div{font-size:14px;line-height:1.4;padding:8px 10px;border-left:3px solid var(--brass);background:rgba(255,255,255,.04);border-radius:0 8px 8px 0}.rulings time{display:block;font-size:11px;opacity:.6}
 .rulein{width:100%;height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:#15171c;color:inherit;padding:0 12px;font-size:16px;margin:4px 0 8px}
 .rlist{margin-top:8px}.rk{display:inline-flex;align-items:center;gap:6px}.rk .ci{font-size:1.1em}.rk .ci svg{width:1em;height:1em}
+.rlab{font-size:11px;text-transform:uppercase;letter-spacing:.08em;opacity:.6;margin:6px 0 2px}
+.rofc{margin-top:10px;padding-top:8px;border-top:1px solid rgba(201,164,92,.3)}.rofc q{display:block;font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-size:17px;line-height:1.35;quotes:none}.rofc small{display:block;font-size:11px;opacity:.55;margin-top:4px}
 .rulebox{margin-top:10px;padding:12px 14px;border-radius:12px;background:rgba(201,164,92,.12);border:1px solid rgba(201,164,92,.35);line-height:1.45}
 .rulebox h4{margin:0 0 4px;display:flex;align-items:center;gap:8px;font-size:17px}.rulebox .ci{font-size:1.3em}
 @media (max-width:620px){.lookres{grid-template-columns:1fr}.lookres>img{max-width:260px;margin:0 auto}}
@@ -509,6 +511,61 @@ table.t .dot{width:10px;height:10px;margin-right:6px;vertical-align:middle}
 :root[data-skin="card"] .delta{color:#fff;text-shadow:0 0 1cqmin rgba(0,0,0,.8)}
 :root[data-skin="card"] .half span{color:#fff;opacity:.45}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+#intro{position:fixed;inset:0;z-index:999;background:#06060e;overflow:hidden;touch-action:none;cursor:pointer}
+#intro canvas{position:absolute;inset:0;width:100%;height:100%}
+#intro .istage{position:absolute;inset:0;display:grid;place-items:center;perspective:1300px;pointer-events:none}
+#intro .iskip{position:absolute;left:0;right:0;bottom:max(18px,env(safe-area-inset-bottom));text-align:center;color:rgba(255,240,210,.45);font:500 13px var(--f-ui);letter-spacing:.08em;animation:ipulse 2.4s ease-in-out infinite}
+@keyframes ipulse{50%{opacity:.25}}
+.iwrap{--w:min(62vh*.716,78vw,430px);width:var(--w);aspect-ratio:63/88;margin-top:-6vh;opacity:0;perspective:1300px}
+.icard{--w:min(62vh*.716,78vw,430px);width:100%;height:100%;position:relative;transform-style:preserve-3d}
+.icard.flat{animation:none}
+.iface{position:absolute;inset:0;border-radius:calc(var(--w)*.045);backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 60px rgba(255,200,120,.18)}
+/* Rückseite (eigenes Design) */
+.iback{background:radial-gradient(120% 90% at 50% 40%,#5b3a1c 0%,#3a2310 55%,#1d1107 100%);border:calc(var(--w)*.035) solid #120b05}
+.ib-oval{position:absolute;inset:9% 11%;border-radius:50%;background:radial-gradient(closest-side,#1b2240,#0c0f22 70%,#05060f);box-shadow:inset 0 0 0 calc(var(--w)*.012) #b98a43,inset 0 0 calc(var(--w)*.08) rgba(0,0,0,.9),0 0 0 calc(var(--w)*.02) #2a1a0a}
+.ib-swirl{position:absolute;inset:8%;border-radius:50%;background:conic-gradient(from 0deg,#fff3c840,#2f7fd680,#2b243080,#d8441f80,#23934a80,#fff3c840);filter:blur(calc(var(--w)*.02));animation:ispin 6s linear infinite;mix-blend-mode:screen;opacity:.8}
+.ib-ring{position:absolute;inset:22%;border-radius:50%;border:calc(var(--w)*.006) dashed rgba(240,200,120,.55);animation:ispin 14s linear infinite reverse}
+.ib-dot{position:absolute;left:50%;top:50%;width:13%;aspect-ratio:1;margin:-6.5%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0,var(--c) 45%,#000 140%);box-shadow:0 0 calc(var(--w)*.03) var(--c);transform:rotate(var(--a)) translate(calc(var(--w)*.3)) rotate(calc(var(--a)*-1))}
+@keyframes ispin{to{transform:rotate(360deg)}}
+/* Vorderseite (eigener Rahmen) */
+.ifront{transform:rotateY(180deg);background:#0d0b09;padding:calc(var(--w)*.04)}
+.if-frame{position:absolute;inset:calc(var(--w)*.04);border-radius:calc(var(--w)*.025);background:linear-gradient(160deg,#d9b46a,#8a6426 40%,#e6c47c 60%,#7a5520);padding:calc(var(--w)*.022);display:flex;flex-direction:column;gap:calc(var(--w)*.016);font-size:calc(var(--w)*.045);color:#1c140a}
+.if-title,.if-type{display:flex;align-items:center;justify-content:space-between;gap:.4em;padding:.28em .55em;border-radius:.5em/1em;background:linear-gradient(180deg,#f6ead0,#d9c49a);box-shadow:inset 0 0 0 1px rgba(0,0,0,.35),0 2px 4px rgba(0,0,0,.4)}
+.if-title span:first-child{font-family:var(--f-title);font-weight:700;font-size:1.12em;letter-spacing:.01em;white-space:nowrap}
+.if-cost{display:flex;gap:.12em}
+.ipip{width:.82em;height:.82em;border-radius:50%;display:inline-block;box-shadow:0 1px 1px rgba(0,0,0,.6),inset 0 0 0 1px rgba(0,0,0,.25)}
+.ipip.W{background:#f8f1d8}.ipip.U{background:#a9d0ef}.ipip.B{background:#b9aeb4}.ipip.R{background:#f19c80}.ipip.G{background:#9bd3ae}
+.if-art{position:relative;flex:1.15;border-radius:2px;overflow:hidden;background:#05060f;box-shadow:inset 0 0 0 2px rgba(0,0,0,.6)}
+.if-neb{position:absolute;inset:-30%;background:radial-gradient(35% 30% at 30% 40%,#6a4cff99,transparent 70%),radial-gradient(30% 28% at 70% 60%,#ff6a3d88,transparent 70%),radial-gradient(28% 26% at 55% 25%,#4fd16a66,transparent 70%),radial-gradient(40% 40% at 50% 70%,#2f7fd677,transparent 70%);filter:blur(6px);animation:ineb 9s ease-in-out infinite alternate}
+.if-neb.n2{mix-blend-mode:screen;opacity:.7;animation-duration:13s;animation-direction:alternate-reverse;transform:rotate(40deg)}
+@keyframes ineb{to{transform:rotate(25deg) scale(1.15) translate(4%,-3%)}}
+.if-stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 12% 20%,#fff,transparent),radial-gradient(1px 1px at 80% 30%,#fff,transparent),radial-gradient(1.5px 1.5px at 40% 75%,#fff,transparent),radial-gradient(1px 1px at 65% 85%,#fff,transparent),radial-gradient(1px 1px at 25% 55%,#fff,transparent),radial-gradient(1.5px 1.5px at 90% 70%,#fff,transparent),radial-gradient(1px 1px at 55% 12%,#fff,transparent);opacity:.8}
+.if-pw{position:absolute;left:50%;top:50%;height:88%;transform:translate(-50%,-50%);opacity:.55;filter:drop-shadow(0 0 .35em rgba(255,200,120,.8));animation:ipwp 2.6s ease-in-out infinite}
+@keyframes ipwp{50%{opacity:.8;filter:drop-shadow(0 0 .7em rgba(255,210,140,.95))}}
+.ipms{font-size:.78em;box-shadow:0 1px 1px rgba(0,0,0,.6)}
+.if-life{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-num);font-weight:700;font-size:4.6em;color:#fff8e6;text-shadow:0 0 .25em rgba(255,210,140,.9),0 0 .8em rgba(120,160,255,.6),0 .06em 0 rgba(0,0,0,.5);letter-spacing:.02em}
+.if-type span:first-child{font-size:.78em;font-weight:600;font-family:var(--f-ui)}
+.if-set{color:#9a6b1e;font-size:.9em}
+.if-text{position:relative;flex:.95;padding:.5em .65em;border-radius:2px;background:linear-gradient(180deg,#f3e9d2,#e2d2ad);box-shadow:inset 0 0 0 1px rgba(0,0,0,.3);font-family:"Cormorant Garamond",Georgia,serif;font-size:.86em;line-height:1.22;display:flex;flex-direction:column}
+.if-text p{margin:0;font-style:italic;font-weight:600}
+.if-sig{flex:1;width:100%;min-height:0}
+.if-sig text{font-family:"Great Vibes","Snell Roundhand","Segoe Script",cursive;font-size:76px;fill:transparent;stroke:#3a2208;stroke-width:1.4;stroke-dasharray:900;stroke-dashoffset:900;opacity:0}
+.icard.landed .if-sig text{animation:isig 1.6s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes isig{0%{opacity:1}70%{fill:transparent}to{opacity:1;stroke-dashoffset:0;fill:#3a2208}}
+.if-foot{display:flex;justify-content:space-between;align-items:flex-end;font-size:.5em;color:#f3e6c4;padding:0 .3em;font-family:var(--f-ui)}
+.if-pt{font-family:var(--f-num);font-weight:700;font-size:2.1em;color:#1c140a;background:linear-gradient(180deg,#f6ead0,#d9c49a);padding:.05em .45em;border-radius:.3em;box-shadow:inset 0 0 0 1px rgba(0,0,0,.35),0 2px 4px rgba(0,0,0,.4);margin-top:-.6em}
+.if-holo{position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.0) 38%,rgba(255,240,200,.55) 45%,rgba(160,200,255,.45) 50%,rgba(255,160,220,.35) 55%,transparent 62%);background-size:250% 250%;background-position:120% 0;mix-blend-mode:color-dodge;pointer-events:none}
+.icard.landed .if-holo{animation:iholo 2.2s ease-in-out .2s 2}
+@keyframes iholo{to{background-position:-60% 0}}
+.icard.landed{animation:ifloat 3.2s ease-in-out infinite}
+@keyframes ifloat{50%{translate:0 -1.2%}}
+@media (prefers-reduced-motion:reduce){.ib-swirl,.ib-ring,.if-neb{animation:none}}
+/* Startbildschirm */
+.brand .logo{cursor:pointer}
+.brand .sub{margin:2px 0 0;opacity:.8}
+.brand .by{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px;opacity:.85;font-size:13px}
+.brand .by b{font-family:"Great Vibes","Snell Roundhand",cursive;font-weight:400;font-size:28px;color:var(--brass);line-height:1}
+.brand .fan{font-size:11px;opacity:.5;margin-top:2px}
 </style>
 
 </head><body>
@@ -552,7 +609,7 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
-const VERSION='2.0';
+const VERSION='2.1';
 const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal'};
 const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#0c0b0d',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
 const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#2a292c',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(0,0,0,.75)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
@@ -1038,6 +1095,7 @@ let manaOK=false;
 try{document.fonts&&document.fonts.load('16px Mana').then(f=>{manaOK=f&&f.length>0;if(manaOK)update()}).catch(()=>{})}catch(e){}
 function ctrIcon(k){if(k==='monarch')return`<i class="ci">${CI.monarch}</i>`;if(manaOK&&useSym()&&CI_MS[k])return`<i class="ci ms ${CI_MS[k]}"></i>`;const key=k==='tax1'||k==='tax2'?'tax':k==='custom'?'misc':k;return CI[key]?`<i class="ci">${CI[key]}</i>`:''}
 
+const REM={"bless": ["Falls du zehn oder mehr Permanente kontrollierst, erhältst du für den Rest der Partie den Segen der Stadt.", "Knospen-Dryade"], "day": ["Falls ein Spieler in seinem eigenen Zug keine Zaubersprüche wirkt, wird es im nächsten Zug Nacht.", "Child of the Pack // Savage Packmate"], "speed": ["Falls du kein Tempo hast, beginnt es bei 1. Es erhöht sich einmal in jedem deiner Züge, wenn ein Gegner Lebenspunkte verliert. Das Maximaltempo ist 4.", "Muraganda-Ring"], "hourglass": ["Statt diese Karte aus deiner Hand zu wirken, kannst du {1R} bezahlen und sie mit drei Zeitmarken ins Exil schicken. Entferne zu Beginn deines Versorgungssegments eine Zeitmarke von ihr. Wenn die letzte Zeitmarke entfernt wird, kannst du sie wirken, ohne ihre Manakosten zu bezahlen.", "Mitreißender Refrain"], "a:flying": ["Diese Kreatur kann außer von fliegenden Kreaturen und Kreaturen mit Reichweite nicht geblockt werden.", "Weiden-Wind"], "a:deathtouch": ["Eine beliebige Menge Schadenspunkte, die dies einer Kreatur zufügt, ist ausreichend, um sie zu zerstören.", "Vampir-Nachtschwärmer"], "a:lifelink": ["Schaden, der von dieser Kreatur zugefügt wird, lässt dich entsprechend viele Lebenspunkte dazuerhalten.", "Captain America, Steve Rogers"], "a:haste": ["Diese Kreatur kann angreifen und {T}, sobald sie unter deine Kontrolle kommt.", "Quicksilver, Pietro Maximoff"], "a:fear": ["Diese Kreatur kann nur von Artefaktkreaturen und/oder schwarzen Kreaturen geblockt werden.", "Zerfledderte Legion"], "a:intimidate": ["Diese Kreatur kann außer von Artefaktkreaturen und/oder Kreaturen, mit denen sie eine Farbe gemeinsam hat, nicht geblockt werden.", "Düsteres Urwesen"], "a:infect": ["Diese Kreatur fügt Schaden in Form von -1/-1-Marken für Kreaturen und von Giftmarken für Spieler zu.", "Skithiryx, der Fäulnisdrache"], "a:toxic": ["Spieler, denen von dieser Kreatur Kampfschaden zugefügt wird, erhalten außerdem zwei Giftmarken. Ein Spieler mit zehn oder mehr Giftmarken verliert die Partie.", "Blutwurzel-Apothekerin"], "a:annihilator": ["Immer wenn diese Kreatur angreift, opfert der verteidigende Spieler ein Permanent.", "Übelschlängler"], "a:exalted": ["Immer wenn eine Kreatur, die du kontrollierst, alleine angreift, erhält sie +1/+1 bis zum Ende des Zuges.", "Unedler Hierarch"], "myriad": ["Immer wenn diese Kreatur angreift, kannst du für jeden Gegner außer dem verteidigenden Spieler eine Spielstein-Kopie von ihr erzeugen. Sie kommt getappt und jenen Gegner oder einen Planeswalker, den er kontrolliert, angreifend ins Spiel. Schicke die Spielsteine am Ende des Kampfes ins Exil.", "Goldgier-Triade"], "a:afflict": ["Immer wenn diese Kreatur geblockt wird, verliert der verteidigende Spieler 3 Lebenspunkte.", "Verlorener Monarch von Ifnir"], "a:training": ["Immer wenn diese Kreatur zusammen mit einer stärkeren Kreatur angreift, lege eine +1/+1-Marke auf diese Kreatur.", "Jenny Flint"], "mobilize": ["Immer wenn diese Kreatur angreift, erzeuge einen getappten und angreifenden 1/1 roten Krieger-Kreaturenspielstein. Opfere ihn zu Beginn des nächsten Endsegments.", "Zurgo Sturmspalter"], "dethrone": ["Immer wenn diese Kreatur einen Spieler mit den meisten Lebenspunkten angreift, lege eine +1/+1-Marke auf sie.", "Geißel des Throns"], "a:hexproof": ["Diese Kreatur kann nicht das Ziel von Zaubersprüchen oder Fähigkeiten sein, die deine Gegner kontrollieren.", "Flora Colossus"], "a:shroud": ["Diese Kreatur kann nicht das Ziel von Zaubersprüchen oder Fähigkeiten sein.", "Mauer des Verweigerns"], "a:indestructible": ["Effekte, die „zerstören\", zerstören diese Ausrüstung nicht.", "Energiedolche aus Vibranium"], "a:ward": ["Immer wenn diese Kreatur das Ziel eines Zauberspruchs oder einer Fähigkeit wird, den bzw. die ein Gegner kontrolliert, neutralisiere ihn bzw. sie, es sei denn, jener Spieler bezahlt {2}.", "Zerstörender Gecko"], "a:undying": ["Wenn diese Kreatur stirbt und falls keine +1/+1-Marke auf ihr lag, bringe sie mit einer +1/+1-Marke unter der Kontrolle ihres Besitzers ins Spiel zurück.", "Schinder der Hassgebundenen"], "persist": ["Wenn diese Kreatur stirbt und falls keine -1/-1-Marke auf ihr lag, bringe sie mit einer -1/-1-Marke unter der Kontrolle ihres Besitzers ins Spiel zurück.", "Puppenspieler-Clique"], "a:flash": ["Du kannst diesen Zauberspruch zu jedem Zeitpunkt wirken, zu dem du einen Spontanzauber wirken könntest.", "Lockengabe"], "a:kicker": ["Du kannst zusätzlich {2}{W}{W} bezahlen, sowie du diesen Zauberspruch wirkst.", "Die Adler kommen!"], "a:convoke": ["Deine Kreaturen können dir helfen, diesen Zauberspruch zu wirken. Mit jeder Kreatur, die du tappst, während du diesen Zauberspruch wirkst, bezahlst du für {1} oder ein Mana der Farbe jener Kreatur.", "Winter, einer für alle"], "delve": ["Mit jeder Karte, die du aus deinem Friedhof ins Exil schickst, während du diesen Zauberspruch wirkst, bezahlst du {1} seiner Kosten.", "Lohnende Ausfahrt"], "affinity": ["Dieser Zauberspruch kostet beim Wirken für jeden Elfen, den du kontrollierst, {1} weniger.", "Zänkische Wachen"], "cascade": ["Wenn du diesen Zauberspruch wirkst, schicke Karten oben von deiner Bibliothek ins Exil, bis du eine Nichtland-Karte ins Exil schickst, die weniger kostet. Du kannst sie wirken, ohne ihre Manakosten zu bezahlen. Lege die so ins Exil geschickten Karten in zufälliger Reihenfolge unter die Bibliothek.", "In den Zeit-Vortex"], "storm": ["Wenn du diesen Zauberspruch wirkst, kopiere ihn einmal für jeden Zauberspruch, der in diesem Zug vor ihm gewirkt wurde. Du kannst neue Ziele für die Kopien bestimmen.", "Traubenkartusche"], "flashback": ["Du kannst diese Karte aus deinem Friedhof für ihre Rückblendekosten wirken. Schicke sie danach ins Exil.", "Entfachen des Flammenkerns"], "a:cycling": ["{U}{R}{W}, wirf diese Karte ab: Ziehe eine Karte.", "Gefährliche Landschaft"], "madness": ["Falls du diese Karte abwirfst, wirf sie ins Exil ab. Wenn du dies tust, wirke sie für ihre Wahnsinn-Kosten oder lege sie auf deinen Friedhof.", "Unverbesserliche Halbwüchsige"], "evoke": ["Du kannst diesen Zauberspruch für seine Herbeirufungskosten wirken. Falls du dies tust, wird die Kreatur geopfert, wenn sie ins Spiel kommt.", "Wehmut"], "dash": ["Du kannst diesen Zauberspruch für seine Sturmangriff-Kosten wirken. Falls du dies tust, erhält die Kreatur Eile und kehrt zu Beginn des nächsten Endsegments aus dem Spiel auf die Hand ihres Besitzers zurück.", "Flammenrausch-Reiter"], "a:blitz": ["Falls du diesen Zauberspruch für seine Blitz-Kosten wirkst, erhält er Eile und „Wenn diese Kreatur stirbt, ziehe eine Karte.\" Opfere diese Kreatur zu Beginn des nächsten Endsegments.", "Sabin, monumentaler Mönch"], "a:unearth": ["{7}: Bringe diese Karte aus deinem Friedhof ins Spiel zurück. Sie erhält Eile. Schicke sie zu Beginn des nächsten Endsegments, oder falls sie das Spiel verlassen würde, ins Exil. Spiele Exhumieren wie eine Hexerei.", "Tri-Sentinel, Akt der Rache"], "a:ninjutsu": ["{1}{R}, bringe einen ungeblockten Angreifer, den du kontrollierst, auf die Hand zurück: Bringe diese Karte aus deiner Hand getappt und angreifend ins Spiel.", "Yuffie, Materia-Jägerin"], "a:mutate": ["Falls du diesen Zauberspruch für seine Mutationskosten wirkst, lege ihn auf oder unter eine Nicht-Mensch-Kreatur deiner Wahl, die du besitzt. Sie mutieren zur oben liegenden Kreatur, die zusätzlich alle Fähigkeiten der darunter liegenden hat.", "Immerfeder-Phoenix"], "a:disguise": ["Du kannst diese Karte verdeckt für {3} als eine 2/2 Kreatur mit Abwehr {2} wirken. Decke sie zu einem beliebigen Zeitpunkt für ihre Verkleidungskosten auf.", "Bayek von Siwa"], "a:plot": ["Du kannst {1}{B}{G} bezahlen und diese Karte aus deiner Hand ins Exil schicken. Wirke sie in einem späteren Zug wie eine Hexerei, ohne ihre Manakosten zu bezahlen. Spiele Aushecken wie eine Hexerei.", "Schlammplünderung"], "a:bargain": ["Du kannst ein Artefakt, eine Verzauberung oder einen Spielstein opfern, sowie du diesen Zauberspruch wirkst.", "Buboh-Störenfried"], "a:offspring": ["Du kannst zusätzlich {1} bezahlen, sowie du diesen Zauberspruch wirkst. Falls du dies tust, erzeuge, wenn diese Kreatur ins Spiel kommt, eine 1/1-Spielsteinkopie davon.", "Wohlhabender Bandit"], "a:gift": ["Du kannst einem Gegner ein Geschenk versprechen, sowie du diesen Zauberspruch wirkst. Falls du dies tust, erzeugt er vor dessen anderen Effekten einen Schatz-Spielstein. Er ist ein Artefakt mit „{T}, opfere diesen Spielstein: Erzeuge ein Mana beliebiger Farbe.\"", "Bilbos Wagnis"], "a:casualty": ["Sowie du diesen Zauberspruch wirkst, kannst du eine Kreatur mit Stärke 1 oder mehr opfern. Wenn du dies tust, kopiere diesen Zauberspruch.", "Archivraub"], "harmonize": ["Du kannst diese Karte aus deinem Friedhof für ihre Harmonisieren-Kosten wirken. Du kannst eine Kreatur, die du kontrollierst, tappen, um jene Kosten um so viel generisches Mana zu reduzieren, wie ihre Stärke beträgt. Schicke diesen Zauberspruch dann ins Exil.", "Zenitfest"], "scry": ["Schaue dir die oberste Karte deiner Bibliothek an. Du kannst sie unter deine Bibliothek legen.", "Pfad der Ahnen"], "a:surveil": ["Schaue dir die oberste Karte deiner Bibliothek an. Du kannst sie auf deinen Friedhof legen.", "Prüferin des Potenzials"], "a:proliferate": ["Um Wucherung durchzuführen, bestimme eine beliebige Anzahl an Permanenten und/oder Spielern und gib ihnen dann von jeder Sorte Marke, die dort bereits liegt, eine weitere Marke.", "Expansionsalgorithmus"], "a:goad": ["Bis zu deinem nächsten Zug greift die Kreatur in jedem Kampf an, falls möglich, und greift einen anderen Spieler als dich an, falls möglich.", "Begehrter Pfau"], "a:investigate": ["Erzeuge einen Hinweis-Spielstein. Er ist ein Artefakt mit „{2}, opfere diesen Spielstein: Ziehe eine Karte.\"", "Agent 13, Sharon Carter"], "a:explore": ["Decke die oberste Karte deiner Bibliothek auf. Falls die Karte ein Land ist, nimm sie auf deine Hand. Lege sonst eine +1/+1-Marke auf die Kreatur und lege dann die Karte zurück oder auf deinen Friedhof.", "Pfad der Entdeckung"], "connive": ["Ziehe eine Karte und wirf dann eine Karte ab. Falls du eine Nichtland-Karte abgeworfen hast, lege eine +1/+1-Marke auf die Kreatur.", "Schurkenversteck"], "a:crew": ["Tappe eine beliebige Anzahl an Kreaturen, die du kontrollierst und die zusammen Stärke 2 oder mehr haben: Dieses Fahrzeug wird bis zum Ende des Zuges zu einer Artefaktkreatur.", "Güldenes Großboot"], "a:saddle": ["Tappe eine beliebige Anzahl anderer Kreaturen, die du kontrollierst und die zusammen Stärke 1 oder mehr haben: Dieses Reittier ist bis zum Ende des Zuges gesattelt. Spiele Aufsatteln wie eine Hexerei.", "Lagorin, Seele von Alacria"], "equip": ["{2}: Lege diese Karte an eine Kreatur deiner Wahl an, die du kontrollierst. Spiele Ausrüsten wie eine Hexerei.", "Medicus-Lenkdrache"], "a:amass": ["Lege eine +1/+1-Marke auf eine Armee, die du kontrollierst. Sie ist auch ein Zombie. Falls du keine Armee kontrollierst, erzeuge zuerst einen 0/0 schwarzen Zombie-Armee-Kreaturenspielstein.", "Invasion der Schreckenshorde"], "a:incubate": ["Erzeuge einen Inkubator-Spielstein mit drei +1/+1-Marken und „{2}: Transformiere dieses Artefakt.\" Er transformiert in eine 0/0 Phyrexianer-Artefaktkreatur.", "Injektor-Krokodil"], "a:manifest-dread": ["Schaue dir die obersten zwei Karten deiner Bibliothek an. Lege eine davon auf deinen Friedhof und bringe die andere als eine 2/2 Kreatur verdeckt ins Spiel. Decke sie zu einem beliebigen Zeitpunkt für ihre Manakosten auf, falls es eine Kreaturenkarte ist.", "Wachsendes Grauen"], "treasure": ["Er ist ein Artefakt mit „{T}, opfere diesen Spielstein: Erzeuge ein Mana beliebiger Farbe.\"", "Vraska, schneidender Blick"], "clue": ["Er ist ein Artefakt mit „{2}, opfere diesen Spielstein: Ziehe eine Karte.\"", "Sokkas Schwertkampftraining"], "food": ["Er ist ein Artefakt mit „{2}, {T}, opfere diesen Spielstein: Du erhältst 3 Lebenspunkte dazu.\"", "Heroisches Festmahl"], "blood": ["Er ist ein Artefakt mit „{1}, {T}, wirf eine Karte ab, opfere dieses Artefakt: Ziehe eine Karte.\"", "Voldaren-Gourmet"], "a:role-royal": ["Falls du eine andere daran angelegte Rolle kontrollierst, lege die alte Rolle auf den Friedhof. Die verzauberte Kreatur erhält +1/+1 und hat Abwehr {1}.", "Königliche Behandlung"], "powerstone": ["Er ist ein Artefakt mit „{T}: Erzeuge {C}. Dieses Mana kann nicht ausgegeben werden, um einen Nichtartefakt-Zauberspruch zu wirken.\"", "Wracksucherin"], "map": ["Ein Lageplan-Spielstein ist ein Artefakt mit „{1}, {T}, opfere dieses Artefakt: Eine Kreatur deiner Wahl, die du kontrollierst, erkundet. Aktiviere diese Fähigkeit wie eine Hexerei.\"", "Sturmflotten-Unterhändlerin"], "shard": ["Sie sind Verzauberungen mit „{2}, opfere diese Verzauberung: Hellsicht 1, ziehe dann eine Karte.\"", "Niko Aris"], "mutagen": ["Ein Mutagen-Spielstein ist ein Artefakt mit „{1}, {T}, opfere diesen Spielstein: Lege eine +1/+1-Marke auf eine Kreatur deiner Wahl. Aktiviere diese Fähigkeit wie eine Hexerei.\"", "Der Schleim"], "gold": ["Ein Gold-Spielstein ist ein Artefakt mit „Opfere diesen Spielstein: Erzeuge ein Mana einer beliebigen Farbe.“", "Fluch des Reichtums"]};
 const RCAT={spiel:'Spiel & Marken',kampf:'Kampf',schutz:'Schutz',wirken:'Wirken & Kosten',aktion:'Aktionen',stein:'Spielsteine'};
 const RULES=[
   ['monarch','Monarch','Am Ende deines Zuges ziehst du eine Karte. Fügt dir eine Kreatur Kampfschaden zu, wird ihr Beherrscher Monarch. Es gibt immer nur einen Monarchen.','spiel'],
@@ -1070,14 +1128,14 @@ const RULES=[
   ['a:intimidate','Einschüchtern','Kann nur von Artefaktkreaturen und Kreaturen geblockt werden, die eine Farbe mit ihr teilen.','kampf'],
   ['a:skulk','Schleichen','Kann nicht von Kreaturen mit größerer Stärke geblockt werden.','kampf'],
   ['a:infect','Infizieren','Fügt Kreaturen Schaden als −1/−1-Marken zu und Spielern als Giftmarken statt Lebensverlust.','kampf'],
-  ['a:toxic','Toxisch N','Fügt sie einem Spieler Kampfschaden zu, bekommt er zusätzlich N Giftmarken.','kampf'],
+  ['a:toxic','Toxisch','Steht als „Toxisch 2“ auf der Karte. Fügt sie einem Spieler Kampfschaden zu, bekommt er zusätzlich so viele Giftmarken, wie die Zahl angibt.','kampf'],
   ['wither','Verdorren','Fügt Kreaturen Schaden als −1/−1-Marken zu.','kampf'],
-  ['a:annihilator','Vernichter N','Immer wenn sie angreift, opfert der verteidigende Spieler N bleibende Karten.','kampf'],
+  ['a:annihilator','Vernichter','Steht als „Vernichter 2“ auf der Karte. Immer wenn sie angreift, opfert der verteidigende Spieler so viele bleibende Karten, wie die Zahl angibt.','kampf'],
   ['a:exalted','Edelmut','Greift eine deiner Kreaturen allein an, erhält sie +1/+1 bis Zugende – für jede Edelmut-Fähigkeit, die du hast.','kampf'],
   ['myriad','Myriade','Greift sie an, entsteht für jeden anderen Gegner eine Kopie als Spielstein, die diesen Spieler angreift. Die Kopien gehen am Ende des Kampfes ins Exil.','kampf'],
-  ['a:afflict','Pestilenz N','Wird sie geblockt, verliert der verteidigende Spieler N Leben.','kampf'],
+  ['a:afflict','Pestilenz','Steht als „Pestilenz 3“ auf der Karte. Wird sie geblockt, verliert der verteidigende Spieler so viele Leben, wie die Zahl angibt.','kampf'],
   ['a:training','Training','Greift sie zusammen mit einer Kreatur größerer Stärke an, bekommt sie eine +1/+1-Marke.','kampf'],
-  ['mobilize','Mobilisieren N','Greift sie an, entstehen N getappte, angreifende 1/1 Krieger-Spielsteine. Sie werden am Zugende geopfert.','kampf'],
+  ['mobilize','Mobilisieren','Steht als „Mobilisieren 2“ auf der Karte. Greift sie an, entstehen so viele getappte, angreifende 1/1 Krieger-Spielsteine, wie die Zahl angibt. Sie werden am Zugende geopfert.','kampf'],
   ['dethrone','Entthronen','Greift sie den Spieler mit den meisten Leben an (oder einen, der gleichauf liegt), bekommt sie eine +1/+1-Marke.','kampf'],
   ['a:hexproof','Fluchsicher','Kann nicht das Ziel von Zaubersprüchen und Fähigkeiten deiner Gegner sein. Du selbst darfst sie als Ziel wählen.','schutz'],
   ['a:shroud','Verhüllt','Kann von niemandem als Ziel gewählt werden – auch nicht von dir.','schutz'],
@@ -1109,11 +1167,11 @@ const RULES=[
   ['a:bargain','Feilschen','Beim Wirken zusätzlich ein Artefakt, eine Verzauberung oder einen Spielstein opfern – dafür gibt es einen Bonus.','wirken'],
   ['a:offspring','Nachwuchs','Zahlst du die Zusatzkosten, entsteht beim Ins-Spiel-Kommen eine 1/1-Spielstein-Kopie der Kreatur.','wirken'],
   ['a:gift','Verschenken','Du darfst einem Gegner etwas schenken (z. B. eine Karte oder einen Schatz). Tust du es, wird der Effekt stärker.','wirken'],
-  ['a:casualty','Todesopfer N','Opfere beim Wirken zusätzlich eine Kreatur mit Stärke N oder mehr, um den Zauberspruch zu kopieren.','wirken'],
+  ['a:casualty','Todesopfer','Steht als „Todesopfer 2“ auf der Karte. Opfere beim Wirken zusätzlich eine Kreatur, deren Stärke mindestens so groß ist wie die Zahl, um den Zauberspruch zu kopieren.','wirken'],
   ['warp','Warp','Für die Warp-Kosten aus der Hand wirken. Am Zugende ins Exil – in einem späteren Zug darfst du sie normal aus dem Exil wirken.','wirken'],
   ['harmonize','Harmonisieren','Aus dem Friedhof wirken. Tappe dabei eine Kreatur, um die Kosten um ihre Stärke zu senken. Danach ins Exil.','wirken'],
-  ['scry','Hellsicht N','Schaue die obersten N Karten deiner Bibliothek an. Lege beliebig viele davon unter die Bibliothek, den Rest in beliebiger Reihenfolge zurück.','aktion'],
-  ['a:surveil','Überwachen N','Schaue die obersten N Karten an. Lege beliebig viele in den Friedhof, den Rest in beliebiger Reihenfolge zurück.','aktion'],
+  ['scry','Hellsicht','Steht als „Hellsicht 2“ auf der Karte – die Zahl sagt, wie viele Karten. Schaue dir so viele oberste Karten deiner Bibliothek an, lege beliebig viele davon unter die Bibliothek und den Rest in beliebiger Reihenfolge zurück.','aktion'],
+  ['a:surveil','Überwachen','Steht als „Überwachen 2“ auf der Karte – die Zahl sagt, wie viele Karten. Schaue sie dir oben von der Bibliothek an, lege beliebig viele in den Friedhof und den Rest in beliebiger Reihenfolge zurück.','aktion'],
   ['mill','Millen','Lege die obersten Karten deiner Bibliothek in deinen Friedhof.','aktion'],
   ['a:proliferate','Wucherung','Wähle beliebig viele bleibende Karten und Spieler, die Marken haben. Jeder bekommt eine weitere Marke jeder Art, die er schon hat – auch Gift und Energie.','aktion'],
   ['fight','Kämpfen','Zwei Kreaturen fügen sich gegenseitig Schaden in Höhe ihrer Stärke zu.','aktion'],
@@ -1121,28 +1179,35 @@ const RULES=[
   ['a:investigate','Nachforschungen anstellen','Erzeuge einen Hinweis-Spielstein (siehe Spielsteine).','aktion'],
   ['a:explore','Erkunden','Decke die oberste Karte auf. Ist es ein Land, nimm es auf die Hand. Sonst bekommt die Kreatur eine +1/+1-Marke und du darfst die Karte in den Friedhof legen.','aktion'],
   ['connive','Intrigieren','Ziehe eine Karte, dann wirf eine ab. War sie keine Landkarte, bekommt die Kreatur eine +1/+1-Marke.','aktion'],
-  ['a:crew','Bemannen N','Tappe Kreaturen mit zusammen mindestens Stärke N. Das Fahrzeug ist dann bis Zugende eine Artefaktkreatur.','aktion'],
-  ['a:saddle','Aufsatteln N','Tappe Kreaturen mit zusammen mindestens Stärke N. Das Reittier ist bis Zugende aufgesattelt. Nur zum Zeitpunkt einer Hexerei.','aktion'],
+  ['a:crew','Bemannen','Steht als „Bemannen 3“ auf der Karte. Tappe eigene Kreaturen, deren Stärke zusammen mindestens die Zahl erreicht. Das Fahrzeug ist dann bis Zugende eine Artefaktkreatur.','aktion'],
+  ['a:saddle','Aufsatteln','Steht als „Aufsatteln 2“ auf der Karte. Tappe andere eigene Kreaturen, deren Stärke zusammen mindestens die Zahl erreicht. Das Reittier ist bis Zugende aufgesattelt. Nur zum Zeitpunkt einer Hexerei.','aktion'],
   ['equip','Ausrüsten','Bezahle die Kosten, um die Ausrüstung an eine eigene Kreatur anzulegen. Nur zum Zeitpunkt einer Hexerei.','aktion'],
-  ['a:amass','Aufmarsch N','Lege N +1/+1-Marken auf deine Armee. Hast du keine, erzeuge vorher einen 0/0-Armee-Spielstein.','aktion'],
-  ['a:incubate','Inkubieren N','Erzeuge einen Inkubator mit N +1/+1-Marken. Für {2} wird er eine Phyrexianer-Artefaktkreatur.','aktion'],
+  ['a:amass','Aufmarsch','Steht z. B. als „Zombie-Aufmarsch 2“ auf der Karte. Lege so viele +1/+1-Marken auf deine Armee, wie die Zahl angibt. Hast du keine Armee, erzeuge vorher einen 0/0-Armee-Spielstein.','aktion'],
+  ['a:incubate','Inkubieren','Steht als „Inkubieren 3“ auf der Karte. Erzeuge einen Inkubator-Spielstein mit so vielen +1/+1-Marken, wie die Zahl angibt. Für {2} wird er zu einer Phyrexianer-Artefaktkreatur.','aktion'],
   ['a:manifest-dread','Manifestiere das Grauen','Schaue die obersten zwei Karten an. Eine kommt verdeckt als 2/2 ins Spiel, die andere in den Friedhof.','aktion'],
-  ['a:collect-evidence','Beweissicherung N','Schicke Karten mit zusammen Manawert N oder mehr aus deinem Friedhof ins Exil.','aktion'],
+  ['a:collect-evidence','Beweissicherung','Steht als „Beweissicherung 6“ auf der Karte. Schicke Karten aus deinem Friedhof ins Exil, deren Manawert zusammen mindestens die Zahl erreicht.','aktion'],
   ['a:suspect','Verdächtigen','Eine verdächtige Kreatur hat Bedrohlich und kann nicht blocken, solange sie verdächtig ist.','aktion'],
   ['sac','Opfern','Du legst eine eigene bleibende Karte in den Friedhof. Das ist kein Zerstören – Unzerstörbar hilft nicht.','aktion'],
   ['a:exile','Exil','Die Karte wird aus dem Spiel entfernt. Zählt nicht als „sterben“, also lösen „stirbt“-Effekte nicht aus.','aktion'],
-  ['tap','Tappen {T}','Eine Karte quer drehen, um sie zu benutzen. Getappte Kreaturen können nicht blocken. In deinem Enttappsegment wird alles wieder gerade gedreht.','aktion'],
+  ['tap','Tappen','Das Symbol {T} heißt „tappe diese Karte“: Du drehst sie quer, um sie zu benutzen. Getappte Kreaturen können nicht blocken. In deinem Enttappsegment wird alles wieder gerade gedreht.','aktion'],
   ['treasure','Schatz','Artefakt-Spielstein: {T}, opfern: Erzeuge ein Mana einer beliebigen Farbe.','stein'],
   ['clue','Hinweis','Artefakt-Spielstein: {2}, opfern: Ziehe eine Karte.','stein'],
   ['food','Speise','Artefakt-Spielstein: {2}, {T}, opfern: Du erhältst 3 Lebenspunkte.','stein'],
   ['blood','Blut','Artefakt-Spielstein: {1}, {T}, wirf eine Karte ab, opfern: Ziehe eine Karte.','stein'],
+  ['gold','Gold','Artefakt-Spielstein: Opfern: Erzeuge ein Mana einer beliebigen Farbe. Anders als ein Schatz muss er nicht getappt werden.','stein'],
+  ['powerstone','Kraftstein','Artefakt-Spielstein, kommt meist getappt: {T}: Erzeuge {C}. Das Mana darf nicht für Nichtartefakt-Zaubersprüche ausgegeben werden.','stein'],
+  ['map','Lageplan','Artefakt-Spielstein: {1}, {T}, opfern: Eine deiner Kreaturen erkundet. Nur zum Zeitpunkt einer Hexerei.','stein'],
+  ['junk','Altmetall','Artefakt-Spielstein: {T}, opfern: Schicke die oberste Karte deiner Bibliothek ins Exil, du darfst sie in diesem Zug spielen. Nur zum Zeitpunkt einer Hexerei.','stein'],
+  ['shard','Splitter','Verzauberungs-Spielstein: {2}, opfern: Hellsicht 1, dann ziehe eine Karte.','stein'],
+  ['mutagen','Mutagen','Artefakt-Spielstein: {1}, {T}, opfern: Lege eine +1/+1-Marke auf eine Kreatur deiner Wahl. Nur zum Zeitpunkt einer Hexerei.','stein'],
   ['a:role-royal','Rollen','Aura-Spielsteine, die eine Kreatur verbessern (z. B. Königlich, Monster, Junger Held). Eine Kreatur hat nur eine Rolle von dir – kommt eine neue, wird die alte geopfert.','stein']];
 function ruleIcon(k){if(k.startsWith('a:'))return manaOK&&useSym()?`<i class="ci ms ms-ability-${k.slice(2)}"></i>`:`<i class="ci">${I.book}</i>`;if(!CI_MS[k]&&!CI[k]&&!['cmd','hourglass','saga','tax1'].includes(k))return`<i class="ci">${I.book}</i>`;return k==='cmd'?`<i class="ci">${I.sword||''}</i>`:k==='hourglass'||k==='saga'?`<i class="ci">${I.hourglass}</i>`:ctrIcon(k)}
 function ruleListHTML(){const q=(ui.ruleQ||'').trim().toLowerCase(),cat=ui.rcat||'spiel';
   const list=RULES.map((r,i)=>[r,i]).filter(([r])=>q?(r[1].toLowerCase().includes(q)||r[2].toLowerCase().includes(q)):r[3]===cat);
   const ru=ui.rule!=null?RULES[ui.rule]:null;
-  return`<div class="chips-row rlist">${list.map(([r,i])=>`<button class="ch txt rk" data-act="rule" data-i="${i}" aria-pressed="${ui.rule===i}">${ruleIcon(r[0])}${r[1]}</button>`).join('')||'<span class="hint">Nichts gefunden.</span>'}</div>
-    ${ru?`<div class="rulebox"><h4>${ruleIcon(ru[0])}${ru[1]}</h4>${manaInText(esc(ru[2]))}</div>`:''}`}
+  return`<div class="chips-row rlist">${list.map(([r,i])=>`<button class="ch txt rk" data-act="rule" data-i="${i}" aria-pressed="${ui.rule===i}">${ruleIcon(r[0])}${manaInText(esc(r[1]))}</button>`).join('')||'<span class="hint">Nichts gefunden.</span>'}</div>
+    ${ru?`<div class="rulebox"><h4>${ruleIcon(ru[0])}${manaInText(esc(ru[1]))}</h4><div class="rlab">Kurz erklärt</div>${manaInText(esc(ru[2]))}
+      ${REM[ru[0]]?`<div class="rofc"><div class="rlab">Offizieller Erinnerungstext von Wizards</div><q>${manaInText(esc(REM[ru[0]][0]))}</q><small>Wortlaut wie auf der deutschen Karte „${esc(REM[ru[0]][1])}“ – Zahlen und Kosten sind dort kartenspezifisch.</small></div>`:''}</div>`:''}`}
 function lookResHTML(c){if(!c)return'';if(c.err)return`<p class="hint">${esc(c.err)}</p>`;
   const img=c.imgDe||c.img,nm=c.nameDe||c.name,ty=c.typeDe||c.type,tx=c.textDe||c.text;
   const leg=c.leg?`<div class="legal">${Object.entries(c.leg).map(([k,v])=>`<span class="${v==='legal'?'':'no'}">${k}: ${v==='legal'?'erlaubt':v==='banned'?'verboten':v==='restricted'?'beschränkt':'nicht erlaubt'}</span>`).join('')}</div>`:'';
@@ -1177,6 +1242,115 @@ function turnHooks(prev,nx,newRound){const msgs=[],rem=S.setup.remind!==false;
     if(S.g.dn&&prev!=null)msgs.push(S.g.dn===1?`<b>Tag</b>: Hat ${esc(P_(prev).name)} keinen Zauber gewirkt? Dann wird es Nacht.`:`<b>Nacht</b>: Hat ${esc(P_(prev).name)} 2+ Zauber gewirkt? Dann wird es Tag.`)}
   if(msgs.length){notice(msgs);if(msgs.some(m=>/abgelaufen|endet|kostenlos|opfern/.test(m)))setTimeout(()=>sfx('turn'),250)}}
 
+/* ---------- Startanimation ---------- */
+const INTRO=(()=>{
+  let root=null,cv=null,ctx=null,raf=0,t0=0,done=null,ending=false,W=0,H=0,DPR=1,parts=[],sprites={},orbs=[],pwPts=null,pwLen=0;
+  const COLS=[['W','#fff3c8','#f8e7a8',''],['U','#7cc4ff','#2f7fd6',''],['B','#b9a9c9','#2b2430',''],['R','#ff8a5c','#d8441f',''],['G','#7fe39a','#23934a','']];
+  const ease={o3:t=>1-Math.pow(1-t,3),i3:t=>t*t*t,io:t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2,o5:t=>1-Math.pow(1-t,5),back:t=>{const c=1.4;return 1+(c+1)*Math.pow(t-1,3)+c*Math.pow(t-1,2)}};
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),seg=(t,a,b)=>clamp((t-a)/(b-a),0,1);
+  function sprite(col){if(sprites[col])return sprites[col];const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d');const gr=g.createRadialGradient(64,64,0,64,64,64);
+    gr.addColorStop(0,col);gr.addColorStop(.18,col);gr.addColorStop(.45,col.replace(/^#(..)(..)(..)$/,(m,r,gg,b)=>`rgba(${parseInt(r,16)},${parseInt(gg,16)},${parseInt(b,16)},.35)`));gr.addColorStop(1,'rgba(0,0,0,0)');
+    g.fillStyle=gr;g.fillRect(0,0,128,128);return sprites[col]=c}
+  function glow(x,y,r,col,a){ctx.globalAlpha=a;ctx.drawImage(sprite(col),x-r,y-r,r*2,r*2);ctx.globalAlpha=1}
+  // Planeswalker-Symbol als Linienzug (eigene Zeichnung)
+  function bez(p0,p1,p2,p3,n,out){for(let i=0;i<=n;i++){const t=i/n,u=1-t;out.push([u*u*u*p0[0]+3*u*u*t*p1[0]+3*u*t*t*p2[0]+t*t*t*p3[0],u*u*u*p0[1]+3*u*u*t*p1[1]+3*u*t*t*p2[1]+t*t*t*p3[1]])}}
+  function buildPW(){const P=[];const S=[];
+    // Mittelspitze
+    bez([0,-1.05],[.07,-.45],[.11,.25],[0,1.02],40,P);bez([0,1.02],[-.11,.25],[-.07,-.45],[0,-1.05],40,P);
+    S.push(P.splice(0));
+    [-1,1].forEach(sx=>{const Q=[];bez([sx*.16,-.62],[sx*.62,-.52],[sx*.7,.25],[sx*.2,.9],36,Q);bez([sx*.2,.9],[sx*.42,.25],[sx*.4,-.28],[sx*.16,-.44],30,Q);Q.push([sx*.16,-.62]);S.push(Q)});
+    let L=0;S.forEach(s=>{for(let i=1;i<s.length;i++)L+=Math.hypot(s[i][0]-s[i-1][0],s[i][1]-s[i-1][1])});pwLen=L;return S}
+  function drawPW(prog,cx,cy,sc,alpha,fillA){if(!pwPts)pwPts=buildPW();let left=prog*pwLen;let tip=null;
+    ctx.lineCap='round';ctx.lineJoin='round';
+    pwPts.forEach(s=>{if(left<=0)return;ctx.beginPath();ctx.moveTo(cx+s[0][0]*sc,cy+s[0][1]*sc);
+      for(let i=1;i<s.length;i++){const d=Math.hypot(s[i][0]-s[i-1][0],s[i][1]-s[i-1][1]);if(left<d){const f=left/d;const x=s[i-1][0]+(s[i][0]-s[i-1][0])*f,y=s[i-1][1]+(s[i][1]-s[i-1][1])*f;ctx.lineTo(cx+x*sc,cy+y*sc);tip=[cx+x*sc,cy+y*sc];left=0;break}left-=d;ctx.lineTo(cx+s[i][0]*sc,cy+s[i][1]*sc)}
+      ctx.strokeStyle=`rgba(255,214,140,${.35*alpha})`;ctx.lineWidth=sc*.07;ctx.stroke();ctx.strokeStyle=`rgba(255,246,220,${alpha})`;ctx.lineWidth=Math.max(1.5,sc*.018);ctx.stroke()});
+    if(fillA>0){ctx.save();ctx.globalAlpha=fillA;pwPts.forEach(s=>{ctx.beginPath();s.forEach((p,i)=>i?ctx.lineTo(cx+p[0]*sc,cy+p[1]*sc):ctx.moveTo(cx+p[0]*sc,cy+p[1]*sc));ctx.closePath();
+      const g=ctx.createLinearGradient(cx,cy-sc,cx,cy+sc);g.addColorStop(0,'#fff6dc');g.addColorStop(.6,'#f0c46a');g.addColorStop(1,'#a8742a');ctx.fillStyle=g;ctx.fill()});ctx.restore()}
+    return tip}
+  function spawn(x,y,vx,vy,col,life,size,grav){parts.push({x,y,vx,vy,col,life,max:life,size,grav:grav||0})}
+  function stepParts(dt){for(let i=parts.length-1;i>=0;i--){const p=parts[i];p.life-=dt;if(p.life<=0){parts.splice(i,1);continue}
+      p.vy+=p.grav*dt;p.vx*=.985;p.vy*=.985;p.x+=p.vx*dt;p.y+=p.vy*dt;const a=p.life/p.max;glow(p.x,p.y,p.size*(.6+.4*a),p.col,a*(.55+.45*Math.random()))}}
+  function frame(now){const t=now-t0,dt=Math.min(.05,(now-(frame.last||now))/1000);frame.last=now;
+    const cx=W/2,cy=H*.47,R=Math.min(W,H)*.3,sc=Math.min(W,H)*.17;
+    // Nachleuchten: Hintergrund leicht deckend übermalen
+    ctx.globalCompositeOperation='source-over';ctx.fillStyle='rgba(6,6,14,.26)';ctx.fillRect(0,0,W,H);
+    ctx.globalCompositeOperation='lighter';
+    // Glut von unten
+    if(t<7000&&Math.random()<.45)spawn(Math.random()*W,H*(.55+Math.random()*.5),(Math.random()-.5)*24,-(18+Math.random()*40),Math.random()<.7?'#ff9a4a':'#ffd27a',2.5+Math.random()*3,1.5+Math.random()*3.5,-4);
+    // 1) Symbol zeichnet sich (300–1700)
+    const pwp=ease.io(seg(t,300,1700)),pwFade=1-seg(t,3000,3400);
+    if(t>300&&pwFade>0){const pulse=t>1700?.5+.5*Math.sin((t-1700)/140):0;const tip=drawPW(pwp,cx,cy,sc,pwFade,(seg(t,1500,2100)*.85+pulse*.1)*pwFade);
+      glow(cx,cy,sc*2.2,'#f0c46a',.18*pwp*pwFade+.1*pulse*pwFade);
+      if(tip&&pwp<1){glow(tip[0],tip[1],sc*.35,'#fff1c8',.9);for(let k=0;k<3;k++)spawn(tip[0],tip[1],(Math.random()-.5)*160,(Math.random()-.5)*160,'#ffd98a',.5+Math.random()*.4,3+Math.random()*4,120)}}
+    // 2) Mana-Kugeln fliegen ein (1100–2500), kreisen (2500–3100), stürzen ein (3100–3450)
+    const fin=seg(t,1100,2500),orbit=seg(t,2500,3100),col=seg(t,3100,3450);
+    if(t>1100&&t<3500){orbs.forEach((o,i)=>{const fi=ease.o3(clamp((t-1100-i*110)/1300,0,1));if(fi<=0)return;
+        let ang=o.a0+(1-fi)*2.4+orbit*orbit*3.2+col*col*4,rad=R*(1-fi)*2.6+R*fi;rad*=1-ease.i3(col);rad*=1-.12*orbit;
+        const x=cx+Math.cos(ang)*rad,y=cy+Math.sin(ang)*rad*.92,sz=Math.min(W,H)*.052*(1-.5*col);
+        // Energiestrahl zur Mitte
+        if(orbit>0&&col<1){ctx.strokeStyle=o.c1;ctx.globalAlpha=.25*orbit*(1-col);ctx.lineWidth=sz*.18;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(cx,cy);ctx.stroke();ctx.globalAlpha=1}
+        glow(x,y,sz*3.4,o.c1,.55);glow(x,y,sz*1.6,o.c2==='#2b2430'?'#8e7fa0':o.c1,.8);
+        if(Math.random()<.7)spawn(x,y,(Math.random()-.5)*50,(Math.random()-.5)*50,o.c1,.6,sz*.5,0);
+        // Kugel selbst
+        ctx.globalCompositeOperation='source-over';const g=ctx.createRadialGradient(x-sz*.35,y-sz*.4,sz*.1,x,y,sz);g.addColorStop(0,'#ffffff');g.addColorStop(.25,o.c1);g.addColorStop(1,o.c2);
+        ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,sz,0,Math.PI*2);ctx.fill();
+        if(o.glyph&&manaReady){ctx.fillStyle=o.k==='B'?'#e8e0f0':'rgba(10,10,14,.82)';ctx.font=`${sz*1.25}px Mana`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(o.glyph,x,y+sz*.04)}
+        ctx.globalCompositeOperation='lighter'})}
+    // 3) Blitz + Schockwelle (3450–4300)
+    if(t>3400){const f=seg(t,3400,3850);if(f<1){ctx.globalCompositeOperation='source-over';ctx.fillStyle=`rgba(255,248,230,${Math.pow(1-f,2.2)*.75})`;ctx.fillRect(0,0,W,H);ctx.globalCompositeOperation='lighter'}
+      const sw=seg(t,3420,4400);if(sw<1){ctx.strokeStyle=`rgba(255,226,160,${1-sw})`;ctx.lineWidth=12*(1-sw)+1;ctx.beginPath();ctx.arc(cx,cy,ease.o3(sw)*Math.max(W,H)*.75,0,Math.PI*2);ctx.stroke();
+        ctx.strokeStyle=`rgba(140,200,255,${.6*(1-sw)})`;ctx.lineWidth=5*(1-sw)+1;ctx.beginPath();ctx.arc(cx,cy,ease.o3(sw)*Math.max(W,H)*.6,0,Math.PI*2);ctx.stroke()}
+      if(t<3600)for(let k=0;k<26;k++){const a=Math.random()*Math.PI*2,v=200+Math.random()*700;const c=COLS[k%5][1];spawn(cx,cy,Math.cos(a)*v,Math.sin(a)*v,c,.6+Math.random()*.7,4+Math.random()*7,60)}}
+    // 4) Portal (3350 – Ende)
+    const po=ease.back(seg(t,3350,4200))*(1-ease.i3(seg(t,endAt-50,endAt+500)));
+    if(t>3350&&po>0){const pr=Math.min(W,H)*.46*po,rot=t/900;
+      glow(cx,cy,pr*1.5,'#3a2a6a',.55);glow(cx,cy,pr*.9,'#6a8cff',.25);
+      for(let arm=0;arm<5;arm++){const c=COLS[arm][1];for(let s=0;s<26;s++){const f=s/26,a=rot+arm*Math.PI*2/5+f*4.2,r=pr*(.08+f*.95);
+          glow(cx+Math.cos(a)*r,cy+Math.sin(a)*r*.86,pr*(.05+.13*(1-f)),c,.22*(1-f*.6))}}
+      ctx.globalCompositeOperation='source-over';const g=ctx.createRadialGradient(cx,cy,0,cx,cy,pr*.5);g.addColorStop(0,'rgba(0,0,0,.65)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(cx-pr,cy-pr,pr*2,pr*2);ctx.globalCompositeOperation='lighter';
+      if(Math.random()<.8){const a=Math.random()*Math.PI*2;spawn(cx+Math.cos(a)*pr,cy+Math.sin(a)*pr*.86,-Math.cos(a)*60,-Math.sin(a)*60,COLS[(Math.random()*5)|0][1],1.2,3+Math.random()*4,0)}}
+    stepParts(dt);ctx.globalCompositeOperation='source-over';
+    if(t>endAt+700){finish();return}
+    raf=requestAnimationFrame(frame)}
+  let manaReady=false,endAt=7800,card=null,wrap=null;
+  function cardHTML(){const pips=COLS.map(c=>`<i class="ipip ${c[0]}"></i>`).join('');
+    return`<div class="iwrap" id="iwrap"><div class="icard" id="icard"><div class="iface iback"><div class="ib-oval"><div class="ib-swirl"></div><div class="ib-ring"></div>${COLS.map((c,i)=>`<i class="ib-dot" style="--a:${i*72-90}deg;--c:${c[2]}"></i>`).join('')}</div></div>
+      <div class="iface ifront"><div class="if-frame">
+        <div class="if-title"><span>Commander-Tafel</span><span class="if-cost">${pips}</span></div>
+        <div class="if-art"><div class="if-neb"></div><div class="if-neb n2"></div><div class="if-stars"></div><svg class="if-pw" viewBox="-1.2 -1.2 2.4 2.4"><defs><linearGradient id="ipwg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6dc"/><stop offset=".6" stop-color="#f0c46a"/><stop offset="1" stop-color="#a8742a"/></linearGradient></defs><path d="M0 -1.05C.07 -.45 .11 .25 0 1.02C-.11 .25 -.07 -.45 0 -1.05ZM-0.16 -.62C-0.62 -.52 -0.7 .25 -0.2 .9C-0.42 .25 -0.4 -.28 -0.16 -.44ZM0.16 -.62C0.62 -.52 0.7 .25 0.2 .9C0.42 .25 0.4 -.28 0.16 -.44Z" fill="url(#ipwg)"/></svg><div class="if-life">40</div></div>
+        <div class="if-type"><span>Life Counter für Magic: The Gathering</span><span class="if-set">✦</span></div>
+        <div class="if-text"><p>Zählt Leben, Gift, Commander-Schaden und jede Marke – damit ihr euch aufs Spielen konzentrieren könnt.</p>
+          <svg class="if-sig" viewBox="0 0 300 90" aria-label="Uli"><text x="150" y="66" text-anchor="middle">Uli</text></svg></div>
+        <div class="if-foot"><span>Inoffizielle Fan-App · v${VERSION}</span><span class="if-pt">40/40</span></div>
+      </div><div class="if-holo"></div></div></div></div>`}
+  function play(cb){if(root)return;done=cb||null;ending=false;
+    const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+    root=document.createElement('div');root.id='intro';root.innerHTML=`<canvas></canvas><div class="istage">${cardHTML()}</div><div class="iskip">Tippen zum Überspringen</div>`;document.body.appendChild(root);
+    cv=root.querySelector('canvas');ctx=cv.getContext('2d');card=root.querySelector('#icard');wrap=root.querySelector('#iwrap');
+    const rs=()=>{DPR=Math.min(2,window.devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle='#06060e';ctx.fillRect(0,0,W,H)};rs();window.addEventListener('resize',rs);root._rs=rs;
+    root.addEventListener('pointerdown',()=>finish(true));
+    orbs=COLS.map((c,i)=>({k:c[0],c1:c[1],c2:c[2],glyph:c[3],a0:i*Math.PI*2/5-Math.PI/2}));parts=[];
+    if(reduce){endAt=1600;card.style.transform='rotateY(180deg)';card.classList.add('flat');setTimeout(()=>finish(true),1800);return}
+    const go=()=>{if(manaReady){const pc=root&&root.querySelector('.if-cost');if(pc)pc.innerHTML=COLS.map(c=>`<i class="ms ms-${c[0].toLowerCase()} ms-cost ipms"></i>`).join('')}t0=performance.now();frame.last=0;raf=requestAnimationFrame(frame);
+      // Karte: kommt aus dem Portal, dreht sich 1,5-mal und landet
+      wrap.animate([{opacity:0,filter:'brightness(3) blur(6px)'},{opacity:1,filter:'brightness(1.8) blur(0)',offset:.25},{opacity:1,filter:'brightness(1) blur(0)'}],{duration:1400,delay:3500,easing:'ease-out',fill:'both'}).finished.then(()=>{if(wrap)wrap.style.filter='none'});
+      card.animate([{transform:'translateZ(-2200px) rotateX(18deg) rotateY(0deg) rotateZ(-28deg) scale(.25)'},
+        {transform:'translateZ(-300px) rotateX(8deg) rotateY(380deg) rotateZ(-6deg) scale(.92)',offset:.62},
+        {transform:'translateZ(0) rotateX(0) rotateY(540deg) rotateZ(0) scale(1)'}],
+        {duration:2300,delay:3500,easing:'cubic-bezier(.2,.75,.25,1)',fill:'both'});
+      setTimeout(()=>{if(!root)return;card.classList.add('landed')},5800);
+      setTimeout(()=>{if(!root||ending)return;outro()},endAt)};
+    manaReady=false;const f=document.fonts&&document.fonts.load?document.fonts.load('40px Mana').then(r=>{manaReady=r&&r.length>0}).catch(()=>{}):Promise.resolve();
+    Promise.race([f,new Promise(r=>setTimeout(r,450))]).then(go)}
+  function outro(){if(!root||ending)return;ending=true;const st=root.querySelector('.istage');
+    card.animate([{transform:'translateZ(0) rotateY(540deg) scale(1)'},{transform:'translateZ(-600px) translateY(-30vh) rotateY(540deg) scale(.4)'}],{duration:650,easing:'cubic-bezier(.6,0,.8,.4)',fill:'forwards'});
+    wrap.animate([{opacity:1},{opacity:0}],{duration:650,easing:'ease-in',fill:'forwards'});
+    root.animate([{opacity:1},{opacity:0}],{duration:700,delay:300,fill:'forwards'});setTimeout(cleanup,1000)}
+  function finish(skip){if(!root)return;if(skip&&!ending){ending=true;root.animate([{opacity:1},{opacity:0}],{duration:350,fill:'forwards'});setTimeout(cleanup,360);return}if(!ending)outro()}
+  function cleanup(){cancelAnimationFrame(raf);if(root){window.removeEventListener('resize',root._rs);root.remove()}root=null;parts=[];const cb=done;done=null;if(cb)cb()}
+  return{play,get on(){return!!root}}})();
+
 /* ---------- Setup ---------- */
 const ROTS=[null,0,90,180,270];const rotName=r=>r==null?'automatisch':r===0?'unten':r===90?'links':r===180?'oben':'rechts';
 function renderSetup(){
@@ -1188,7 +1362,7 @@ function renderSetup(){
   let h='';
   if(scr==='home'){
     h=`<div class="home">
-      <div class="brand"><div class="logo">40</div><h1>Commander-Tafel</h1><p>Life Counter für Magic</p></div>
+      <div class="brand"><div class="logo" data-act="intro" title="Intro abspielen">40</div><h1>Commander-Tafel</h1><p class="sub">Life Counter für Magic: The Gathering</p><div class="by"><span>gestaltet von</span><b>Uli</b></div><div class="fan">Inoffizielle Fan-App</div></div>
       ${live?`<button class="bigbtn pri" data-act="resume">Weiterspielen<small>${esc(FORMATS[S.cfg.fmt]?FORMATS[S.cfg.fmt].n:'Commander')} · ${S.players.length} Spieler${S.g.ended?' · beendet':''}</small></button>`:''}
       <button class="bigbtn${live?'':' pri'}" data-act="nav" data-to="fmt">Neues Spiel<small>Format, Spieler und Commander wählen</small></button>
       <div class="homerow"><button class="bigbtn sm" data-act="archive">${I.stats}Archiv</button><button class="bigbtn sm" data-act="nav" data-to="settings">${I.menu}Einstellungen</button></div>
@@ -1236,6 +1410,7 @@ function renderSetup(){
         <label class="tog top"><input type="checkbox" id="cmdlife" ${st.cmdLife?'checked':''}><span>Commander-Schaden auch vom Leben abziehen<small>Nur bei Commander. 5 Commander-Schaden senken das Leben automatisch um 5.</small></span></label>
         <label class="tog"><input type="checkbox" id="artopt" ${st.art?'checked':''}> Commander-Bild im Spielerfeld</label>
         <label class="tog top"><input type="checkbox" id="glowopt" ${st.glow!==false?'checked':''}><span>Farbrahmen nach Commander-Farben<small>Rand und Name leuchten dezent in der Farbidentität, z. B. Rot/Schwarz bei Rakdos. Gilt für alle Designs.</small></span></label>
+        <label class="tog"><input type="checkbox" id="introopt" ${st.intro!==false?'checked':''}> Startanimation beim Öffnen</label>
         <label class="tog top"><input type="checkbox" id="remindopt" ${st.remind!==false?'checked':''}><span>Erinnerungen beim Zugwechsel<small>Monarch zieht, Initiative, Strahlung, Tag/Nacht und ablaufende Effekte. Braucht „Züge mitzählen“.</small></span></label>
         <label class="tog top"><input type="checkbox" id="symopt" ${st.symbols!==false?'checked':''}><span>Originale Manasymbole<small>Werden von Scryfall geladen und brauchen beim ersten Mal Internet. Ohne Verbindung erscheinen einfache Ersatzsymbole.</small></span></label></section>
       <section class="setbox"><h3>Töne</h3>
@@ -1267,6 +1442,7 @@ function readSetupInputs(){const st=S.setup;const cc=document.getElementById('cu
   const ao=document.getElementById('artopt');if(ao)st.art=ao.checked;
   const go=document.getElementById('glowopt');if(go)st.glow=go.checked;
   const ro=document.getElementById('remindopt');if(ro)st.remind=ro.checked;
+  const io=document.getElementById('introopt');if(io)st.intro=io.checked;
   const mo2=document.getElementById('musicopt');if(mo2)st.music=mo2.checked;
   const mv=document.getElementById('musvol');if(mv)st.musVol=+mv.value;
   const so2=document.getElementById('symopt');if(so2)st.symbols=so2.checked;
@@ -1279,6 +1455,7 @@ elSetup.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!
     case'resume':applyLive();ui.back=null;ui.scr='home';S.phase='game';show();save();wake();return;
     case'archive':ui.archConfirm=false;openModal('archive');return;
     case'skin':st.skin=b.dataset.v;applySkin();break;
+    case'intro':INTRO.play();break;
     case'mussrc':S.setup.musSrc=b.dataset.v;save();MUSIC.sync();renderSetup();break;
     case'sndtest':{ac();const k=b.dataset.k;if(k==='end')tone([[523,.16],[659,.16],[784,.16],[1047,.5]],true);else sfx(k,true);return}
     case'fmt':st.fmt=b.dataset.v;{const l=fmtLife(st.fmt,st.n);if(l)st.start=l}if(st.fmt!=='commander'&&st.fmt!=='custom')st.arch=-1;goScr('count');return;
@@ -1717,6 +1894,7 @@ function show(){applySkin();const g=S.phase==='game'&&S.players.length;elSetup.h
   if(g)buildGame();else{if(ro)ro.disconnect();renderSetup();window.scrollTo(0,0)}}
 if('serviceWorker' in navigator&&location.protocol==='https:'&&/github\.io$|pages\.dev$|netlify|vercel/.test(location.hostname)){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 show();
+try{if(S.setup.intro!==false&&!/[?&]nointro/.test(location.search))INTRO.play()}catch(e){}
 window.__tafel={get S(){return S},ui};
 })();
 </script>
