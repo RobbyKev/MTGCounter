@@ -183,19 +183,19 @@ button.map-seat{cursor:pointer;border:0}
 .cmdr{cursor:pointer}
 .cmdr .cost{padding:0 1.6cqmin;border-radius:99px;background:var(--fg);color:var(--bg2);font-weight:700}
 .cardv{flex:1;min-height:0;display:flex;gap:3cqmin;align-items:stretch}
-.cardv .ci{flex:none;height:100%;max-width:46%;display:flex;align-items:flex-start;justify-content:center}
-.cardv .ci img{max-height:100%;max-width:100%;border-radius:4.5%/3.3%;box-shadow:0 6px 24px rgba(0,0,0,.5);display:block}
-.cardv .ct{flex:1;min-width:0;overflow:auto;display:grid;gap:1.6cqmin;align-content:start;touch-action:pan-y;font-size:max(13px,3.8cqmin);line-height:1.4}
-.cardv .ct h4{margin:0;font-family:var(--f-title);font-size:max(15px,5cqmin);letter-spacing:.02em}
+.cardv .cimg{flex:none;height:100%;max-width:50%;display:flex;align-items:flex-start;justify-content:center}
+.cardv .cimg img{max-height:100%;max-width:100%;border-radius:4.5%/3.3%;box-shadow:0 6px 24px rgba(0,0,0,.5);display:block}
+.cardv .ct{flex:1;min-width:0;overflow:auto;display:grid;gap:1.6cqmin;align-content:start;touch-action:pan-y;font-size:clamp(13px,3.2cqmin,18px);line-height:1.4}
+.cardv .ct h4{margin:0;font-family:var(--f-title);font-size:clamp(15px,5cqmin,23px);letter-spacing:.02em}
 .cardv .ct .ty{opacity:.8;font-style:italic}
 .cardv .ct .tx{white-space:pre-wrap;background:rgba(0,0,0,.22);padding:2cqmin;border-radius:10px}
-.cardv .ct .pt{font-family:var(--f-num);font-weight:700;font-size:max(18px,6cqmin)}
+.cardv .ct .pt{font-family:var(--f-num);font-weight:700;font-size:clamp(18px,6cqmin,28px)}
 .cardv .ct .en{opacity:.7;font-size:.92em}
 .mp{display:inline-grid;place-items:center;width:1.35em;height:1.35em;border-radius:50%;font-family:var(--f-num);font-weight:700;font-size:.85em;margin:0 .06em;color:#1a1a1a;background:#cfc7b8;vertical-align:-.15em;font-style:normal}
 .mp.W{background:#f6f0d6}.mp.U{background:#a9d0ef}.mp.B{background:#b9aeb4}.mp.R{background:#f19c80}.mp.G{background:#9bd3ae}.mp.C{background:#d5d0cc}
 .mp.W:empty::after{content:"W"}.mp.U:empty::after{content:"U"}.mp.B:empty::after{content:"B"}.mp.R:empty::after{content:"R"}.mp.G:empty::after{content:"G"}.mp.C:empty::after{content:"C"}
 .mp:empty::after{font-size:.7em;opacity:.55}
-@container (max-width:520px){.cardv{flex-direction:column}.cardv .ci{height:auto;max-height:52%;max-width:100%}.cardv .ci img{max-height:100%}}
+@container (max-width:520px){.cardv{flex-direction:column}.cardv .cimg{height:auto;max-height:52%;max-width:100%}.cardv .cimg img{max-height:100%}}
 .pchips{display:flex;flex-wrap:wrap;justify-content:center;gap:1.4cqmin;pointer-events:auto;max-width:92%}
 .pchip{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:.2cqmin;min-width:max(40px,11cqmin);padding:.9cqmin 1.8cqmin .7cqmin;border-radius:9px;background:rgba(0,0,0,.25);font-size:max(13px,4.2cqmin);font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
 .pchip .pc-t{display:inline-flex;align-items:center;gap:1cqmin}
@@ -203,8 +203,8 @@ button.map-seat{cursor:pointer;border:0}
 .pchip .ci{font-size:1.15em}
 .pchip.gold{background:rgba(201,162,69,.85);color:#1e1606}
 .dzrow{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:1.4cqmin;background:none!important;padding:0!important}
-.dz{display:flex;align-items:center;gap:1.4cqmin;text-align:left;padding:1.4cqmin 1.8cqmin;border-radius:12px;background:rgba(0,0,0,.2);color:inherit;font-weight:600;font-size:max(12px,3.5cqmin);min-height:44px;min-width:0}
-.dz span{min-width:0;overflow:hidden}.dz small{display:block;font-weight:400;opacity:.75;font-size:max(10px,2.7cqmin);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dz{display:flex;align-items:center;gap:1.4cqmin;text-align:left;padding:1.4cqmin 1.8cqmin;border-radius:12px;background:rgba(0,0,0,.2);color:inherit;font-weight:600;font-size:clamp(12px,3.5cqmin,19px);min-height:44px;min-width:0}
+.dz span{min-width:0;overflow:hidden}.dz small{display:block;font-weight:400;opacity:.75;font-size:clamp(10px,2.7cqmin,16px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dz .ci{font-size:1.5em;flex:none}
 .dz.on{background:rgba(201,162,69,.9);color:#1e1606}
 @container (max-width:420px){.dzrow{grid-template-columns:1fr!important}}
@@ -260,17 +260,17 @@ button.map-seat{cursor:pointer;border:0}
 .ov.on{display:flex}
 .ov-h{display:flex;align-items:center;gap:2cqmin}
 .ov-h>div{flex:1;min-width:0}
-.ov-h h3{margin:0;font-family:var(--f-title);font-size:max(15px,5cqmin);letter-spacing:.03em}
-.ov-h p{margin:0;font-size:max(11px,3.2cqmin);opacity:.75}
+.ov-h h3{margin:0;font-family:var(--f-title);font-size:clamp(15px,5cqmin,23px);letter-spacing:.03em}
+.ov-h p{margin:0;font-size:clamp(11px,3.2cqmin,17px);opacity:.75}
 .x{width:max(44px,11cqmin);height:max(44px,11cqmin);border-radius:12px;background:rgba(0,0,0,.28);display:grid;place-items:center;flex:none}
 .x svg{width:55%;height:55%}
 .rows{flex:1;min-height:0;overflow:auto;display:grid;grid-template-columns:1fr;gap:1.6cqmin;align-content:start;touch-action:pan-y;-webkit-overflow-scrolling:touch}
 @container (min-width:520px){.rows{grid-template-columns:1fr 1fr}.rows .wide{grid-column:1/-1}}
 @container (min-width:900px) and (max-height:320px){.rows{grid-template-columns:repeat(3,1fr)}}
 .r{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;align-items:center;gap:1.6cqmin;padding:1.4cqmin 2cqmin;border-radius:12px;background:rgba(0,0,0,.2)}
-.r .lab{display:flex;align-items:center;gap:1.6cqmin;min-width:0;font-weight:600;font-size:max(13px,3.8cqmin)}
+.r .lab{display:flex;align-items:center;gap:1.6cqmin;min-width:0;font-weight:600;font-size:clamp(13px,3.8cqmin,20px)}
 .r .lab span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.r .lab small{display:block;font-weight:400;opacity:.75;font-size:max(11px,3cqmin)}
+.r .lab small{display:block;font-weight:400;opacity:.75;font-size:clamp(11px,3cqmin,17px)}
 .r .lab i,.dot{flex:none;width:max(12px,3.4cqmin);height:max(12px,3.4cqmin);border-radius:50%;background:var(--dot);box-shadow:0 0 0 1px rgba(255,255,255,.5);display:inline-block}
 .sb{width:max(44px,11cqmin);height:max(44px,11cqmin);border-radius:10px;background:rgba(255,255,255,.12);font-family:var(--f-num);font-size:max(22px,7cqmin);font-weight:700;line-height:1;touch-action:manipulation}
 .sb:active,.sb.press{background:rgba(255,255,255,.3)}
@@ -279,7 +279,7 @@ button.map-seat{cursor:pointer;border:0}
 .fxsec{display:grid;gap:1.6cqmin;padding:2cqmin;border-radius:12px;background:rgba(0,0,0,.2);align-content:start}
 .fxsec h4{margin:0;font-size:max(11px,3.2cqmin);text-transform:uppercase;letter-spacing:.1em;opacity:.8}
 .tg{display:flex;flex-wrap:wrap;gap:1.4cqmin}
-.tb{min-height:max(40px,10cqmin);padding:0 2.6cqmin;border-radius:10px;background:rgba(255,255,255,.12);font-weight:600;font-size:max(13px,3.8cqmin);display:inline-flex;align-items:center;gap:1.4cqmin}
+.tb{min-height:max(40px,10cqmin);padding:0 2.6cqmin;border-radius:10px;background:rgba(255,255,255,.12);font-weight:600;font-size:clamp(13px,3.8cqmin,20px);display:inline-flex;align-items:center;gap:1.4cqmin}
 .tb[aria-pressed="true"]{background:var(--fg);color:var(--bg2)}
 .tb.go2{background:var(--fg);color:var(--bg2);width:100%;justify-content:center}
 .amt{display:flex;align-items:center;gap:2cqmin;flex-wrap:wrap}
@@ -347,6 +347,8 @@ button.map-seat{cursor:pointer;border:0}
 .lookres .en{opacity:.65;font-size:.92em;margin-top:6px;white-space:pre-wrap}
 .legal{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.legal span{font-size:12px;padding:3px 8px;border-radius:99px;background:#2b3a2e;color:#a9e7b5}.legal span.no{background:#3a2626;color:#f0a8a8}
 .rulings{margin-top:12px;display:grid;gap:8px}.rulings div{font-size:14px;line-height:1.4;padding:8px 10px;border-left:3px solid var(--brass);background:rgba(255,255,255,.04);border-radius:0 8px 8px 0}.rulings time{display:block;font-size:11px;opacity:.6}
+.rulein{width:100%;height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:#15171c;color:inherit;padding:0 12px;font-size:16px;margin:4px 0 8px}
+.rlist{margin-top:8px}.rk{display:inline-flex;align-items:center;gap:6px}.rk .ci{font-size:1.1em}.rk .ci svg{width:1em;height:1em}
 .rulebox{margin-top:10px;padding:12px 14px;border-radius:12px;background:rgba(201,164,92,.12);border:1px solid rgba(201,164,92,.35);line-height:1.45}
 .rulebox h4{margin:0 0 4px;display:flex;align-items:center;gap:8px;font-size:17px}.rulebox .ci{font-size:1.3em}
 @media (max-width:620px){.lookres{grid-template-columns:1fr}.lookres>img{max-width:260px;margin:0 auto}}
@@ -523,12 +525,12 @@ const COLORS={
   R:{n:'Rot',bg:'#9a3221',bg2:'#5e190f',fg:'#fdece7'},
   G:{n:'Grün',bg:'#326838',bg2:'#1a3b1f',fg:'#eaf6eb'},
   W:{n:'Weiß',bg:'#ddd2b4',bg2:'#b3a581',fg:'#241e12'},
-  B:{n:'Schwarz',bg:'#352c3e',bg2:'#16121a',fg:'#efe8f5'},
+  B:{n:'Schwarz',bg:'#2f2e31',bg2:'#111012',fg:'#f1eff2'},
   M:{n:'Gold',bg:'#a07b22',bg2:'#5f4510',fg:'#fff7e0'},
   C:{n:'Farblos',bg:'#646b74',bg2:'#383d43',fg:'#f3f5f7'},
   P:{n:'Lila',bg:'#62438c',bg2:'#33214f',fg:'#f4edfc'}
 };
-const LINE={U:'#5aa0e6',R:'#ef6a4f',G:'#5fbf6a',W:'#efe4c4',B:'#a58fc0',M:'#e2b44a',C:'#a9b1ba',P:'#a77fe0'};
+const LINE={U:'#5aa0e6',R:'#ef6a4f',G:'#5fbf6a',W:'#efe4c4',B:'#b9b6bd',M:'#e2b44a',C:'#a9b1ba',P:'#a77fe0'};
 const CORDER=['U','R','G','W','B','M','C','P'];
 const CTRS=[
   {k:'poison',n:'Gift',hint:'10 = ausgeschieden'},
@@ -550,10 +552,10 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
-const VERSION='1.9';
+const VERSION='2.0';
 const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal'};
-const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#b48cff',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
-const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#3b2a4d',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(170,120,220,.5)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
+const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#0c0b0d',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
+const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#2a292c',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(0,0,0,.75)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
 function idColors(p){const s=new Set();(p.cdata||[]).forEach(c=>c&&(c.ci||[]).forEach(x=>s.add(x)));const o=['W','U','B','R','G'].filter(x=>s.has(x));if(o.length)return o;if(isCmd()&&p.cdata&&p.cdata[0]&&p.cdata[0].full)return['C'];return null}
 const skin=()=>S.setup.skin||'classic';
 function applySkin(){document.documentElement.dataset.skin=skin();const m=document.querySelector('meta[name=theme-color]');if(m)m.content={light:'#ebe9e4',parchment:'#2a1d12',terminal:'#020604'}[skin()]||'#101215'}
@@ -563,6 +565,7 @@ const FS_OK=!STANDALONE_EARLY()&&!!(document.fullscreenEnabled||document.webkitF
 function STANDALONE_EARLY(){return!!(navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches))}
 const HASTOUCH=('ontouchstart' in window)||navigator.maxTouchPoints>0;
 const I={
+  book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 21V5M8 7h7"/></svg>',
   music:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>',
   search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>',
   hourglass:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 3h12M6 21h12M7 3c0 5 10 6 10 9s-10 4-10 9M17 3c0 5-10 6-10 9s10 4 10 9"/></svg>',
@@ -696,12 +699,37 @@ const MUSIC=(()=>{let master=null,rev=null,timer=null,step=0,nextT=0,playing=fal
       const ai=P.arp[s];if(ai!=null&&!(Math.random()<.12)){const n=ch[ai%3]+12*Math.floor(ai/3);const f=mtof(P.root+n+(P.bells?12:0));
         if(P.bells)bell(a,t,f,2.2,P.leadV);else if(P.pluck)pluck(a,t,f,P.lead,P.leadV);else voice(a,t,f,sd*1.6,P.lead,P.leadV,.01,sd*1.2,P.lead==='square'?1400:2200)}
       step++;nextT+=sd}}
-  function vol(){if(master&&AC)master.gain.setTargetAtTime((S.setup.musVol||40)/100*.55,AC.currentTime,.3)}
+  function vol(){if(master&&AC)master.gain.setTargetAtTime((S.setup.musVol||40)/100*(fileOn?1:.55),AC.currentTime,.3)}
   function start(){const a=ac();if(!a)return;if(!master){master=a.createGain();master.gain.value=0;rev=a.createConvolver();rev.buffer=irBuf(a);const rg=a.createGain();rg.gain.value=.55;master.connect(a.destination);master.connect(rev);rev.connect(rg);rg.connect(a.destination)}
     if(playing)return;playing=true;step=0;nextT=a.currentTime+.15;vol();tick();timer=setInterval(tick,200)}
   function stop(){playing=false;clearInterval(timer);timer=null;if(master&&AC)master.gain.setTargetAtTime(0,AC.currentTime,.25)}
-  function sync(){if(S.setup.music&&document.visibilityState==='visible')start();else stop()}
-  return{start,stop,sync,vol,get on(){return playing}}})();
+  // --- Musikdateien (Ordner music/) mit Überblendung je Farbe ---
+  const FILES={menu:'music/menu.mp3',W:'music/white.mp3',U:'music/blue.mp3',B:'music/black.mp3',R:'music/red.mp3',G:'music/green.mp3'};
+  let avail=null,checking=null,decks=[],cur=null,curKey=null,fileOn=false;
+  function check(){if(avail)return Promise.resolve(avail);if(checking)return checking;
+    if(!/^https?:/.test(location.protocol)&&!/capacitor|localhost/.test(location.href)){avail={};return Promise.resolve(avail)}
+    checking=Promise.all(Object.entries(FILES).map(([k,u])=>fetch(u,{method:'HEAD',cache:'no-store'}).then(r=>[k,r.ok&&!/text\/html/.test(r.headers.get('content-type')||'')]).catch(()=>[k,false])))
+      .then(l=>{avail={};l.forEach(([k,ok])=>{if(ok)avail[k]=FILES[k]});return avail});return checking}
+  function hasFiles(){return avail&&Object.keys(avail).length>0}
+  function wantKey(){if(!avail)return null;let k='menu';
+    if(S.phase==='game'&&S.g&&S.players.length){const p=S.g.active!=null?P(S.g.active):null;const ids=p&&isCmd()?idColors(p):null;
+      if(ids){const c=ids.length===1?ids[0]:ids[p.id%ids.length];if(c!=='C')k=c}}
+    if(!avail[k])k=avail.menu?'menu':(avail.U?'U':Object.keys(avail)[0]);return k}
+  function deck(k){const a=ac();const el=new Audio();el.src=avail[k];el.loop=true;el.preload='auto';el.crossOrigin='anonymous';
+    const src=a.createMediaElementSource(el),g=a.createGain();g.gain.value=0;src.connect(g);g.connect(master);return{el,g,k}}
+  function fadeTo(k){const a=AC;if(!a||!k||k===curKey)return;curKey=k;const old=cur;cur=deck(k);const t=a.currentTime;
+    cur.el.play().catch(()=>{});cur.g.gain.setValueAtTime(0,t);cur.g.gain.linearRampToValueAtTime(1,t+1.5);
+    if(old){old.g.gain.setValueAtTime(old.g.gain.value,t);old.g.gain.linearRampToValueAtTime(0,t+1.5);setTimeout(()=>{try{old.el.pause();old.el.src=''}catch(e){}},1700)}}
+  function startFiles(){fileOn=true;start0();fadeTo(wantKey())}
+  function stopFiles(){fileOn=false;if(cur){const c=cur;cur=null;curKey=null;if(AC){c.g.gain.setTargetAtTime(0,AC.currentTime,.3)}setTimeout(()=>{try{c.el.pause();c.el.src=''}catch(e){}},1200)}}
+  function follow(){if(fileOn)fadeTo(wantKey())}
+  function start0(){const a=ac();if(!a)return;if(!master){master=a.createGain();master.gain.value=0;rev=a.createConvolver();rev.buffer=irBuf(a);const rg=a.createGain();rg.gain.value=.55;master.connect(a.destination);master.connect(rev);rev.connect(rg);rg.connect(a.destination)}vol()}
+  function sync(){const want=S.setup.music&&document.visibilityState==='visible';
+    if(!want){stop();stopFiles();return}
+    check().then(()=>{if(!(S.setup.music&&document.visibilityState==='visible'))return;
+      if(hasFiles()&&S.setup.musSrc!=='synth'){stop();startFiles()}
+      else{stopFiles();start()}})}
+  return{start,stop,sync,vol,follow,check,get on(){return playing||fileOn},get files(){return avail?Object.keys(avail):null}}})();
 document.addEventListener('pointerdown',()=>{if(S.setup&&S.setup.music&&!MUSIC.on)MUSIC.sync()},{passive:true});
 document.addEventListener('visibilitychange',()=>MUSIC.sync());
 function sfx(kind,force){const on=S.cfg?S.cfg.sfx:S.setup.sfx;if(!on&&!force)return;const now=performance.now();if(!force&&now-sfxT<90)return;sfxT=now;const a=ac();if(!a)return;const t=a.currentTime+.01;const sk=skin();
@@ -1010,22 +1038,111 @@ let manaOK=false;
 try{document.fonts&&document.fonts.load('16px Mana').then(f=>{manaOK=f&&f.length>0;if(manaOK)update()}).catch(()=>{})}catch(e){}
 function ctrIcon(k){if(k==='monarch')return`<i class="ci">${CI.monarch}</i>`;if(manaOK&&useSym()&&CI_MS[k])return`<i class="ci ms ${CI_MS[k]}"></i>`;const key=k==='tax1'||k==='tax2'?'tax':k==='custom'?'misc':k;return CI[key]?`<i class="ci">${CI[key]}</i>`:''}
 
+const RCAT={spiel:'Spiel & Marken',kampf:'Kampf',schutz:'Schutz',wirken:'Wirken & Kosten',aktion:'Aktionen',stein:'Spielsteine'};
 const RULES=[
-  ['monarch','Monarch','Am Ende deines Zuges ziehst du eine Karte. Fügt dir eine Kreatur Kampfschaden zu, wird ihr Beherrscher Monarch. Es gibt immer nur einen Monarchen.'],
-  ['initiative','Initiative','Wer die Initiative nimmt, betritt die Unterstadt (Raum 1). Zu Beginn deines Versorgungssegments gehst du einen Raum weiter. Fügt dir eine Kreatur Kampfschaden zu, nimmt ihr Beherrscher die Initiative und betritt selbst die Unterstadt.'],
-  ['bless','Stadtsegen','Aufstieg: Kontrollierst du 10 oder mehr bleibende Karten, erhältst du den Stadtsegen. Er bleibt für den Rest des Spiels, auch wenn die Karten wieder weg sind.'],
-  ['day','Tag & Nacht','Ist es Tag und der Spieler des letzten Zuges hat keinen Zauberspruch gewirkt, wird es Nacht. Ist es Nacht und er hat zwei oder mehr gewirkt, wird es Tag. Karten mit „Tag/Nacht“ drehen sich mit.'],
-  ['speed','Tempo','„Motoren an!“ gibt dir Tempo 1. Einmal pro Zug, wenn ein Gegner in deinem Zug Leben verliert, steigt dein Tempo um 1. Maximal 4 – das ist Höchsttempo und schaltet Boni frei.'],
-  ['ring','Der Ring versucht dich','Wähle eine Kreatur als Ringträger: Sie ist legendär und kann nicht von Kreaturen mit größerer Stärke geblockt werden. Jede weitere Versuchung schaltet die nächste Ring-Fähigkeit frei (bis 4).'],
-  ['poison','Gift','Mit 10 Giftmarken verlierst du das Spiel. Giftmarken kommen von Infizieren, Toxisch und Giftig.'],
-  ['tax1','Commander-Steuer','Für jedes frühere Wirken aus der Kommandozone kostet dein Commander {2} mehr. Stirbt er, darf er zurück in die Kommandozone.'],
-  ['cmd','Commander-Schaden','Hast du 21 oder mehr Kampfschaden vom selben Commander erhalten, verlierst du – egal wie viel Leben du noch hast.'],
-  ['rad','Strahlung','Zu Beginn deiner ersten Hauptphase legst du so viele Karten von deiner Bibliothek in den Friedhof, wie du Strahlungsmarken hast. Für jede Nichtland-Karte verlierst du 1 Leben und entfernst 1 Strahlungsmarke.'],
-  ['energy','Energie','Energiemarken ({E}) bekommst du durch Karten und gibst sie für Fähigkeiten aus. Sie bleiben, bis du sie ausgibst.'],
-  ['hourglass','Aussetzen','Karte mit N Zeitmarken ins Exil legen. Zu Beginn deines Versorgungssegments 1 Zeitmarke entfernen. Ist die letzte weg, wirkst du die Karte ohne Manakosten – Kreaturen haben dann Eile.'],
-  ['saga','Saga','Kommt mit Kapitel I ins Spiel. Nach deinem Ziehsegment kommt eine Kunde-Marke dazu und das nächste Kapitel löst aus. Nach dem letzten Kapitel wird die Saga geopfert.'],
-  ['pw','Planarwürfel','Planeswalk: zur nächsten Ebene wechseln. Chaos: die Chaos-Fähigkeit der aktuellen Ebene löst aus. Der erste Wurf im Zug ist kostenlos, jeder weitere kostet 1 Mana mehr.']];
-function ruleIcon(k){return k==='cmd'?`<i class="ci">${I.sword||''}</i>`:k==='hourglass'||k==='saga'?`<i class="ci">${I.hourglass}</i>`:ctrIcon(k)}
+  ['monarch','Monarch','Am Ende deines Zuges ziehst du eine Karte. Fügt dir eine Kreatur Kampfschaden zu, wird ihr Beherrscher Monarch. Es gibt immer nur einen Monarchen.','spiel'],
+  ['initiative','Initiative','Wer die Initiative nimmt, betritt die Unterstadt (Raum 1). Zu Beginn deines Versorgungssegments gehst du einen Raum weiter. Fügt dir eine Kreatur Kampfschaden zu, nimmt ihr Beherrscher die Initiative und betritt selbst die Unterstadt.','spiel'],
+  ['bless','Stadtsegen','Aufstieg: Kontrollierst du 10 oder mehr bleibende Karten, erhältst du den Stadtsegen. Er bleibt für den Rest des Spiels, auch wenn die Karten wieder weg sind.','spiel'],
+  ['day','Tag & Nacht','Ist es Tag und der Spieler des letzten Zuges hat keinen Zauberspruch gewirkt, wird es Nacht. Ist es Nacht und er hat zwei oder mehr gewirkt, wird es Tag. Karten mit „Tag/Nacht“ drehen sich mit.','spiel'],
+  ['speed','Tempo','„Motoren an!“ gibt dir Tempo 1. Einmal pro Zug, wenn ein Gegner in deinem Zug Leben verliert, steigt dein Tempo um 1. Maximal 4 – das ist Höchsttempo und schaltet Boni frei.','spiel'],
+  ['ring','Der Ring versucht dich','Wähle eine Kreatur als Ringträger: Sie ist legendär und kann nicht von Kreaturen mit größerer Stärke geblockt werden. Jede weitere Versuchung schaltet die nächste Ring-Fähigkeit frei (bis 4).','spiel'],
+  ['poison','Gift','Mit 10 Giftmarken verlierst du das Spiel. Giftmarken kommen von Infizieren, Toxisch und Giftig.','spiel'],
+  ['tax1','Commander-Steuer','Für jedes frühere Wirken aus der Kommandozone kostet dein Commander {2} mehr. Stirbt er, darf er zurück in die Kommandozone.','spiel'],
+  ['cmd','Commander-Schaden','Hast du 21 oder mehr Kampfschaden vom selben Commander erhalten, verlierst du – egal wie viel Leben du noch hast.','spiel'],
+  ['rad','Strahlung','Zu Beginn deiner ersten Hauptphase legst du so viele Karten von deiner Bibliothek in den Friedhof, wie du Strahlungsmarken hast. Für jede Nichtland-Karte verlierst du 1 Leben und entfernst 1 Strahlungsmarke.','spiel'],
+  ['energy','Energie','Energiemarken ({E}) bekommst du durch Karten und gibst sie für Fähigkeiten aus. Sie bleiben, bis du sie ausgibst.','spiel'],
+  ['hourglass','Aussetzen','Karte mit N Zeitmarken ins Exil legen. Zu Beginn deines Versorgungssegments 1 Zeitmarke entfernen. Ist die letzte weg, wirkst du die Karte ohne Manakosten – Kreaturen haben dann Eile.','spiel'],
+  ['saga','Saga','Kommt mit Kapitel I ins Spiel. Nach deinem Ziehsegment kommt eine Kunde-Marke dazu und das nächste Kapitel löst aus. Nach dem letzten Kapitel wird die Saga geopfert.','spiel'],
+  ['pw','Planarwürfel','Planeswalk: zur nächsten Ebene wechseln. Chaos: die Chaos-Fähigkeit der aktuellen Ebene löst aus. Der erste Wurf im Zug ist kostenlos, jeder weitere kostet 1 Mana mehr.','spiel'],
+  ['partner','Partner','Zwei Commander mit Partner dürfen zusammen dein Commander sein. Die Farbidentität ist die von beiden zusammen, Commander-Schaden und Steuer zählen für jeden einzeln.','spiel'],
+  ['a:flying','Fliegend','Kann nur von Kreaturen mit Fliegend oder Reichweite geblockt werden.','kampf'],
+  ['a:reach','Reichweite','Kann Kreaturen mit Fliegend blocken.','kampf'],
+  ['a:menace','Bedrohlich','Kann nur von zwei oder mehr Kreaturen gemeinsam geblockt werden.','kampf'],
+  ['a:trample','Trampelschaden','Wird sie geblockt, geht der Schaden, der über tödlichen Schaden für die Blocker hinausgeht, an den angegriffenen Spieler oder Planeswalker.','kampf'],
+  ['a:first-strike','Erstschlag','Fügt Kampfschaden vor Kreaturen ohne Erstschlag zu. Stirbt der Gegner dabei, schlägt er nicht mehr zurück.','kampf'],
+  ['a:double-strike','Doppelschlag','Fügt Kampfschaden zweimal zu: einmal im Erstschlag-Schritt und einmal im normalen Schadensschritt.','kampf'],
+  ['a:deathtouch','Todesberührung','Schon 1 Schaden dieser Quelle reicht, um eine Kreatur zu zerstören. Mit Trampelschaden gilt 1 Schaden pro Blocker als tödlich.','kampf'],
+  ['a:lifelink','Lebensverknüpfung','Jeder Schaden, den diese Quelle zufügt, bringt dir genauso viele Lebenspunkte.','kampf'],
+  ['a:vigilance','Wachsamkeit','Wird beim Angreifen nicht getappt und kann danach noch blocken.','kampf'],
+  ['a:haste','Eile','Kann sofort angreifen und {T}-Fähigkeiten nutzen, auch in dem Zug, in dem sie ins Spiel kam.','kampf'],
+  ['a:defender','Verteidiger','Kann nicht angreifen.','kampf'],
+  ['a:fear','Furcht','Kann nur von schwarzen Kreaturen und Artefaktkreaturen geblockt werden.','kampf'],
+  ['a:intimidate','Einschüchtern','Kann nur von Artefaktkreaturen und Kreaturen geblockt werden, die eine Farbe mit ihr teilen.','kampf'],
+  ['a:skulk','Schleichen','Kann nicht von Kreaturen mit größerer Stärke geblockt werden.','kampf'],
+  ['a:infect','Infizieren','Fügt Kreaturen Schaden als −1/−1-Marken zu und Spielern als Giftmarken statt Lebensverlust.','kampf'],
+  ['a:toxic','Toxisch N','Fügt sie einem Spieler Kampfschaden zu, bekommt er zusätzlich N Giftmarken.','kampf'],
+  ['wither','Verdorren','Fügt Kreaturen Schaden als −1/−1-Marken zu.','kampf'],
+  ['a:annihilator','Vernichter N','Immer wenn sie angreift, opfert der verteidigende Spieler N bleibende Karten.','kampf'],
+  ['a:exalted','Edelmut','Greift eine deiner Kreaturen allein an, erhält sie +1/+1 bis Zugende – für jede Edelmut-Fähigkeit, die du hast.','kampf'],
+  ['myriad','Myriade','Greift sie an, entsteht für jeden anderen Gegner eine Kopie als Spielstein, die diesen Spieler angreift. Die Kopien gehen am Ende des Kampfes ins Exil.','kampf'],
+  ['a:afflict','Pestilenz N','Wird sie geblockt, verliert der verteidigende Spieler N Leben.','kampf'],
+  ['a:training','Training','Greift sie zusammen mit einer Kreatur größerer Stärke an, bekommt sie eine +1/+1-Marke.','kampf'],
+  ['mobilize','Mobilisieren N','Greift sie an, entstehen N getappte, angreifende 1/1 Krieger-Spielsteine. Sie werden am Zugende geopfert.','kampf'],
+  ['dethrone','Entthronen','Greift sie den Spieler mit den meisten Leben an (oder einen, der gleichauf liegt), bekommt sie eine +1/+1-Marke.','kampf'],
+  ['a:hexproof','Fluchsicher','Kann nicht das Ziel von Zaubersprüchen und Fähigkeiten deiner Gegner sein. Du selbst darfst sie als Ziel wählen.','schutz'],
+  ['a:shroud','Verhüllt','Kann von niemandem als Ziel gewählt werden – auch nicht von dir.','schutz'],
+  ['a:indestructible','Unzerstörbar','Wird durch tödlichen Schaden und „zerstöre“-Effekte nicht zerstört. Opfern, Exil und −X/−X wirken trotzdem.','schutz'],
+  ['a:ward','Abwehr','Wird sie Ziel eines gegnerischen Zauberspruchs oder einer Fähigkeit, wird dieser neutralisiert – außer der Gegner bezahlt die Abwehrkosten.','schutz'],
+  ['a:protection','Schutz vor …','Kann von der genannten Quelle nicht geblockt, verzaubert, ausgerüstet oder als Ziel gewählt werden, und Schaden davon wird verhindert.','schutz'],
+  ['a:undying','Unverwüstlich','Stirbt sie ohne +1/+1-Marke, kommt sie mit einer +1/+1-Marke zurück ins Spiel.','schutz'],
+  ['persist','Beharrlichkeit','Stirbt sie ohne −1/−1-Marke, kommt sie mit einer −1/−1-Marke zurück ins Spiel.','schutz'],
+  ['a:changeling','Wandelwicht','Hat alle Kreaturentypen – überall, auch in Hand und Bibliothek.','schutz'],
+  ['a:flash','Aufblitzen','Darf jederzeit gewirkt werden, wie ein Spontanzauber – auch im Zug der Gegner.','wirken'],
+  ['a:kicker','Bonus','Zusätzliche, freiwillige Kosten beim Wirken. Zahlst du sie, wird der Effekt stärker.','wirken'],
+  ['a:convoke','Einberufen','Jede Kreatur, die du beim Wirken tappst, bezahlt {1} oder ein Mana ihrer Farbe.','wirken'],
+  ['delve','Wühlen','Jede Karte, die du beim Wirken aus deinem Friedhof ins Exil schickst, bezahlt {1}.','wirken'],
+  ['affinity','Affinität zu …','Kostet {1} weniger für jede passende bleibende Karte, die du kontrollierst.','wirken'],
+  ['cascade','Kaskade','Wirkst du ihn, deckst du Karten auf, bis eine Nichtland-Karte mit kleinerem Manawert kommt. Die darfst du kostenlos wirken, der Rest kommt unter die Bibliothek.','wirken'],
+  ['storm','Sturm','Wirkst du ihn, wird er für jeden Zauberspruch kopiert, der vorher in diesem Zug gewirkt wurde. Den Sturm-Zähler findest du unter „Würfel“.','wirken'],
+  ['flashback','Rückblende','Du darfst die Karte für ihre Rückblendekosten aus dem Friedhof wirken. Danach geht sie ins Exil.','wirken'],
+  ['a:cycling','Umwandlung','Bezahle die Umwandlungskosten, wirf die Karte ab und ziehe eine neue.','wirken'],
+  ['madness','Wahnsinn','Wirfst du die Karte ab, darfst du sie sofort für ihre Wahnsinnskosten wirken.','wirken'],
+  ['evoke','Herbeirufen','Günstiger wirken – dafür wird die Kreatur beim Ins-Spiel-Kommen sofort geopfert. Ihre Fähigkeit beim Ins-Spiel-Kommen löst trotzdem aus.','wirken'],
+  ['dash','Sturmangriff','Für die Sturmangriff-Kosten mit Eile wirken. Am Zugende geht sie zurück auf die Hand.','wirken'],
+  ['a:blitz','Blitz','Mit Eile wirken, am Zugende opfern. Stirbt sie, ziehst du eine Karte.','wirken'],
+  ['a:escape','Befreiung','Aus dem Friedhof wirken: Kosten zahlen und zusätzlich andere Karten aus dem Friedhof ins Exil schicken.','wirken'],
+  ['a:unearth','Exhumieren','Für die Kosten aus dem Friedhof mit Eile zurückholen. Am Zugende – oder wenn sie das Spiel verlassen würde – geht sie ins Exil.','wirken'],
+  ['a:ninjutsu','Ninjutsu','Bring einen ungeblockten Angreifer auf die Hand zurück und die Ninja-Karte getappt und angreifend ins Spiel.','wirken'],
+  ['a:mutate','Mutation','Auf eine eigene Nicht-Mensch-Kreatur legen. Beide werden ein Wesen mit allen Fähigkeiten, die oberste Karte bestimmt Name und Werte.','wirken'],
+  ['a:disguise','Morph / Verkleidung','Verdeckt für {3} als 2/2 ohne Namen wirken. Jederzeit für die Kosten umdrehen. Verkleidung hat verdeckt zusätzlich Abwehr {2}.','wirken'],
+  ['a:plot','Aushecken','Für die Kosten aus der Hand ins Exil legen. In einem späteren eigenen Zug kostenlos wirken (zum Zeitpunkt einer Hexerei).','wirken'],
+  ['a:bargain','Feilschen','Beim Wirken zusätzlich ein Artefakt, eine Verzauberung oder einen Spielstein opfern – dafür gibt es einen Bonus.','wirken'],
+  ['a:offspring','Nachwuchs','Zahlst du die Zusatzkosten, entsteht beim Ins-Spiel-Kommen eine 1/1-Spielstein-Kopie der Kreatur.','wirken'],
+  ['a:gift','Verschenken','Du darfst einem Gegner etwas schenken (z. B. eine Karte oder einen Schatz). Tust du es, wird der Effekt stärker.','wirken'],
+  ['a:casualty','Todesopfer N','Opfere beim Wirken zusätzlich eine Kreatur mit Stärke N oder mehr, um den Zauberspruch zu kopieren.','wirken'],
+  ['warp','Warp','Für die Warp-Kosten aus der Hand wirken. Am Zugende ins Exil – in einem späteren Zug darfst du sie normal aus dem Exil wirken.','wirken'],
+  ['harmonize','Harmonisieren','Aus dem Friedhof wirken. Tappe dabei eine Kreatur, um die Kosten um ihre Stärke zu senken. Danach ins Exil.','wirken'],
+  ['scry','Hellsicht N','Schaue die obersten N Karten deiner Bibliothek an. Lege beliebig viele davon unter die Bibliothek, den Rest in beliebiger Reihenfolge zurück.','aktion'],
+  ['a:surveil','Überwachen N','Schaue die obersten N Karten an. Lege beliebig viele in den Friedhof, den Rest in beliebiger Reihenfolge zurück.','aktion'],
+  ['mill','Millen','Lege die obersten Karten deiner Bibliothek in deinen Friedhof.','aktion'],
+  ['a:proliferate','Wucherung','Wähle beliebig viele bleibende Karten und Spieler, die Marken haben. Jeder bekommt eine weitere Marke jeder Art, die er schon hat – auch Gift und Energie.','aktion'],
+  ['fight','Kämpfen','Zwei Kreaturen fügen sich gegenseitig Schaden in Höhe ihrer Stärke zu.','aktion'],
+  ['a:goad','Anstacheln','Die Kreatur muss bis zu deinem nächsten Zug in jedem Kampf angreifen, und zwar wenn möglich einen anderen Spieler als dich.','aktion'],
+  ['a:investigate','Nachforschungen anstellen','Erzeuge einen Hinweis-Spielstein (siehe Spielsteine).','aktion'],
+  ['a:explore','Erkunden','Decke die oberste Karte auf. Ist es ein Land, nimm es auf die Hand. Sonst bekommt die Kreatur eine +1/+1-Marke und du darfst die Karte in den Friedhof legen.','aktion'],
+  ['connive','Intrigieren','Ziehe eine Karte, dann wirf eine ab. War sie keine Landkarte, bekommt die Kreatur eine +1/+1-Marke.','aktion'],
+  ['a:crew','Bemannen N','Tappe Kreaturen mit zusammen mindestens Stärke N. Das Fahrzeug ist dann bis Zugende eine Artefaktkreatur.','aktion'],
+  ['a:saddle','Aufsatteln N','Tappe Kreaturen mit zusammen mindestens Stärke N. Das Reittier ist bis Zugende aufgesattelt. Nur zum Zeitpunkt einer Hexerei.','aktion'],
+  ['equip','Ausrüsten','Bezahle die Kosten, um die Ausrüstung an eine eigene Kreatur anzulegen. Nur zum Zeitpunkt einer Hexerei.','aktion'],
+  ['a:amass','Aufmarsch N','Lege N +1/+1-Marken auf deine Armee. Hast du keine, erzeuge vorher einen 0/0-Armee-Spielstein.','aktion'],
+  ['a:incubate','Inkubieren N','Erzeuge einen Inkubator mit N +1/+1-Marken. Für {2} wird er eine Phyrexianer-Artefaktkreatur.','aktion'],
+  ['a:manifest-dread','Manifestiere das Grauen','Schaue die obersten zwei Karten an. Eine kommt verdeckt als 2/2 ins Spiel, die andere in den Friedhof.','aktion'],
+  ['a:collect-evidence','Beweissicherung N','Schicke Karten mit zusammen Manawert N oder mehr aus deinem Friedhof ins Exil.','aktion'],
+  ['a:suspect','Verdächtigen','Eine verdächtige Kreatur hat Bedrohlich und kann nicht blocken, solange sie verdächtig ist.','aktion'],
+  ['sac','Opfern','Du legst eine eigene bleibende Karte in den Friedhof. Das ist kein Zerstören – Unzerstörbar hilft nicht.','aktion'],
+  ['a:exile','Exil','Die Karte wird aus dem Spiel entfernt. Zählt nicht als „sterben“, also lösen „stirbt“-Effekte nicht aus.','aktion'],
+  ['tap','Tappen {T}','Eine Karte quer drehen, um sie zu benutzen. Getappte Kreaturen können nicht blocken. In deinem Enttappsegment wird alles wieder gerade gedreht.','aktion'],
+  ['treasure','Schatz','Artefakt-Spielstein: {T}, opfern: Erzeuge ein Mana einer beliebigen Farbe.','stein'],
+  ['clue','Hinweis','Artefakt-Spielstein: {2}, opfern: Ziehe eine Karte.','stein'],
+  ['food','Speise','Artefakt-Spielstein: {2}, {T}, opfern: Du erhältst 3 Lebenspunkte.','stein'],
+  ['blood','Blut','Artefakt-Spielstein: {1}, {T}, wirf eine Karte ab, opfern: Ziehe eine Karte.','stein'],
+  ['a:role-royal','Rollen','Aura-Spielsteine, die eine Kreatur verbessern (z. B. Königlich, Monster, Junger Held). Eine Kreatur hat nur eine Rolle von dir – kommt eine neue, wird die alte geopfert.','stein']];
+function ruleIcon(k){if(k.startsWith('a:'))return manaOK&&useSym()?`<i class="ci ms ms-ability-${k.slice(2)}"></i>`:`<i class="ci">${I.book}</i>`;if(!CI_MS[k]&&!CI[k]&&!['cmd','hourglass','saga','tax1'].includes(k))return`<i class="ci">${I.book}</i>`;return k==='cmd'?`<i class="ci">${I.sword||''}</i>`:k==='hourglass'||k==='saga'?`<i class="ci">${I.hourglass}</i>`:ctrIcon(k)}
+function ruleListHTML(){const q=(ui.ruleQ||'').trim().toLowerCase(),cat=ui.rcat||'spiel';
+  const list=RULES.map((r,i)=>[r,i]).filter(([r])=>q?(r[1].toLowerCase().includes(q)||r[2].toLowerCase().includes(q)):r[3]===cat);
+  const ru=ui.rule!=null?RULES[ui.rule]:null;
+  return`<div class="chips-row rlist">${list.map(([r,i])=>`<button class="ch txt rk" data-act="rule" data-i="${i}" aria-pressed="${ui.rule===i}">${ruleIcon(r[0])}${r[1]}</button>`).join('')||'<span class="hint">Nichts gefunden.</span>'}</div>
+    ${ru?`<div class="rulebox"><h4>${ruleIcon(ru[0])}${ru[1]}</h4>${manaInText(esc(ru[2]))}</div>`:''}`}
 function lookResHTML(c){if(!c)return'';if(c.err)return`<p class="hint">${esc(c.err)}</p>`;
   const img=c.imgDe||c.img,nm=c.nameDe||c.name,ty=c.typeDe||c.type,tx=c.textDe||c.text;
   const leg=c.leg?`<div class="legal">${Object.entries(c.leg).map(([k,v])=>`<span class="${v==='legal'?'':'no'}">${k}: ${v==='legal'?'erlaubt':v==='banned'?'verboten':v==='restricted'?'beschränkt':'nicht erlaubt'}</span>`).join('')}</div>`:'';
@@ -1127,6 +1244,9 @@ function renderSetup(){
         <p class="hint">Jedes Design hat eigene Töne. Probehören (${SKINS[skin()]}):</p>
         <label class="tog top"><input type="checkbox" id="musicopt" ${st.music?'checked':''}><span>Hintergrundmusik<small>Wird live im Gerät erzeugt, passend zum Design. Ohne Internet, ohne Lizenzfragen.</small></span></label>
         <label class="tog volrow">Lautstärke <input type="range" id="musvol" min="5" max="100" step="5" value="${st.musVol||40}"></label>
+        ${(()=>{const fl=MUSIC.files;if(fl==null){MUSIC.check().then(()=>{if(ui.scr==='settings')renderSetup()});return''}
+          return fl.length?`<div class="chips-row"><button class="ch txt" data-act="mussrc" data-v="files" aria-pressed="${st.musSrc!=='synth'}">Musikdateien (${fl.length})</button><button class="ch txt" data-act="mussrc" data-v="synth" aria-pressed="${st.musSrc==='synth'}">Erzeugte Musik</button></div><p class="hint">Die Musik wechselt mit dem Spieler am Zug passend zur Farbe seines Commanders.</p>`
+          :`<p class="hint">Eigene Musik: Lege im Ordner <b>music/</b> neben der index.html die Dateien menu.mp3, white.mp3, blue.mp3, black.mp3, red.mp3 und green.mp3 ab. Dann wechselt die Musik mit dem Spieler am Zug passend zur Commander-Farbe – mit Überblendung.</p>`})()}
         <div class="chips-row">${[['dmg','Schaden'],['big','10 Schaden'],['heal','Heilung'],['cmd','Commander'],['poison','Gift'],['turn','Zug'],['end','Spielende']].map(([k,l])=>`<button class="ch txt" data-act="sndtest" data-k="${k}">${l}</button>`).join('')}</div></section>
       </div>
       <p class="hint ver">Version ${VERSION}</p>`}
@@ -1159,6 +1279,7 @@ elSetup.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!
     case'resume':applyLive();ui.back=null;ui.scr='home';S.phase='game';show();save();wake();return;
     case'archive':ui.archConfirm=false;openModal('archive');return;
     case'skin':st.skin=b.dataset.v;applySkin();break;
+    case'mussrc':S.setup.musSrc=b.dataset.v;save();MUSIC.sync();renderSetup();break;
     case'sndtest':{ac();const k=b.dataset.k;if(k==='end')tone([[523,.16],[659,.16],[784,.16],[1047,.5]],true);else sfx(k,true);return}
     case'fmt':st.fmt=b.dataset.v;{const l=fmtLife(st.fmt,st.n);if(l)st.start=l}if(st.fmt!=='commander'&&st.fmt!=='custom')st.arch=-1;goScr('count');return;
     case'n':st.n=+b.dataset.v;{const l=fmtLife(st.fmt,st.n);if(l&&st.fmt==='brawl')st.start=l}if(st.table==='upright'){if(st.arch>=st.n)st.arch=-1;break}if(st.table==='head2'&&st.n<4)st.table=st.n>=3?'head1':'long';if(st.table==='head1'&&st.n<3)st.table='long';if(st.arch>=st.n)st.arch=-1;break;
@@ -1256,7 +1377,7 @@ function ovHTML(p,type){
     const hasDe=c&&(c.textDe||c.imgDe);const en=ui.cardEn[p.id]||!hasDe;
     const img=c?(en?c.img:(c.imgDe||c.img)):null;
     const body=!c||c.offline?`<div class="ct"><p>Zu „${esc(n)}“ sind keine Kartendaten da. Mit Internet wird die Karte beim nächsten Öffnen geladen.</p></div>`:!c.full?`<div class="ct"><p>Karte wird geladen …</p></div>`:
-      `${img?`<div class="ci"><img src="${img}" alt="${esc(n)}"></div>`:''}<div class="ct">
+      `${img?`<div class="cimg"><img src="${img}" alt="${esc(n)}"></div>`:''}<div class="ct">
         <h4>${esc(en?c.name:(c.nameDe||c.name))} ${manaHTML(c.cost)}</h4>
         <div class="ty">${esc(en?c.type:(c.typeDe||c.type))}</div>
         ${(en?c.text:(c.textDe||c.text))?`<div class="tx">${manaInText(esc(en?c.text:(c.textDe||c.text)))}</div>`:''}
@@ -1343,7 +1464,7 @@ function barHTML(){const g=S.g;
   <button class="bb" data-act="hist" aria-label="Verlauf">${I.hist}<span class="t">Verlauf</span></button>
   ${FS_OK?`<button class="bb" data-act="fs" aria-label="Vollbild">${I.full}</button>`:''}`}
 
-function update(){if(S.phase!=='game'||!S.players.length)return;
+function update(){try{MUSIC.follow()}catch(e){}if(S.phase!=='game'||!S.players.length)return;
   const bar=$('#bar');if(bar){const sl=bar.scrollLeft;bar.innerHTML=barHTML();bar.scrollLeft=sl;tickClock()}
   S.players.forEach(p=>{const el=elGame.querySelector(`.panel[data-pid="${p.id}"]`);if(!el)return;
     const dr=deadReason(p);
@@ -1535,8 +1656,10 @@ function renderModal(){const t=ui.modal;if(!t)return closeModal();const X=`<butt
     <div class="grp"><div class="lookbar"><input type="search" id="lookin" list="dl-lookin" placeholder="Kartenname – deutsch oder englisch" autocomplete="off" enterkeyhint="search"><datalist id="dl-lookin"></datalist><button class="tb" data-act="lookgo">${I.search} Suchen</button></div>
       ${rr.length?`<div class="chips-row" style="margin-top:8px">${rr.map(n=>`<button class="ch txt" data-act="lookpick" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div>`:''}</div>
     <div id="lookres">${lookResHTML(ui.look)}</div>
-    <div class="grp"><h4>Regeln kurz erklärt</h4><div class="chips-row">${RULES.map((r,i)=>`<button class="ch txt" data-act="rule" data-i="${i}" aria-pressed="${ui.rule===i}">${r[1]}</button>`).join('')}</div>
-      ${ru?`<div class="rulebox"><h4>${ruleIcon(ru[0])}${ru[1]}</h4>${manaInText(esc(ru[2]))}</div>`:''}</div>`}
+    <div class="grp"><h4>Regeln kurz erklärt <small style="opacity:.6;font-weight:400;text-transform:none;letter-spacing:0">${RULES.length} Begriffe</small></h4>
+      <input type="search" id="rulein" class="rulein" placeholder="Begriff suchen, z. B. Trampel, Fluch, Schatz" autocomplete="off" value="${esc(ui.ruleQ||'')}">
+      <div class="chips-row rcats">${Object.entries(RCAT).map(([k,v])=>`<button class="ch txt" data-act="rcat" data-v="${k}" aria-pressed="${!ui.ruleQ&&(ui.rcat||'spiel')===k}">${v}</button>`).join('')}</div>
+      <div id="rulelist">${ruleListHTML()}</div></div>`}
   else if(t==='hist'){body=`<div class="card-h"><h2>Verlauf</h2>${X}</div>
     <div class="hist">${S.hist.length?S.hist.slice().reverse().map(histLine).join(''):'<p class="hint">Noch keine Einträge.</p>'}</div>`}
   else if(t==='stats'){body=`<div class="card-h"><h2>Übersicht</h2>${X}</div>${statsHTML()}`}
@@ -1568,14 +1691,15 @@ elModal.addEventListener('click',e=>{if(e.target===elModal)return closeModal();c
     case'planar':rollPlanar();break;
     case'lookgo':lookup(document.getElementById('lookin').value);break;
     case'lookpick':lookup(b.dataset.n);break;
-    case'rule':ui.rule=ui.rule===+b.dataset.i?null:+b.dataset.i;renderModal();break;
+    case'rule':ui.rule=ui.rule===+b.dataset.i?null:+b.dataset.i;{const rl=document.getElementById('rulelist');if(rl)rl.innerHTML=ruleListHTML()}break;
+    case'rcat':ui.rcat=b.dataset.v;ui.ruleQ='';ui.rule=null;{const ri=document.getElementById('rulein');if(ri)ri.value=''}elModal.querySelectorAll('.rcats .ch').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));{const rl=document.getElementById('rulelist');if(rl)rl.innerHTML=ruleListHTML()}break;
     case'music':S.setup.music=!S.setup.music;MUSIC.sync();save();renderModal();toast(S.setup.music?'Musik an':'Musik aus');break;
     case'monarch':case'initiative':closeModal();ui.assign=b.dataset.act;update();break;
     case'dn':pushUndo();S.g.dn=(S.g.dn+1)%3;if(S.g.dn)ev(S.g.dn===1?'Es wird Tag':'Es wird Nacht');update();save();renderModal();break;
     case'storm':S.g.storm=Math.max(0,S.g.storm+ +b.dataset.d);renderModal();update();save();break;
   }});
 elModal.addEventListener('change',e=>{if(e.target.id==='m-sfx'){S.cfg.sfx=S.setup.sfx=e.target.checked;if(e.target.checked){ac();sfx('heal')}save()}if(e.target.id==='m-turns'){S.cfg.turns=S.setup.turns=e.target.checked;update();save()}if(e.target.id==='m-clock'){S.cfg.clock=S.setup.clock=e.target.checked;update();save()}if(e.target.id==='m-art'){S.cfg.art=S.setup.art=e.target.checked;update();save()}if(e.target.id==='m-cmdlife'){S.cfg.cmdLife=S.setup.cmdLife=e.target.checked;save()}if(e.target.id==='m-sound'){S.cfg.sound=S.setup.sound=e.target.checked;if(e.target.checked)ac();save()}});
-elModal.addEventListener('input',e=>{const t=e.target;if(t.id!=='lookin')return;const dl=document.getElementById('dl-lookin');if(dl&&[...dl.options].some(o=>o.value===t.value)){lookup(t.value);t.blur();return}onCmdInput(t)});
+elModal.addEventListener('input',e=>{const t=e.target;if(t.id==='rulein'){ui.ruleQ=t.value;ui.rule=null;const rl=document.getElementById('rulelist');if(rl)rl.innerHTML=ruleListHTML();elModal.querySelectorAll('.rcats .ch').forEach(x=>x.setAttribute('aria-pressed',String(!ui.ruleQ&&x.dataset.v===(ui.rcat||'spiel'))));return}if(t.id!=='lookin')return;const dl=document.getElementById('dl-lookin');if(dl&&[...dl.options].some(o=>o.value===t.value)){lookup(t.value);t.blur();return}onCmdInput(t)});
 elModal.addEventListener('keydown',e=>{if(e.target.id==='lookin'&&e.key==='Enter'){e.preventDefault();lookup(e.target.value);e.target.blur()}});
 document.addEventListener('keydown',e=>{
   if(S.phase==='game'&&!ui.modal&&!(document.activeElement&&/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))&&!e.metaKey&&!e.ctrlKey&&!e.altKey){
