@@ -1,11 +1,13 @@
 // Commander-Tafel – Offline-Cache
-const CACHE='tafel-v18';
+const CACHE='tafel-v19';
 const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{
   const req=e.request;if(req.method!=='GET')return;
   const url=new URL(req.url);
+  // Musikdateien direkt streamen (Teil-Anfragen nicht cachen)
+  if(url.origin===location.origin&&url.pathname.includes('/music/'))return;
   // Scryfall-Suche immer live (nicht cachen)
   if(url.hostname==='api.scryfall.com')return;
   // Seite selbst: zuerst Netz (für Updates), sonst Cache
