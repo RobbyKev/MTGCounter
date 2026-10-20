@@ -353,6 +353,30 @@ button.map-seat{cursor:pointer;border:0}
 .prices{margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(95,191,106,.08);border:1px solid rgba(95,191,106,.3)}.prices>small{display:block;opacity:.55;font-size:11px;margin-top:6px}
 .pr-row{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline}.pr{font-family:var(--f-num);font-size:24px;font-weight:700}.pr small{display:block;font-family:var(--f-ui);font-size:11px;font-weight:500;opacity:.6}.pr.foil{background:linear-gradient(90deg,#ffd27a,#9be7ff,#e5a7ff);-webkit-background-clip:text;background-clip:text;color:transparent}
 .pr-link{margin-left:auto;font-size:13px;color:#9fe0a8;text-decoration:none;border:1px solid rgba(159,224,168,.4);padding:5px 10px;border-radius:8px}.pr-ch{margin-top:6px;font-size:14px}.pr-ch small{opacity:.6}
+
+.tv-join{background:rgba(201,164,92,.18);border:1px solid rgba(201,164,92,.5);border-radius:.5em;padding:.15em .6em;color:#f3e5ab}.tv-join b{letter-spacing:.15em;font-family:var(--f-num)}
+.tv-pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;width:min(92vw,640px)}.tv-pick button{background:radial-gradient(120% 120% at 50% 40%,var(--bg),var(--bg2));padding:18px 10px;border-radius:14px;display:grid;gap:4px;font-size:18px}.tv-pick button small{font-size:12px;opacity:.75}.tv-pick button.taken{opacity:.55}
+.tv-wait>button[data-r="view"]{display:inline-flex;gap:8px;align-items:center;background:rgba(201,164,92,.2)!important}.tv-wait>button svg{width:1.2em;height:1.2em}
+.tv-dice{position:absolute;inset:0;z-index:20;display:grid;place-items:center;background:rgba(0,0,0,.55);animation:tvdi .3s ease-out}.tv-dice.out{opacity:0;transition:opacity .5s}
+@keyframes tvdi{from{opacity:0}}.tvd-box{width:min(70vw,900px);text-align:center}.tvd-box canvas{width:100%;height:42vh;display:block;border-radius:2vmin;background:radial-gradient(120% 100% at 50% 40%,#1f5a3a,#0b2618)}
+.tvd-who{font-family:var(--f-title);font-size:4.5vmin;color:var(--brass);margin-bottom:1vmin}.tvd-res{font-family:var(--f-num);font-size:12vmin;font-weight:700;line-height:1.1;min-height:1.1em}.tvd-box small{font-size:2.4vmin;opacity:.7}
+#tv.ctrl{overflow:auto;-webkit-overflow-scrolling:touch}
+.c-main{position:relative;flex:none;height:min(52vh,460px);margin:10px;border-radius:18px;overflow:hidden;background:radial-gradient(120% 120% at 50% 40%,var(--bg),var(--bg2));display:grid;place-items:center;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.c-head{position:absolute;top:12px;left:0;right:0;text-align:center;z-index:2;pointer-events:none}.c-head b{display:block;font-family:var(--f-title);font-size:26px}.c-head small{opacity:.85}.c-head .tv-turn{margin-top:6px}
+.c-life{position:relative;z-index:1;font-family:var(--f-num);font-weight:700;font-size:min(30vh,170px);line-height:1;pointer-events:none;font-variant-numeric:tabular-nums}
+.c-zone{position:absolute;top:0;bottom:0;width:50%;z-index:3;display:flex;align-items:center;padding:0 18px;font-size:44px;font-weight:300;opacity:.45;cursor:pointer}.c-zone.l{left:0}.c-zone.r{right:0;justify-content:flex-end}.c-zone:active{background:rgba(255,255,255,.06);opacity:.8}
+.c-hint{position:absolute;bottom:10px;font-size:12px;opacity:.55;z-index:2;pointer-events:none}
+.c-main.dead .c-life{opacity:.3}
+.c-panel{padding:0 12px 20px;display:grid;gap:8px}
+.cr{display:grid;grid-template-columns:1fr 48px 52px 48px;align-items:center;gap:8px;background:rgba(255,255,255,.05);border-radius:12px;padding:6px 8px}.cr .cl{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px;min-width:0}.cr .cl .ci{font-size:1.2em}.cr .cl .ci svg{width:1em;height:1em}
+.cr button,.c-n button{height:44px;border-radius:10px;background:rgba(255,255,255,.1);color:inherit;font-size:24px}.cr b{text-align:center;font-family:var(--f-num);font-size:26px}.cr b.hot{color:#ff8a7a}.cr .dot,.c-others .dot{width:12px;height:12px;border-radius:50%;background:var(--dot);display:inline-block;box-shadow:0 0 0 1px rgba(255,255,255,.4)}
+.c-next{min-height:52px;border-radius:14px;background:var(--brass);color:#1a1408;font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;gap:8px}.c-next svg{width:22px;height:22px}
+.c-more{background:none;color:var(--muted,#aaa);font-size:14px;padding:6px}
+.c-dice{background:rgba(255,255,255,.05);border-radius:12px;padding:10px;display:grid;gap:8px}.c-dice .cl{display:flex;gap:8px;align-items:center;font-weight:600}.c-dice .cl svg{width:20px;height:20px}.c-dice>div{display:flex;flex-wrap:wrap;gap:8px}.c-dice button{flex:1 1 70px;min-height:46px;border-radius:10px;background:rgba(201,164,92,.25);color:inherit;font-weight:700;font-size:16px}.c-dice button.sm{flex:1 1 50px;background:rgba(255,255,255,.08);font-size:14px}
+.c-n{display:flex;align-items:center;gap:8px}.c-n button{width:44px;font-size:20px}.c-n b{font-family:var(--f-num);font-size:22px;min-width:20px;text-align:center}.c-n small{opacity:.6;font-size:12px}
+.c-roll{text-align:center;font-size:18px;background:rgba(201,164,92,.18);border-radius:12px;padding:10px}.c-roll b{font-family:var(--f-num);font-size:28px}
+.c-others{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;font-size:14px;opacity:.85}.c-others span{display:flex;align-items:center;gap:5px}.c-others b{font-family:var(--f-num);font-size:18px}
+.c-foot{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:6px}.c-foot button{background:rgba(255,255,255,.08);color:inherit;border-radius:10px;padding:8px 14px;font-size:13px}.c-foot .tv-stat{font-size:12px;opacity:.5}
 .linkbtn{display:inline-flex;align-items:center;gap:8px;margin:14px auto 0;background:none;color:var(--muted);font-size:14px;padding:8px 12px;border-radius:10px}.linkbtn svg{width:18px;height:18px}.home .linkbtn{display:flex}
 .livebox{display:grid;grid-template-columns:200px 1fr;gap:18px;align-items:center;margin:6px 0 14px}.liveqr{background:#fff;border-radius:12px;padding:8px;aspect-ratio:1;display:grid;place-items:center;color:#333}.liveqr svg{width:100%;height:100%}
 .livetxt small{display:block;opacity:.65;font-size:12.5px;margin-top:6px}.livecode{font-family:var(--f-num);font-size:52px;font-weight:700;letter-spacing:.18em;color:var(--brass);line-height:1}.liveurl{font-size:13px;word-break:break-all;opacity:.9}.livecnt{margin-top:10px;font-weight:600}
@@ -696,7 +720,7 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
-const VERSION='3.1';
+const VERSION='3.2';
 const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal'};
 const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#0c0b0d',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
 const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#2a292c',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(0,0,0,.75)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
@@ -848,8 +872,14 @@ const MUSIC=(()=>{let master=null,rev=null,timer=null,step=0,nextT=0,playing=fal
       const ai=P.arp[s];if(ai!=null&&!(Math.random()<.12)){const n=ch[ai%3]+12*Math.floor(ai/3);const f=mtof(P.root+n+(P.bells?12:0));
         if(P.bells)bell(a,t,f,2.2,P.leadV);else if(P.pluck)pluck(a,t,f,P.lead,P.leadV);else voice(a,t,f,sd*1.6,P.lead,P.leadV,.01,sd*1.2,P.lead==='square'?1400:2200)}
       step++;nextT+=sd}}
-  function vol(){if(master&&AC)master.gain.setTargetAtTime((S.setup.musVol||40)/100*(fileOn?1:.55),AC.currentTime,.3)}
-  function start(){const a=ac();if(!a)return;if(!master){master=a.createGain();master.gain.value=0;rev=a.createConvolver();rev.buffer=irBuf(a);const rg=a.createGain();rg.gain.value=.55;master.connect(a.destination);master.connect(rev);rev.connect(rg);rg.connect(a.destination)}
+  let comp=null,ana=null;
+  function mkMaster(a){master=a.createGain();master.gain.value=0;comp=a.createDynamicsCompressor();comp.threshold.value=-18;comp.knee.value=12;comp.ratio.value=4;comp.attack.value=.01;comp.release.value=.3;
+    const out=a.createGain();out.gain.value=1.4;ana=a.createAnalyser();ana.fftSize=1024;
+    rev=a.createConvolver();rev.buffer=irBuf(a);const rg=a.createGain();rg.gain.value=.5;
+    master.connect(comp);master.connect(rev);rev.connect(rg);rg.connect(comp);comp.connect(out);out.connect(a.destination);out.connect(ana)}
+  function level(){if(!ana)return 0;const d=new Float32Array(ana.fftSize);ana.getFloatTimeDomainData(d);let q=0;for(const v of d)q+=v*v;return Math.sqrt(q/d.length)}
+  function vol(){if(master&&AC)master.gain.setTargetAtTime((S.setup.musVol||40)/100*(fileOn?1.1:2.4),AC.currentTime,.3)}
+  function start(){const a=ac();if(!a)return;if(!master)mkMaster(a);
     if(playing)return;playing=true;step=0;nextT=a.currentTime+.15;vol();tick();timer=setInterval(tick,200)}
   function stop(){playing=false;clearInterval(timer);timer=null;if(master&&AC)master.gain.setTargetAtTime(0,AC.currentTime,.25)}
   // --- Musikdateien (Ordner music/) mit Überblendung je Farbe ---
@@ -872,13 +902,13 @@ const MUSIC=(()=>{let master=null,rev=null,timer=null,step=0,nextT=0,playing=fal
   function startFiles(){fileOn=true;start0();fadeTo(wantKey())}
   function stopFiles(){fileOn=false;if(cur){const c=cur;cur=null;curKey=null;if(AC){c.g.gain.setTargetAtTime(0,AC.currentTime,.3)}setTimeout(()=>{try{c.el.pause();c.el.src=''}catch(e){}},1200)}}
   function follow(){if(fileOn)fadeTo(wantKey())}
-  function start0(){const a=ac();if(!a)return;if(!master){master=a.createGain();master.gain.value=0;rev=a.createConvolver();rev.buffer=irBuf(a);const rg=a.createGain();rg.gain.value=.55;master.connect(a.destination);master.connect(rev);rev.connect(rg);rg.connect(a.destination)}vol()}
+  function start0(){const a=ac();if(!a)return;if(!master)mkMaster(a);vol()}
   function sync(){const want=S.setup.music&&document.visibilityState==='visible';if(want)audioUnlock();
     if(!want){stop();stopFiles();return}
     check().then(()=>{if(!(S.setup.music&&document.visibilityState==='visible'))return;
       if(hasFiles()&&S.setup.musSrc!=='synth'){stop();startFiles()}
       else{stopFiles();start()}})}
-  return{start,stop,sync,vol,follow,check,get on(){return playing||fileOn},get files(){return avail?Object.keys(avail):null}}})();
+  return{start,stop,sync,vol,follow,check,level,get on(){return playing||fileOn},get files(){return avail?Object.keys(avail):null}}})();
 document.addEventListener('pointerdown',()=>{if(S.setup&&S.setup.music&&!MUSIC.on)MUSIC.sync()},{passive:true});
 document.addEventListener('visibilitychange',()=>MUSIC.sync());
 function sfx(kind,force){const on=S.cfg?S.cfg.sfx:S.setup.sfx;if(!on&&!force)return;const now=performance.now();if(!force&&now-sfxT<90)return;sfxT=now;const a=ac();if(!a)return;const t=a.currentTime+.01;const sk=skin();
@@ -1003,11 +1033,11 @@ function rollDie3d(sides){ui.dSides=sides;const cv=document.getElementById('dice
   DICE.roll(cv,sides,cnt,S.setup.diceCol||'ivory',diceKnock,res=>{const label=sides==='coin'?'Münze':(cnt>1?cnt+'×':'')+'W'+sides;
     const sum=sides==='coin'?null:res.reduce((a,b)=>a+b,0);
     const html=sides==='coin'?`${res[0]}<small>Münzwurf</small>`:cnt>1?`${sum}<small>${label}: ${res.join(' + ')}</small>`:`${res[0]}<small>${label}</small>`;
-    ui.die={label,v:sides==='coin'?res[0]:sum,html};const o=document.getElementById('diceres');if(o)o.innerHTML=html;ev(label+': '+(cnt>1?res.join('+')+' = '+sum:res[0]));save()})}
+    ui.die={label,v:sides==='coin'?res[0]:sum,html};try{LIVE.event({k:'roll',who:'',sides,res})}catch(e){}const o=document.getElementById('diceres');if(o)o.innerHTML=html;ev(label+': '+(cnt>1?res.join('+')+' = '+sum:res[0]));save()})}
 function rollDie(sides){const label=sides==='coin'?'Münze':'W'+sides;const final=sides==='coin'?(rnd(2)?'Kopf':'Zahl'):rnd(sides)+1;let n=0;
   const tick=()=>{const out=document.getElementById('dieout');if(!out)return;const v=n<9?(sides==='coin'?(n%2?'Kopf':'Zahl'):rnd(sides)+1):final;out.innerHTML='<b>'+v+'</b><small>'+label+'</small>';if(n++<9)setTimeout(tick,45+n*8);else{ui.die={label,v:final};ev(label+': '+final);save()}};tick()}
 function rollPlanar(){const cost=S.g.planar||0;S.g.planar=cost+1;const cv=document.getElementById('dicecv');
-  const fin=res=>{ui.planar={res,cost};ui.dSides='planar';const html=`${res}<small>Planarwürfel · Wurf für ${cost} Mana</small>`;ui.die={label:'Planarwürfel',v:res,html};
+  const fin=res=>{try{LIVE.event({k:'roll',who:'',sides:'planar',res:[res]})}catch(e){}ui.planar={res,cost};ui.dSides='planar';const html=`${res}<small>Planarwürfel · Wurf für ${cost} Mana</small>`;ui.die={label:'Planarwürfel',v:res,html};
     const o=document.getElementById('diceres');if(o)o.innerHTML=html;const pb=document.getElementById('planarcost');if(pb)pb.textContent=S.g.planar;ev('Planarwürfel ('+cost+' Mana): '+res);save()};
   if(!cv){const r=rnd(6);fin(r===0?'Planeswalk':r===1?'Chaos':'Nichts');renderModal();return}
   const o=document.getElementById('diceres');if(o)o.innerHTML='<small>…</small>';
@@ -1139,14 +1169,15 @@ const DICE=(()=>{
   let DPR=1;
   const COLS={ivory:['#efe6cf','#2b2418'],red:['#a3241b','#fff1e6'],blue:['#1e4f8f','#f2f6ff'],green:['#226b3a','#f0fff2'],black:['#2a2530','#f3e9c8'],purple:['#5b2f8c','#fbf2ff'],gold:['#c9a245','#2b1d06']};
   let anim=null;
-  function roll(canvas,sides,count,colorKey,onBounce,done){
+  function roll(canvas,sides,count,colorKey,onBounce,done,force){
     DPR=Math.min(2,window.devicePixelRatio||1);
     const W=canvas.clientWidth,H=canvas.clientHeight;canvas.width=W*DPR;canvas.height=H*DPR;const ctx=canvas.getContext('2d');
     const [body,ink]=COLS[colorKey]||COLS.ivory;
     const coin=sides==='coin',planar=sides==='planar';const die=coin?null:defs[planar?6:sides];
     const n=coin?1:count,size=Math.min(H*.3,W/(n*2.6+.6));
     const items=[...Array(n)].map((_,i)=>{const fin=[W*(i+1)/(n+1),H*.56];const from=[i%2?W+size*2:-size*2,H*(.2+Math.random()*.4)];
-      const res=coin?(Math.random()<.5?0:1):Math.floor(Math.random()*die.faces.length);
+      const fv=force&&force[i];let res=coin?(Math.random()<.5?0:1):Math.floor(Math.random()*die.faces.length);
+      if(fv!=null){if(coin)res=fv==='Zahl'?1:0;else{const want=planar?(fv==='Planeswalk'?1:fv==='Chaos'?6:2):+fv;const ix=die.faces.findIndex(f=>f.num===want);if(ix>=0)res=ix}}
       return{fin,from,res,axis:nrm([Math.random()-.5,Math.random()-.5,Math.random()-.5]),spins:(3+Math.random()*2.5)*Math.PI*2,tilt:(Math.random()-.5)*.6,
         tq:coin?null:targetQ(die.faces[res],(Math.random()-.5)*.5,sides===6||planar?.5:sides===4?.6:.38),dur:1350+Math.random()*450+i*90,hops:2+Math.floor(Math.random()*2)}});
     const t0=performance.now();let lastHop=items.map(()=>-1);if(anim)cancelAnimationFrame(anim);
@@ -1350,12 +1381,13 @@ async function lookup(q,keepList){q=(q||'').trim();if(!q)return;if(!keepList)ui.
 
 
 /* ---------- Zuschauer-/TV-Modus (direkt von Gerät zu Gerät per WebRTC) ---------- */
-const LIVE=(()=>{let peer=null,conns=[],code=null,sendT=null,status='aus',vpeer=null,vconn=null,vcode=null,vstate=null,vprev={},retryT=null,clockT=null,vfx={};
+const LIVE=(()=>{let peer=null,conns=[],code=null,sendT=null,status='aus',vpeer=null,vconn=null,vcode=null,vstate=null,vprev={},retryT=null,clockT=null,vfx={},lastEv=null,evId=0,local=false,role=null,myPid=null,shownEv=0,ctrlUI={};
   const PJ='https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js',QR='https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js';
   function load(src,ok){if(ok())return Promise.resolve();return new Promise((res,rej)=>{const sc=document.createElement('script');sc.src=src;sc.onload=res;sc.onerror=()=>rej(new Error('load'));document.head.appendChild(sc)})}
   const mk=()=>Array.from({length:5},()=>'ABCDEFGHJKMNPQRSTUVWXYZ23456789'[Math.random()*31|0]).join('');
   const pid=c=>'lifelore-tv-'+c.toUpperCase();
-  const url=()=>location.origin+location.pathname+'?watch='+code;
+  const PUBLIC='https://robbykev.github.io/MTGCounter/';
+  const url=()=>(/^https?:$/.test(location.protocol)&&!/^(localhost|127\.)/.test(location.hostname)?location.origin+location.pathname:PUBLIC)+'?watch='+code;
   function snap(){if(S.phase!=='game'||!S.players.length||!S.g)return{v:1,idle:true};const dm=isDmg();
     return{v:1,fmt:FORMATS[S.cfg.fmt]?FORMATS[S.cfg.fmt].n:'',turns:S.cfg.turns,clock:S.cfg.clock,
       players:S.players.map(p=>{const c=col(p);return{id:p.id,name:p.name,bg:c.bg,bg2:c.bg2,fg:c.fg,life:p.life,poison:p.poison||0,energy:p.energy||0,exp:p.exp||0,rad:p.rad||0,speed:p.speed||0,ring:p.ring||0,bless:!!p.bless,
@@ -1363,18 +1395,32 @@ const LIVE=(()=>{let peer=null,conns=[],code=null,sendT=null,status='aus',vpeer=
         dead:deadReason(p)||'',cmdr:isCmd()?(p.cmdr||[]).filter(Boolean).map((n,k)=>cmdName(p,k)||n):[],art:isCmd()&&p.cdata&&p.cdata[0]&&p.cdata[0].art||null,ci:isCmd()?(idColors(p)||[]):[]}}),
       g:{turn:S.g.turn,active:S.g.active,monarch:S.g.monarch,initiative:S.g.initiative,dn:S.g.dn,ended:S.g.ended,winner:S.g.winner,paused:S.g.paused,
         game:(S.g.ended?S.g.endedAt:nowG())-S.g.started,turnMs:S.g.turnStart?nowG()-S.g.turnStart:0,sent:Date.now()},
-      hist:S.hist.slice(-4).reverse().map(h=>histLine(h).replace(/<time>[^<]*<\/time>/,'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim())}}
-  function push(){if(!peer||!conns.length)return;clearTimeout(sendT);sendT=setTimeout(()=>{const d=snap();conns.forEach(c=>{try{if(c.open)c.send(d)}catch(e){}})},120)}
+      hist:S.hist.slice(-4).reverse().map(h=>histLine(h).replace(/<time>[^<]*<\/time>/,'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()),ev:lastEv,code:code||null,diceCol:S.setup.diceCol||'ivory',
+      seats:conns.filter(c=>c.meta&&c.meta.role==='player').map(c=>c.meta.pid)}}
+  function push(now){if(!local&&(!peer||!conns.length))return;clearTimeout(sendT);const go=()=>{const d=snap();conns.forEach(c=>{try{if(c.open)c.send(d)}catch(e){}});if(local){vstate=d;vstate._rx=Date.now();renderTV()}};if(now)go();else sendT=setTimeout(go,120)}
+  function event(e){if(!peer&&!local)return;e.id=++evId;e.t=Date.now();lastEv=e;push(true)}
+  function rollFor(pid,sides,n){n=Math.max(1,Math.min(6,n||1));const res=[];for(let i=0;i<(sides==='coin'||sides==='planar'?1:n);i++)res.push(sides==='coin'?(rnd(2)?'Kopf':'Zahl'):sides==='planar'?['Planeswalk','Chaos','Nichts','Nichts','Nichts','Nichts'][rnd(6)]:rnd(sides)+1);
+    const who=pid!=null&&P(pid)?P(pid).name:'';const label=sides==='coin'?'Münze':sides==='planar'?'Planarwürfel':(res.length>1?res.length+'×':'')+'W'+sides;
+    ev((who?who+': ':'')+label+': '+(res.length>1?res.join('+')+' = '+res.reduce((a,b)=>a+b,0):res[0]),pid);toast((who?who+' würfelt ':'')+label+': '+(res.length>1?res.reduce((a,b)=>a+b,0):res[0]),2200);event({k:'roll',who,pid,sides,res});save()}
+  function handle(c,d){if(!d||typeof d!=='object')return;
+    if(d.t==='hello'){c.meta={role:d.role,pid:d.pid};c.send(snap());push();upd();if(d.role==='player'&&P(d.pid))toast(P(d.pid).name+' spielt am eigenen Gerät mit',1800);return}
+    if(d.t!=='act'||S.phase!=='game'||!S.players.length)return;const pid=+d.pid;if(d.a!=='next'&&!P(pid))return;
+    const st=Math.max(-50,Math.min(50,+d.d||0));
+    if(d.a==='life'&&st){pushUndo('life'+pid);changeLife(pid,st)}
+    else if(d.a==='ctr'&&st&&/^(poison|energy|exp|rad|speed|ring|misc|tax1|tax2)$/.test(d.k))changeCtr(pid,d.k,st);
+    else if(d.a==='cmd'&&st&&P(+d.from)&&+d.from!==pid)changeCmd(pid,+d.from,+d.k?1:0,st);
+    else if(d.a==='next'&&S.cfg.turns&&!S.g.ended&&(S.g.active==null||S.g.active===pid))stepTurn(1);
+    else if(d.a==='roll')rollFor(pid,d.sides==='coin'||d.sides==='planar'?d.sides:[4,6,8,10,12,20].includes(+d.sides)?+d.sides:20,+d.n||1)}
   function upd(){if(ui.modal==='live')renderModal()}
   async function start(){if(peer)return;status='startet';upd();
     try{await load(PJ,()=>window.Peer)}catch(e){status='fehler';upd();return}
     const open=()=>{code=mk();peer=new Peer(pid(code),{debug:0});
       peer.on('open',()=>{status='bereit';upd()});
-      peer.on('connection',c=>{conns.push(c);c.on('open',()=>{c.send(snap());upd();toast('Zuschauer verbunden',1600)});c.on('close',()=>{conns=conns.filter(x=>x!==c);upd()});c.on('error',()=>{})});
+      peer.on('connection',c=>{conns.push(c);c.meta={role:'view'};c.on('open',()=>{c.send(snap());upd()});c.on('data',d=>handle(c,d));c.on('close',()=>{conns=conns.filter(x=>x!==c);upd();push()});c.on('error',()=>{})});
       peer.on('disconnected',()=>{try{peer.reconnect()}catch(e){}});
       peer.on('error',e=>{if(e&&e.type==='unavailable-id'){try{peer.destroy()}catch(x){}peer=null;open()}else if(e&&/network|server|socket/.test(e.type||'')){status='fehler';upd()}})};
     open();clearInterval(clockT);clockT=setInterval(()=>{if(conns.length&&S.g&&!S.g.ended)push()},15000)}
-  function stop(){clearInterval(clockT);conns.forEach(c=>{try{c.close()}catch(e){}});conns=[];try{peer&&peer.destroy()}catch(e){}peer=null;code=null;status='aus';upd()}
+  function stop(){if(local)setLocal(false);clearInterval(clockT);conns.forEach(c=>{try{c.close()}catch(e){}});conns=[];try{peer&&peer.destroy()}catch(e){}peer=null;code=null;status='aus';upd()}
   function modalHTML(X){const on=!!peer;let qr='';
     if(on&&code&&window.qrcode){try{const q=qrcode(0,'M');q.addData(url());q.make();qr=q.createSvgTag({cellSize:5,margin:2,scalable:true})}catch(e){}}
     else if(on&&code)load(QR,()=>window.qrcode).then(upd).catch(()=>{});
@@ -1385,23 +1431,66 @@ const LIVE=(()=>{let peer=null,conns=[],code=null,sendT=null,status='aus',vpeer=
     :`<div class="livebox"><div class="liveqr">${qr||'<small>QR-Code lädt …</small>'}</div><div class="livetxt"><small>Code</small><div class="livecode">${code}</div>
         <small>Auf dem Fernseher oder zweiten Gerät öffnen:</small><div class="liveurl">${esc(url())}</div>
         <small>oder dort im Startbildschirm „Zuschauen“ tippen und den Code eingeben.</small>
-        <div class="livecnt">${conns.length?`<b>${conns.length}</b> Zuschauer verbunden`:'Noch kein Zuschauer verbunden'}</div></div></div>
+        <div class="livecnt">${(()=>{const pl=conns.filter(c=>c.meta&&c.meta.role==='player'),vw=conns.length-pl.length;return conns.length?`${vw?`<b>${vw}</b> Zuschauer`:''}${vw&&pl.length?' · ':''}${pl.length?`<b>${pl.length}</b> am eigenen Handy: ${pl.map(c=>esc(P(c.meta.pid)?P(c.meta.pid).name:'?')).join(', ')}`:''}`:'Noch niemand verbunden'})()}</div></div></div>
+      <button class="mbtn" data-act="livelocal">${I.tv}<span>Dieses Gerät als TV-Anzeige<small>Für Laptop/Mac am Fernseher: zeigt hier die große Übersicht, alle spielen am eigenen Handy</small></span></button>
       <button class="mbtn" data-act="livestop">${I.x}<span>Übertragung beenden</span></button>`}
-    <p class="hint">Die Verbindung läuft über WebRTC direkt zwischen den Geräten. Es werden nur der Spielstand und die Namen übertragen.</p>`}
+    <p class="hint">Mit demselben Code kann jeder am eigenen Handy <b>mitspielen</b> (eigener Zähler) oder nur <b>zuschauen</b>. Die Verbindung läuft direkt zwischen den Geräten, übertragen werden nur Spielstand und Namen.</p>`}
+  function setLocal(on){local=on;if(on){closeModal();document.body.classList.add('tvmode');vstate=snap();vstate._rx=Date.now();renderTV();clearInterval(clockT);clockT=setInterval(()=>{tvClock();if(conns.length&&S.g&&!S.g.ended&&Date.now()%15000<1000)push()},1000);wake()}
+    else{document.body.classList.remove('tvmode');const r=document.getElementById('tv');if(r)r.remove();vstate=null;show()}}
   // ---------- Zuschauer-Seite ----------
   function vroot(){let r=document.getElementById('tv');if(!r){r=document.createElement('div');r.id='tv';document.body.appendChild(r);
-      r.addEventListener('click',e=>{const b=e.target.closest('[data-tv]');if(!b)return;if(b.dataset.tv==='exit'){location.href=location.pathname}else if(b.dataset.tv==='fs')fullscreen()})}return r}
+      r.addEventListener('click',e=>{const b=e.target.closest('[data-tv]');if(!b)return;if(b.dataset.tv==='exit'){if(local)setLocal(false);else location.href=location.pathname}else if(b.dataset.tv==='fs')fullscreen();else if(b.dataset.tv==='role'){role=null;myPid=null;try{sessionStorage.removeItem('ll-role-'+vcode)}catch(x){}renderClient()}else if(b.dataset.tv==='pick'){role=b.dataset.r;myPid=b.dataset.p!=null?+b.dataset.p:null;try{sessionStorage.setItem('ll-role-'+vcode,JSON.stringify({role,myPid}))}catch(x){}if(vconn&&vconn.open)vconn.send({t:'hello',role,pid:myPid});renderClient()}else ctrlClick(b)})
+      r.addEventListener('pointerdown',ctrlDown);['pointerup','pointercancel','pointerleave'].forEach(x=>r.addEventListener(x,ctrlUp))}return r}
   function vstatus(t){const r=vroot();if(!vstate)r.innerHTML=`<div class="tv-wait"><img class="tv-logo" src="${(document.querySelector('.logoimg')||{}).src||''}" alt=""><h1>Life &amp; Lore</h1><p>${t}</p><div class="tv-code">${esc(vcode||'')}</div><button data-tv="exit">Zurück</button></div>`;else{const st=r.querySelector('.tv-stat');if(st)st.textContent=t;r.classList.toggle('lost',!/verbunden/.test(t))}}
-  async function watch(c){vcode=(c||'').trim().toUpperCase();if(!vcode)return;document.body.classList.add('tvmode');elSetup.hidden=true;elGame.hidden=true;closeModal();vstatus('Verbinde …');wake();
+  async function watch(c){vcode=(c||'').trim().toUpperCase();if(!vcode)return;try{const sr=JSON.parse(sessionStorage.getItem('ll-role-'+vcode)||'null');if(sr){role=sr.role;myPid=sr.myPid}}catch(e){}document.body.classList.add('tvmode');elSetup.hidden=true;elGame.hidden=true;closeModal();vstatus('Verbinde …');wake();
     try{await load(PJ,()=>window.Peer)}catch(e){vstatus('Konnte nicht laden – Internet prüfen');return}
     const go=()=>{clearTimeout(retryT);try{vpeer&&vpeer.destroy()}catch(e){}vpeer=new Peer({debug:0});
       vpeer.on('open',()=>{vconn=vpeer.connect(pid(vcode),{reliable:true});
-        vconn.on('open',()=>vstatus('verbunden'));vconn.on('data',d=>{vstate=d;vstate._rx=Date.now();renderTV()});
+        vconn.on('open',()=>{vstatus('verbunden');if(role)vconn.send({t:'hello',role,pid:myPid})});vconn.on('data',d=>{vstate=d;vstate._rx=Date.now();renderClient()});
         vconn.on('close',()=>{vstatus('Verbindung getrennt – neuer Versuch …');retryT=setTimeout(go,3000)});vconn.on('error',()=>{})});
       vpeer.on('error',e=>{vstatus(e&&e.type==='peer-unavailable'?'Keine Übertragung mit diesem Code gefunden – läuft sie am Spielgerät? Neuer Versuch …':'Verbindungsproblem – neuer Versuch …');retryT=setTimeout(go,4000)})};
     go();clearInterval(clockT);clockT=setInterval(tvClock,1000)}
   function tvClock(){if(!vstate||vstate.idle)return;const g=vstate.g,dt=g.ended||g.paused?0:Date.now()-vstate._rx;const a=document.querySelector('#tv .tv-clock'),b=document.querySelector('#tv .tv-tt');if(a)a.textContent=fmtT(g.game+dt);if(b)b.textContent=fmtT(g.turnMs+dt)}
   const ico=k=>ctrIcon(k);
+  function renderClient(){if(!vstate)return;if(vstate.idle||!role)return role?renderTV():renderChooser();if(role==='player')return renderCtrl();renderTV()}
+  function renderChooser(){const r=vroot(),d=vstate;r.className='';
+    r.innerHTML=`<div class="tv-wait"><h1>Life &amp; Lore</h1>${d.idle?'<p>Verbunden – das Spiel wurde noch nicht gestartet …</p>':`<p>Wie möchtest du mitmachen?</p>
+      <div class="tv-pick">${d.players.map(p=>`<button data-tv="pick" data-r="player" data-p="${p.id}" style="--bg:${p.bg};--bg2:${p.bg2};color:${p.fg||'#fff'}"${(d.seats||[]).includes(p.id)?' class="taken"':''}><b>${esc(p.name)}</b><small>${(d.seats||[]).includes(p.id)?'schon verbunden':'eigener Zähler'}</small></button>`).join('')}</div>
+      <button data-tv="pick" data-r="view">${I.tv} Nur zuschauen (TV-Ansicht)</button>`}<button data-tv="exit">Zurück</button></div>`}
+  // ---- Controller (eigenes Handy) ----
+  function ctrlSend(a){if(vconn&&vconn.open)vconn.send(Object.assign({t:'act',pid:myPid},a));try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}}
+  let holdT=null,holdI=null,held=false;
+  function ctrlDown(e){const z=e.target.closest('[data-cl]');if(!z||role!=='player')return;held=false;const d=+z.dataset.cl;
+    holdT=setTimeout(()=>{held=true;ctrlSend({a:'life',d:d*10});holdI=setInterval(()=>ctrlSend({a:'life',d:d*10}),550)},450)}
+  function ctrlUp(e){const z=e.target.closest&&e.target.closest('[data-cl]');clearTimeout(holdT);clearInterval(holdI);if(e.type==='pointerup'&&z&&!held&&role==='player')ctrlSend({a:'life',d:+z.dataset.cl});held=false}
+  function ctrlClick(b){const t=b.dataset.tv;if(t==='c')ctrlSend({a:'ctr',k:b.dataset.k,d:+b.dataset.d});else if(t==='m')ctrlSend({a:'cmd',from:+b.dataset.f,k:+b.dataset.kk||0,d:+b.dataset.d});else if(t==='next')ctrlSend({a:'next'});
+    else if(t==='roll')ctrlSend({a:'roll',sides:b.dataset.s,n:ctrlUI.n||1});else if(t==='n'){ctrlUI.n=Math.max(1,Math.min(6,(ctrlUI.n||1)+ +b.dataset.d));renderCtrl()}else if(t==='more'){ctrlUI.more=!ctrlUI.more;renderCtrl()}}
+  function renderCtrl(){const r=vroot(),d=vstate;r.className='ctrl';const p=d.players.find(x=>x.id===myPid);if(!p){role=null;return renderChooser()}const g=d.g;
+    const f=vfx[p.id],prev=vprev[p.id];if(prev!=null&&prev!==p.life)vfx[p.id]={v:(f&&Date.now()-f.t<1600?f.v:0)+p.life-prev,t:Date.now()};vprev[p.id]=p.life;const ff=vfx[p.id];
+    const row=(k,n,v,ic)=>`<div class="cr"><span class="cl">${ic?ico(ic):''}${n}</span><button data-tv="c" data-k="${k}" data-d="-1">−</button><b>${v}</b><button data-tv="c" data-k="${k}" data-d="1">+</button></div>`;
+    const opp=d.players.filter(x=>x.id!==p.id);
+    const cmdRows=d.players.length&&d.fmt&&/Commander|Brawl/.test(d.fmt)?opp.map(o=>{const v=(p.cmd.find(c=>c.n===o.name)||{}).v||0;return`<div class="cr"><span class="cl"><i class="dot" style="--dot:${o.bg}"></i>Cmd-Schaden von ${esc(o.name)}</span><button data-tv="m" data-f="${o.id}" data-d="-1">−</button><b class="${v>=15?'hot':''}">${v}</b><button data-tv="m" data-f="${o.id}" data-d="1">+</button></div>`}).join(''):'';
+    const act=d.turns&&g.active===p.id&&!g.ended;
+    r.innerHTML=`<div class="c-main${p.dead?' dead':''}" style="--bg:${p.bg};--bg2:${p.bg2};color:${p.art?'#f7f3ea':(p.fg||'#f7f3ea')}">${p.art?`<div class="tv-art" style="background-image:url('${esc(p.art)}')"></div>`:''}
+        <div class="c-head"><b>${esc(p.name)}</b>${p.cmdr.length?`<small>${esc(p.cmdr.join(' & '))}</small>`:''}${act?'<span class="tv-turn">am Zug</span>':''}</div>
+        <div class="c-zone l" data-cl="-1"><span>−</span></div><div class="c-zone r" data-cl="1"><span>+</span></div>
+        <div class="c-life">${p.life}</div>${ff&&Date.now()-ff.t<1800&&ff.v?`<div class="tv-delta ${ff.v>0?'up':'down'}" style="animation-delay:-${(Date.now()-ff.t)/1000}s">${ff.v>0?'+':'−'}${Math.abs(ff.v)}</div>`:''}
+        ${p.dead?`<div class="tv-dead"><b>${g.ended&&g.winner===p.id?'Sieg':'Ausgeschieden'}</b><small>${esc(p.dead)}</small></div>`:''}<div class="c-hint">tippen ±1 · halten ±10</div></div>
+      <div class="c-panel">${act?`<button class="c-next" data-tv="next">${I.next} Zug beenden</button>`:''}
+        ${row('poison','Gift',p.poison,'poison')}${cmdRows}${d.fmt&&/Commander/.test(d.fmt)?row('tax1','Commander-Steuer',p.tax[0],'tax1'):''}
+        <button class="c-more" data-tv="more">${ctrlUI.more?'Weniger':'Weitere Marken'} ▾</button>
+        ${ctrlUI.more?row('energy','Energie',p.energy,'energy')+row('exp','Erfahrung',p.exp,'exp')+row('rad','Strahlung',p.rad,'rad')+row('speed','Tempo',p.speed,'speed')+row('ring','Ring',p.ring,'ring'):''}
+        <div class="c-dice"><span class="cl">${I.dice} Würfeln</span><div>${['coin',6,20].map(s=>`<button data-tv="roll" data-s="${s}">${s==='coin'?'Münze':'W'+s}</button>`).join('')}${[4,8,10,12].map(s=>`<button data-tv="roll" data-s="${s}" class="sm">W${s}</button>`).join('')}</div>
+          <div class="c-n"><button data-tv="n" data-d="-1">−</button><b>${ctrlUI.n||1}</b><button data-tv="n" data-d="1">+</button><small>Würfel – Ergebnis erscheint auf dem TV</small></div></div>
+        ${d.ev&&d.ev.pid===p.id&&Date.now()-d.ev.t<8000?`<div class="c-roll">Dein Wurf: <b>${d.ev.res.length>1?d.ev.res.join(' + ')+' = '+d.ev.res.reduce((a,b)=>a+b,0):d.ev.res[0]}</b></div>`:''}
+        <div class="c-others">${opp.map(o=>`<span style="--dot:${o.bg}"><i class="dot"></i>${esc(o.name)} <b>${o.life}</b></span>`).join('')}</div>
+        <div class="c-foot"><button data-tv="role">Spieler wechseln</button><button data-tv="exit">Verlassen</button><span class="tv-stat">verbunden</span></div></div>`}
+  function diceOverlay(r,e,d){if(!e||e.id===shownEv)return;shownEv=e.id;if(Date.now()-(e.t||0)>(d._rx?Math.max(6000,Date.now()-d._rx+6000):6000))return;
+    let ov=r.querySelector('.tv-dice');if(ov)ov.remove();ov=document.createElement('div');ov.className='tv-dice';
+    const label=e.sides==='coin'?'Münze':e.sides==='planar'?'Planarwürfel':(e.res.length>1?e.res.length+'×':'')+'W'+e.sides;
+    ov.innerHTML=`<div class="tvd-box"><div class="tvd-who">${esc(e.who||'Würfelwurf')}</div><canvas></canvas><div class="tvd-res"></div><small>${label}</small></div>`;r.appendChild(ov);
+    const cv=ov.querySelector('canvas');requestAnimationFrame(()=>{try{DICE.roll(cv,e.sides,e.res.length,d.diceCol||'ivory',v=>{try{diceKnock(v)}catch(x){}},res=>{const o=ov.querySelector('.tvd-res');if(o)o.textContent=e.sides!=='coin'&&e.sides!=='planar'&&e.res.length>1?e.res.reduce((a,b)=>a+b,0):e.res[0]},e.res)}catch(x){ov.querySelector('.tvd-res').textContent=e.res.join(' + ')}});
+    setTimeout(()=>{ov.classList.add('out');setTimeout(()=>ov.remove(),500)},4800)}
   function renderTV(){const r=vroot(),d=vstate;r.classList.remove('lost');
     if(d.idle){r.innerHTML=`<div class="tv-wait"><h1>Life &amp; Lore</h1><p>Verbunden – warte auf den Spielstart …</p><button data-tv="exit">Zurück</button></div>`;return}
     const n=d.players.length,g=d.g,cols=n<=2?2:n===4?2:3;
@@ -1416,10 +1505,13 @@ const LIVE=(()=>{let peer=null,conns=[],code=null,sendT=null,status='aus',vpeer=
         <div class="tv-top"><div class="tv-name">${esc(p.name)}${p.ci.length?`<span class="tv-ci">${p.ci.map(c=>useSym()?symImg(c,`<i style="--c:${ID_COL[c]}"></i>`):`<i style="--c:${ID_COL[c]}"></i>`).join('')}</span>`:''}</div>${p.cmdr.length?`<div class="tv-cmdr">${esc(p.cmdr.join(' & '))}</div>`:''}${act?`<div class="tv-turn">am Zug${d.clock?' · <span class="tv-tt"></span>':''}</div>`:''}</div>
         <div class="tv-life">${p.life}</div>${fx}<div class="tv-chips">${chips.join('')}</div>${p.dead?`<div class="tv-dead"><b>${win?'Sieg':'Ausgeschieden'}</b><small>${esc(p.dead)}</small></div>`:win?`<div class="tv-win">Sieg!</div>`:''}</div>`}).join('');
     const ap=g.active!=null?d.players.find(p=>p.id===g.active):null;
+    const keep=r.querySelector('.tv-dice');r.className='';
     r.innerHTML=`<div class="tv-bar"><span class="tv-brand">Life &amp; Lore</span><span>${esc(d.fmt)}</span>${d.turns?`<span>Zug ${g.turn}${ap?' · '+esc(ap.name):''}</span>`:''}${g.dn?`<span>${g.dn===1?ico('day')+' Tag':ico('night')+' Nacht'}</span>`:''}${d.clock?`<span class="tv-clock"></span>`:''}<span class="tv-sp"></span><span class="tv-stat">verbunden</span><button data-tv="fs" aria-label="Vollbild">${I.full}</button><button data-tv="exit" aria-label="Beenden">${I.x}</button></div>
       <div class="tv-grid" style="--cols:${cols}">${tiles}</div>${d.hist&&d.hist.length?`<div class="tv-hist">${d.hist.map(h=>`<span>${esc(h)}</span>`).join('')}</div>`:''}`;
-    tvClock()}
-  return{start,stop,push,modalHTML,watch,get on(){return!!peer}}})();
+    if(keep)r.appendChild(keep);
+    if(d.code){const jb=document.createElement('div');jb.className='tv-join';jb.innerHTML=`Mitspielen: <b>${esc(d.code)}</b>`;r.querySelector('.tv-bar').insertBefore(jb,r.querySelector('.tv-sp'))}
+    diceOverlay(r,d.ev,d);tvClock()}
+  return{start,stop,push,event,modalHTML,watch,setLocal,get on(){return!!peer},get local(){return local}}})();
 
 /* ---------- Karten scannen (Kamera + Texterkennung) ---------- */
 const SCAN=(()=>{let ov=null,video=null,stream=null,worker=null,loop=null,busy=false,tries=0;
@@ -1924,7 +2016,7 @@ function barHTML(){const g=S.g;
   <button class="bb" data-act="hist" aria-label="Verlauf">${I.hist}<span class="t">Verlauf</span></button>
   ${FS_OK?`<button class="bb" data-act="fs" aria-label="Vollbild">${I.full}</button>`:''}`}
 
-function update(){try{MUSIC.follow()}catch(e){}if(S.phase!=='game'||!S.players.length)return;
+function update(){try{MUSIC.follow()}catch(e){}try{if(LIVE.local)LIVE.push()}catch(e){}if(S.phase!=='game'||!S.players.length)return;
   const bar=$('#bar');if(bar){const sl=bar.scrollLeft;bar.innerHTML=barHTML();bar.scrollLeft=sl;tickClock()}
   S.players.forEach(p=>{const el=elGame.querySelector(`.panel[data-pid="${p.id}"]`);if(!el)return;
     const dr=deadReason(p);
@@ -2157,6 +2249,7 @@ elModal.addEventListener('click',e=>{if(e.target===elModal)return closeModal();c
     case'live':openModal('live');break;
     case'livestart':LIVE.start();break;
     case'livestop':LIVE.stop();break;
+    case'livelocal':LIVE.setLocal(true);break;
     case'watchgo':{const v=document.getElementById('watchin').value;if(v.trim().length>=4)LIVE.watch(v);break}
     case'zoom':{const z=document.createElement('div');z.className='zoomov';const sm=b.getAttribute('src'),lg=sm.replace('/normal/','/large/');z.innerHTML=`<img src="${lg}" alt="" onerror="if(this.src!=='${sm}')this.src='${sm}'"><span>Antippen zum Schließen</span>`;z.addEventListener('click',()=>{z.classList.remove('on');setTimeout(()=>z.remove(),250)});document.body.appendChild(z);requestAnimationFrame(()=>z.classList.add('on'));break}
     case'lookgo':lookList(document.getElementById('lookin').value);break;
