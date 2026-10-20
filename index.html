@@ -354,6 +354,8 @@ button.map-seat{cursor:pointer;border:0}
 .pr-row{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline}.pr{font-family:var(--f-num);font-size:24px;font-weight:700}.pr small{display:block;font-family:var(--f-ui);font-size:11px;font-weight:500;opacity:.6}.pr.foil{background:linear-gradient(90deg,#ffd27a,#9be7ff,#e5a7ff);-webkit-background-clip:text;background-clip:text;color:transparent}
 .pr-link{margin-left:auto;font-size:13px;color:#9fe0a8;text-decoration:none;border:1px solid rgba(159,224,168,.4);padding:5px 10px;border-radius:8px}.pr-ch{margin-top:6px;font-size:14px}.pr-ch small{opacity:.6}
 
+.tv-qr{position:absolute;right:1.6vmin;bottom:1.6vmin;z-index:5;background:#fff;border-radius:1.2vmin;padding:.8vmin;width:15vmin;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.5)}.tv-qr svg{width:100%;height:auto;display:block}.tv-qr small{display:block;color:#222;font-size:1.3vmin;font-weight:600;margin-top:.3vmin}
+#scanov.qrscan .qframe{position:absolute;left:50%;top:48%;width:min(62vw,62vh);aspect-ratio:1;transform:translate(-50%,-50%);border:3px solid #e8c46a;border-radius:18px;box-shadow:0 0 0 200vmax rgba(0,0,0,.55),0 0 18px rgba(232,196,106,.6)}
 .tv-join{background:rgba(201,164,92,.18);border:1px solid rgba(201,164,92,.5);border-radius:.5em;padding:.15em .6em;color:#f3e5ab}.tv-join b{letter-spacing:.15em;font-family:var(--f-num)}
 .tv-pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;width:min(92vw,640px)}.tv-pick button{background:radial-gradient(120% 120% at 50% 40%,var(--bg),var(--bg2));padding:18px 10px;border-radius:14px;display:grid;gap:4px;font-size:18px}.tv-pick button small{font-size:12px;opacity:.75}.tv-pick button.taken{opacity:.55}
 .tv-wait>button[data-r="view"]{display:inline-flex;gap:8px;align-items:center;background:rgba(201,164,92,.2)!important}.tv-wait>button svg{width:1.2em;height:1.2em}
@@ -720,7 +722,7 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
-const VERSION='3.3';
+const VERSION='3.4';
 const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal'};
 const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#0c0b0d',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
 const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#2a292c',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(0,0,0,.75)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
@@ -1423,6 +1425,7 @@ const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid='c'+Math.random()
     else if(d.a==='next'&&S.cfg.turns&&!S.g.ended&&(S.g.active==null||S.g.active===pid))stepTurn(1);
     else if(d.a==='roll')rollFor(pid,d.sides==='coin'||d.sides==='planar'?d.sides:[4,6,8,10,12,20].includes(+d.sides)?+d.sides:20,+d.n||1)}
   function upd(){if(ui.modal==='live')renderModal()}
+  const qrCache={};function qrSvg(t){if(qrCache[t])return qrCache[t];if(!window.qrcode){load(QR,()=>window.qrcode).then(()=>{if(vstate)renderClient()}).catch(()=>{});return''}try{const q=qrcode(0,'M');q.addData(t);q.make();return qrCache[t]=q.createSvgTag({cellSize:4,margin:1,scalable:true})}catch(e){return''}}
   async function start(){if(peer)return;status='startet';upd();
     try{await load(MQ,()=>window.mqtt)}catch(e){status='fehler';upd();return}
     code=mk();clients.clear();
@@ -1520,9 +1523,27 @@ const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid='c'+Math.random()
     r.innerHTML=`<div class="tv-bar"><span class="tv-brand">Life &amp; Lore</span><span>${esc(d.fmt)}</span>${d.turns?`<span>Zug ${g.turn}${ap?' · '+esc(ap.name):''}</span>`:''}${g.dn?`<span>${g.dn===1?ico('day')+' Tag':ico('night')+' Nacht'}</span>`:''}${d.clock?`<span class="tv-clock"></span>`:''}<span class="tv-sp"></span><span class="tv-stat">verbunden</span><button data-tv="fs" aria-label="Vollbild">${I.full}</button><button data-tv="exit" aria-label="Beenden">${I.x}</button></div>
       <div class="tv-grid" style="--cols:${cols}">${tiles}</div>${d.hist&&d.hist.length?`<div class="tv-hist">${d.hist.map(h=>`<span>${esc(h)}</span>`).join('')}</div>`:''}`;
     if(keep)r.appendChild(keep);
-    if(d.code){const jb=document.createElement('div');jb.className='tv-join';jb.innerHTML=`Mitspielen: <b>${esc(d.code)}</b>`;r.querySelector('.tv-bar').insertBefore(jb,r.querySelector('.tv-sp'))}
+    if(d.code){const jb=document.createElement('div');jb.className='tv-join';jb.innerHTML=`Mitspielen: <b>${esc(d.code)}</b>`;r.querySelector('.tv-bar').insertBefore(jb,r.querySelector('.tv-sp'));
+      const q=document.createElement('div');q.className='tv-qr';q.innerHTML=qrSvg(PUBLIC+'?watch='+d.code)+'<small>Mit Life &amp; Lore scannen</small>';r.appendChild(q)}
     diceOverlay(r,d.ev,d);tvClock()}
-  return{start,stop,push,event,modalHTML,watch,setLocal,get on(){return!!peer},get local(){return local}}})();
+  // ---- Beitreten per QR-Code (Kamera in der App) ----
+  let qov=null,qstream=null,qloop=null,det=null;
+  async function scanJoin(){if(qov)return;if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('Kamera wird hier nicht unterstützt',2500);return}
+    qov=document.createElement('div');qov.id='scanov';qov.className='qrscan';qov.innerHTML=`<video playsinline autoplay muted></video><div class="qframe"></div>
+      <div class="stop"><span class="stxt">QR-Code vom Fernseher oder Spielgerät scannen</span><small>Code in das Quadrat halten</small><div class="sread"></div></div>
+      <div class="sbtm"><button data-s="close">Abbrechen</button></div>`;document.body.appendChild(qov);
+    qov.addEventListener('click',e=>{if(e.target.closest('[data-s=close]'))qclose()});const v=qov.querySelector('video');
+    try{qstream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}});if(!qov){qstream.getTracks().forEach(t=>t.stop());return}v.srcObject=qstream;await v.play().catch(()=>{})}
+    catch(e){qov.querySelector('.stxt').textContent='Kein Zugriff auf die Kamera';qov.querySelector('.sread').textContent='Bitte die Kamera für diese App erlauben oder den Code eintippen.';return}
+    try{if('BarcodeDetector' in window){const f=await BarcodeDetector.getSupportedFormats();if(f.includes('qr_code'))det=new BarcodeDetector({formats:['qr_code']})}}catch(e){det=null}
+    if(!det)try{await load('https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js',()=>window.jsQR)}catch(e){qov.querySelector('.sread').textContent='QR-Erkennung konnte nicht geladen werden – Code bitte eintippen.';return}
+    const cv=document.createElement('canvas'),g=cv.getContext('2d',{willReadFrequently:true});
+    qloop=setInterval(async()=>{if(!qov||!v.videoWidth)return;let txt=null;
+      try{if(det){const r=await det.detect(v);if(r[0])txt=r[0].rawValue}else{const w=Math.min(800,v.videoWidth),h=Math.round(v.videoHeight*w/v.videoWidth);cv.width=w;cv.height=h;g.drawImage(v,0,0,w,h);const r=jsQR(g.getImageData(0,0,w,h).data,w,h,{inversionAttempts:'dontInvert'});if(r)txt=r.data}}catch(e){}
+      if(!txt)return;const m=txt.match(/[?&]watch=([A-Za-z0-9]{4,8})/)||txt.trim().match(/^([A-Za-z0-9]{5,6})$/);
+      if(m){try{navigator.vibrate&&navigator.vibrate(40)}catch(e){}qclose();watch(m[1])}else qov.querySelector('.sread').textContent='Das ist kein Life-&-Lore-Code.'},280)}
+  function qclose(){clearInterval(qloop);qloop=null;if(qstream)qstream.getTracks().forEach(t=>t.stop());qstream=null;if(qov)qov.remove();qov=null}
+  return{start,stop,push,event,modalHTML,watch,setLocal,scanJoin,get on(){return!!peer},get local(){return local}}})();
 
 /* ---------- Karten scannen (Kamera + Texterkennung) ---------- */
 const SCAN=(()=>{let ov=null,video=null,stream=null,worker=null,loop=null,busy=false,tries=0;
@@ -2222,7 +2243,7 @@ function renderModal(){const t=ui.modal;if(!t)return closeModal();const X=`<butt
     <div id="lookres">${lookAreaHTML()}</div>
 `}
   else if(t==='live'){body=LIVE.modalHTML(X)}
-  else if(t==='watchin'){body=`<div class="card-h"><h2>Zuschauen</h2>${X}</div><p class="hint" style="font-size:15px">Code vom Spielgerät eingeben (Menü → Zuschauer &amp; TV):</p><div class="lookbar"><input id="watchin" maxlength="6" autocomplete="off" autocapitalize="characters" placeholder="z. B. K7M2QA" style="text-transform:uppercase;letter-spacing:.3em;font-size:22px"><button class="tb" data-act="watchgo">${I.tv} Verbinden</button></div>`}
+  else if(t==='watchin'){body=`<div class="card-h"><h2>Zuschauen</h2>${X}</div><p class="hint" style="font-size:15px">Code vom Spielgerät eingeben (Menü → Zuschauer &amp; TV):</p><div class="lookbar"><input id="watchin" maxlength="6" autocomplete="off" autocapitalize="characters" placeholder="z. B. K7M2QA" style="text-transform:uppercase;letter-spacing:.3em;font-size:22px"><button class="tb" data-act="watchgo">${I.tv} Verbinden</button></div><button class="mbtn" data-act="watchscan" style="margin-top:12px">${I.cam}<span>QR-Code scannen<small>Den QR-Code am Fernseher oder Spielgerät mit der Kamera erfassen</small></span></button>`}
   else if(t==='rules'){body=`<div class="card-h"><h2>Regeln</h2>${X}</div>
     <div class="grp"><h4>${RULES.length} Begriffe</h4>
       <input type="search" id="rulein" class="rulein" placeholder="Begriff suchen, z. B. Trampel, Fluch, Schatz" autocomplete="off" value="${esc(ui.ruleQ||'')}">
@@ -2261,6 +2282,7 @@ elModal.addEventListener('click',e=>{if(e.target===elModal)return closeModal();c
     case'livestart':LIVE.start();break;
     case'livestop':LIVE.stop();break;
     case'livelocal':LIVE.setLocal(true);break;
+    case'watchscan':closeModal();LIVE.scanJoin();break;
     case'watchgo':{const v=document.getElementById('watchin').value;if(v.trim().length>=5)LIVE.watch(v);break}
     case'zoom':{const z=document.createElement('div');z.className='zoomov';const sm=b.getAttribute('src'),lg=sm.replace('/normal/','/large/');z.innerHTML=`<img src="${lg}" alt="" onerror="if(this.src!=='${sm}')this.src='${sm}'"><span>Antippen zum Schließen</span>`;z.addEventListener('click',()=>{z.classList.remove('on');setTimeout(()=>z.remove(),250)});document.body.appendChild(z);requestAnimationFrame(()=>z.classList.add('on'));break}
     case'lookgo':lookList(document.getElementById('lookin').value);break;
