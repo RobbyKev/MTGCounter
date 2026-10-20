@@ -1,1 +1,1 @@
-# MTGCounter
+Life & Lore
