@@ -720,7 +720,7 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
-const VERSION='3.2';
+const VERSION='3.3';
 const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal'};
 const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#0c0b0d',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
 const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#2a292c',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(0,0,0,.75)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
@@ -1381,10 +1381,18 @@ async function lookup(q,keepList){q=(q||'').trim();if(!q)return;if(!keepList)ui.
 
 
 /* ---------- Zuschauer-/TV-Modus (direkt von Gerät zu Gerät per WebRTC) ---------- */
-const LIVE=(()=>{let peer=null,conns=[],code=null,sendT=null,status='aus',vpeer=null,vconn=null,vcode=null,vstate=null,vprev={},retryT=null,clockT=null,vfx={},lastEv=null,evId=0,local=false,role=null,myPid=null,shownEv=0,ctrlUI={};
-  const PJ='https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js',QR='https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js';
+const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid='c'+Math.random().toString(36).slice(2,10),hbT=null,gotT=null,code=null,sendT=null,status='aus',vpeer=null,vconn=null,vcode=null,vstate=null,vprev={},retryT=null,clockT=null,vfx={},lastEv=null,evId=0,local=false,role=null,myPid=null,shownEv=0,ctrlUI={};
+  const MQ='https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js',BROKERS=['wss://public.cloud.shiftr.io','wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt'];
+  const TOP=c=>'lifelore/v1/'+c;
+  // Verbindung über einen öffentlichen Relay-Server (Port 443) – funktioniert in jedem Netz
+  function mconnect(onc,onstat){let i=0,cur=null,ok=false;
+    const tryB=()=>{ok=false;const c=mqtt.connect(BROKERS[i],{username:'public',password:'public',clientId:'ll_'+Math.random().toString(36).slice(2,12),connectTimeout:7000,reconnectPeriod:3000,keepalive:30,clean:true});cur=c;
+      c.on('connect',()=>{ok=true;onstat&&onstat('ok');onc(c)});c.on('reconnect',()=>onstat&&onstat('reconnect'));c.on('offline',()=>onstat&&onstat('offline'));c.on('error',()=>{});
+      setTimeout(()=>{if(!ok&&cur===c&&i<BROKERS.length-1){try{c.end(true)}catch(e){}i++;tryB()}},9000);return c};
+    return tryB()}
+  const QR='https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js';
   function load(src,ok){if(ok())return Promise.resolve();return new Promise((res,rej)=>{const sc=document.createElement('script');sc.src=src;sc.onload=res;sc.onerror=()=>rej(new Error('load'));document.head.appendChild(sc)})}
-  const mk=()=>Array.from({length:5},()=>'ABCDEFGHJKMNPQRSTUVWXYZ23456789'[Math.random()*31|0]).join('');
+  const mk=()=>Array.from({length:6},()=>'ABCDEFGHJKMNPQRSTUVWXYZ23456789'[Math.random()*31|0]).join('');
   const pid=c=>'lifelore-tv-'+c.toUpperCase();
   const PUBLIC='https://robbykev.github.io/MTGCounter/';
   const url=()=>(/^https?:$/.test(location.protocol)&&!/^(localhost|127\.)/.test(location.hostname)?location.origin+location.pathname:PUBLIC)+'?watch='+code;
@@ -1396,14 +1404,17 @@ const LIVE=(()=>{let peer=null,conns=[],code=null,sendT=null,status='aus',vpeer=
       g:{turn:S.g.turn,active:S.g.active,monarch:S.g.monarch,initiative:S.g.initiative,dn:S.g.dn,ended:S.g.ended,winner:S.g.winner,paused:S.g.paused,
         game:(S.g.ended?S.g.endedAt:nowG())-S.g.started,turnMs:S.g.turnStart?nowG()-S.g.turnStart:0,sent:Date.now()},
       hist:S.hist.slice(-4).reverse().map(h=>histLine(h).replace(/<time>[^<]*<\/time>/,'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()),ev:lastEv,code:code||null,diceCol:S.setup.diceCol||'ivory',
-      seats:conns.filter(c=>c.meta&&c.meta.role==='player').map(c=>c.meta.pid)}}
-  function push(now){if(!local&&(!peer||!conns.length))return;clearTimeout(sendT);const go=()=>{const d=snap();conns.forEach(c=>{try{if(c.open)c.send(d)}catch(e){}});if(local){vstate=d;vstate._rx=Date.now();renderTV()}};if(now)go();else sendT=setTimeout(go,120)}
+      seats:[...clients.values()].filter(c=>c.role==='player').map(c=>c.pid)}}
+  function push(now){if(!local&&!peer)return;clearTimeout(sendT);const go=()=>{const d=snap();if(peer&&peer.connected&&code)try{peer.publish(TOP(code)+'/s',JSON.stringify(d),{retain:true,qos:0})}catch(e){}if(local){vstate=d;vstate._rx=Date.now();renderTV()}};if(now)go();else sendT=setTimeout(go,120)}
   function event(e){if(!peer&&!local)return;e.id=++evId;e.t=Date.now();lastEv=e;push(true)}
   function rollFor(pid,sides,n){n=Math.max(1,Math.min(6,n||1));const res=[];for(let i=0;i<(sides==='coin'||sides==='planar'?1:n);i++)res.push(sides==='coin'?(rnd(2)?'Kopf':'Zahl'):sides==='planar'?['Planeswalk','Chaos','Nichts','Nichts','Nichts','Nichts'][rnd(6)]:rnd(sides)+1);
     const who=pid!=null&&P(pid)?P(pid).name:'';const label=sides==='coin'?'Münze':sides==='planar'?'Planarwürfel':(res.length>1?res.length+'×':'')+'W'+sides;
     ev((who?who+': ':'')+label+': '+(res.length>1?res.join('+')+' = '+res.reduce((a,b)=>a+b,0):res[0]),pid);toast((who?who+' würfelt ':'')+label+': '+(res.length>1?res.reduce((a,b)=>a+b,0):res[0]),2200);event({k:'roll',who,pid,sides,res});save()}
-  function handle(c,d){if(!d||typeof d!=='object')return;
-    if(d.t==='hello'){c.meta={role:d.role,pid:d.pid};c.send(snap());push();upd();if(d.role==='player'&&P(d.pid))toast(P(d.pid).name+' spielt am eigenen Gerät mit',1800);return}
+  function handle(d){if(!d||typeof d!=='object')return;
+    if(d.t==='bye'){clients.delete(d.cid);upd();push();return}
+    if(d.t==='hello'||d.t==='ping'){const old=clients.get(d.cid);clients.set(d.cid,{role:d.role||'view',pid:d.pid,seen:Date.now()});
+      if(d.t==='hello'||!old){push(true);upd();if(d.role==='player'&&P(d.pid)&&(!old||old.pid!==d.pid))toast(P(d.pid).name+' spielt am eigenen Gerät mit',1800)}return}
+    if(d.cid&&clients.has(d.cid))clients.get(d.cid).seen=Date.now();
     if(d.t!=='act'||S.phase!=='game'||!S.players.length)return;const pid=+d.pid;if(d.a!=='next'&&!P(pid))return;
     const st=Math.max(-50,Math.min(50,+d.d||0));
     if(d.a==='life'&&st){pushUndo('life'+pid);changeLife(pid,st)}
@@ -1413,43 +1424,43 @@ const LIVE=(()=>{let peer=null,conns=[],code=null,sendT=null,status='aus',vpeer=
     else if(d.a==='roll')rollFor(pid,d.sides==='coin'||d.sides==='planar'?d.sides:[4,6,8,10,12,20].includes(+d.sides)?+d.sides:20,+d.n||1)}
   function upd(){if(ui.modal==='live')renderModal()}
   async function start(){if(peer)return;status='startet';upd();
-    try{await load(PJ,()=>window.Peer)}catch(e){status='fehler';upd();return}
-    const open=()=>{code=mk();peer=new Peer(pid(code),{debug:0});
-      peer.on('open',()=>{status='bereit';upd()});
-      peer.on('connection',c=>{conns.push(c);c.meta={role:'view'};c.on('open',()=>{c.send(snap());upd()});c.on('data',d=>handle(c,d));c.on('close',()=>{conns=conns.filter(x=>x!==c);upd();push()});c.on('error',()=>{})});
-      peer.on('disconnected',()=>{try{peer.reconnect()}catch(e){}});
-      peer.on('error',e=>{if(e&&e.type==='unavailable-id'){try{peer.destroy()}catch(x){}peer=null;open()}else if(e&&/network|server|socket/.test(e.type||'')){status='fehler';upd()}})};
-    open();clearInterval(clockT);clockT=setInterval(()=>{if(conns.length&&S.g&&!S.g.ended)push()},15000)}
-  function stop(){if(local)setLocal(false);clearInterval(clockT);conns.forEach(c=>{try{c.close()}catch(e){}});conns=[];try{peer&&peer.destroy()}catch(e){}peer=null;code=null;status='aus';upd()}
+    try{await load(MQ,()=>window.mqtt)}catch(e){status='fehler';upd();return}
+    code=mk();clients.clear();
+    peer=mconnect(c=>{if(peer!==c){peer=c;c.on('message',(tp,m)=>{let d;try{d=JSON.parse(m.toString())}catch(e){return}handle(d)})}status='bereit';c.subscribe(TOP(code)+'/a');push(true);upd()},st=>{if(st!=='ok'&&status==='bereit'){status='verbinde';upd()}else if(st==='ok'&&status!=='bereit'){status='bereit';upd()}});
+    peer.on('message',(tp,m)=>{let d;try{d=JSON.parse(m.toString())}catch(e){return}handle(d)});peer._h=1;
+    clearInterval(clockT);clockT=setInterval(()=>{const now=Date.now();let ch=false;clients.forEach((v,k)=>{if(now-v.seen>65000){clients.delete(k);ch=true}});if(ch){upd();push()}if(S.g&&!S.g.ended&&now%15000<1000)push()},1000)}
+  function stop(){if(local)setLocal(false);clearInterval(clockT);try{if(peer&&code){peer.publish(TOP(code)+'/s','',{retain:true,qos:0});setTimeout(()=>{try{peer&&peer.end()}catch(e){}peer=null},300)}else peer=null}catch(e){peer=null}clients.clear();code=null;status='aus';upd()}
   function modalHTML(X){const on=!!peer;let qr='';
     if(on&&code&&window.qrcode){try{const q=qrcode(0,'M');q.addData(url());q.make();qr=q.createSvgTag({cellSize:5,margin:2,scalable:true})}catch(e){}}
     else if(on&&code)load(QR,()=>window.qrcode).then(upd).catch(()=>{});
     return`<div class="card-h"><h2>Zuschauer &amp; TV</h2>${X}</div>
     ${!on?`<p class="hint" style="font-size:15px">Zeig den Spielstand live auf einem Fernseher, Laptop oder zweiten Tablet – ohne Konto. Die Geräte verbinden sich direkt miteinander.</p>
       <button class="mbtn" data-act="livestart">${I.tv}<span>Übertragung starten<small>Du bekommst einen Code und QR-Code für den Bildschirm</small></span></button>`
-    :status!=='bereit'?`<p class="hint">${status==='fehler'?'Verbindung zum Vermittlungsdienst fehlgeschlagen. Internet prüfen und nochmal versuchen.':'Übertragung wird gestartet …'}</p>${status==='fehler'?`<button class="mbtn" data-act="livestop">Zurücksetzen</button>`:''}`
+    :status!=='bereit'?`<p class="hint">${status==='fehler'?'Konnte den Übertragungsdienst nicht laden. Internet prüfen und nochmal versuchen.':status==='verbinde'?'Verbindung kurz unterbrochen – verbinde neu …':'Übertragung wird gestartet …'}</p>${status==='fehler'?`<button class="mbtn" data-act="livestop">Zurücksetzen</button>`:''}`
     :`<div class="livebox"><div class="liveqr">${qr||'<small>QR-Code lädt …</small>'}</div><div class="livetxt"><small>Code</small><div class="livecode">${code}</div>
         <small>Auf dem Fernseher oder zweiten Gerät öffnen:</small><div class="liveurl">${esc(url())}</div>
         <small>oder dort im Startbildschirm „Zuschauen“ tippen und den Code eingeben.</small>
-        <div class="livecnt">${(()=>{const pl=conns.filter(c=>c.meta&&c.meta.role==='player'),vw=conns.length-pl.length;return conns.length?`${vw?`<b>${vw}</b> Zuschauer`:''}${vw&&pl.length?' · ':''}${pl.length?`<b>${pl.length}</b> am eigenen Handy: ${pl.map(c=>esc(P(c.meta.pid)?P(c.meta.pid).name:'?')).join(', ')}`:''}`:'Noch niemand verbunden'})()}</div></div></div>
+        <div class="livecnt">${(()=>{const all=[...clients.values()],pl=all.filter(c=>c.role==='player'),vw=all.length-pl.length;return all.length?`${vw?`<b>${vw}</b> Zuschauer`:''}${vw&&pl.length?' · ':''}${pl.length?`<b>${pl.length}</b> am eigenen Handy: ${pl.map(c=>esc(P(c.pid)?P(c.pid).name:'?')).join(', ')}`:''}`:'Noch niemand verbunden'})()}</div></div></div>
       <button class="mbtn" data-act="livelocal">${I.tv}<span>Dieses Gerät als TV-Anzeige<small>Für Laptop/Mac am Fernseher: zeigt hier die große Übersicht, alle spielen am eigenen Handy</small></span></button>
       <button class="mbtn" data-act="livestop">${I.x}<span>Übertragung beenden</span></button>`}
-    <p class="hint">Mit demselben Code kann jeder am eigenen Handy <b>mitspielen</b> (eigener Zähler) oder nur <b>zuschauen</b>. Die Verbindung läuft direkt zwischen den Geräten, übertragen werden nur Spielstand und Namen.</p>`}
-  function setLocal(on){local=on;if(on){closeModal();document.body.classList.add('tvmode');vstate=snap();vstate._rx=Date.now();renderTV();clearInterval(clockT);clockT=setInterval(()=>{tvClock();if(conns.length&&S.g&&!S.g.ended&&Date.now()%15000<1000)push()},1000);wake()}
+    <p class="hint">Mit demselben Code kann jeder am eigenen Handy <b>mitspielen</b> (eigener Zähler) oder nur <b>zuschauen</b>. Die Geräte müssen nicht im selben WLAN sein – Handy-Netz geht auch. Übertragen werden nur Spielstand und Namen.</p>`}
+  function setLocal(on){local=on;if(on){closeModal();document.body.classList.add('tvmode');vstate=snap();vstate._rx=Date.now();renderTV();clearInterval(clockT);clockT=setInterval(()=>{tvClock()},1000);wake()}
     else{document.body.classList.remove('tvmode');const r=document.getElementById('tv');if(r)r.remove();vstate=null;show()}}
   // ---------- Zuschauer-Seite ----------
   function vroot(){let r=document.getElementById('tv');if(!r){r=document.createElement('div');r.id='tv';document.body.appendChild(r);
-      r.addEventListener('click',e=>{const b=e.target.closest('[data-tv]');if(!b)return;if(b.dataset.tv==='exit'){if(local)setLocal(false);else location.href=location.pathname}else if(b.dataset.tv==='fs')fullscreen();else if(b.dataset.tv==='role'){role=null;myPid=null;try{sessionStorage.removeItem('ll-role-'+vcode)}catch(x){}renderClient()}else if(b.dataset.tv==='pick'){role=b.dataset.r;myPid=b.dataset.p!=null?+b.dataset.p:null;try{sessionStorage.setItem('ll-role-'+vcode,JSON.stringify({role,myPid}))}catch(x){}if(vconn&&vconn.open)vconn.send({t:'hello',role,pid:myPid});renderClient()}else ctrlClick(b)})
+      r.addEventListener('click',e=>{const b=e.target.closest('[data-tv]');if(!b)return;if(b.dataset.tv==='exit'){if(local)setLocal(false);else location.href=location.pathname}else if(b.dataset.tv==='fs')fullscreen();else if(b.dataset.tv==='role'){role=null;myPid=null;try{sessionStorage.removeItem('ll-role-'+vcode)}catch(x){}renderClient()}else if(b.dataset.tv==='pick'){role=b.dataset.r;myPid=b.dataset.p!=null?+b.dataset.p:null;try{sessionStorage.setItem('ll-role-'+vcode,JSON.stringify({role,myPid}))}catch(x){}vsend({t:'hello',role,pid:myPid});renderClient()}else ctrlClick(b)})
       r.addEventListener('pointerdown',ctrlDown);['pointerup','pointercancel','pointerleave'].forEach(x=>r.addEventListener(x,ctrlUp))}return r}
   function vstatus(t){const r=vroot();if(!vstate)r.innerHTML=`<div class="tv-wait"><img class="tv-logo" src="${(document.querySelector('.logoimg')||{}).src||''}" alt=""><h1>Life &amp; Lore</h1><p>${t}</p><div class="tv-code">${esc(vcode||'')}</div><button data-tv="exit">Zurück</button></div>`;else{const st=r.querySelector('.tv-stat');if(st)st.textContent=t;r.classList.toggle('lost',!/verbunden/.test(t))}}
   async function watch(c){vcode=(c||'').trim().toUpperCase();if(!vcode)return;try{const sr=JSON.parse(sessionStorage.getItem('ll-role-'+vcode)||'null');if(sr){role=sr.role;myPid=sr.myPid}}catch(e){}document.body.classList.add('tvmode');elSetup.hidden=true;elGame.hidden=true;closeModal();vstatus('Verbinde …');wake();
-    try{await load(PJ,()=>window.Peer)}catch(e){vstatus('Konnte nicht laden – Internet prüfen');return}
-    const go=()=>{clearTimeout(retryT);try{vpeer&&vpeer.destroy()}catch(e){}vpeer=new Peer({debug:0});
-      vpeer.on('open',()=>{vconn=vpeer.connect(pid(vcode),{reliable:true});
-        vconn.on('open',()=>{vstatus('verbunden');if(role)vconn.send({t:'hello',role,pid:myPid})});vconn.on('data',d=>{vstate=d;vstate._rx=Date.now();renderClient()});
-        vconn.on('close',()=>{vstatus('Verbindung getrennt – neuer Versuch …');retryT=setTimeout(go,3000)});vconn.on('error',()=>{})});
-      vpeer.on('error',e=>{vstatus(e&&e.type==='peer-unavailable'?'Keine Übertragung mit diesem Code gefunden – läuft sie am Spielgerät? Neuer Versuch …':'Verbindungsproblem – neuer Versuch …');retryT=setTimeout(go,4000)})};
-    go();clearInterval(clockT);clockT=setInterval(tvClock,1000)}
+    try{await load(MQ,()=>window.mqtt)}catch(e){vstatus('Konnte nicht laden – Internet prüfen');return}
+    let any=false;clearTimeout(gotT);gotT=setTimeout(()=>{if(!any)vstatus('Keine Übertragung mit diesem Code gefunden. Läuft sie am Spielgerät? Ich warte weiter …')},9000);
+    vcli=mconnect(c=>{if(vcli!==c){vcli=c;c.on('message',onMsg)}c.subscribe(TOP(vcode)+'/s');if(role)vsend({t:'hello',role,pid:myPid});else vsend({t:'ping',role:'view'});if(any)vstatus('verbunden')},st=>{if(st!=='ok')vstatus('Verbindung unterbrochen – verbinde neu …')});
+    function onMsg(tp,m){const txt=m.toString();if(!txt){if(any){vstate=null;vstatus('Die Übertragung wurde am Spielgerät beendet.')}return}let d;try{d=JSON.parse(txt)}catch(e){return}any=true;vstate=d;vstate._rx=Date.now();renderClient()}
+    vcli.on('message',onMsg);
+    clearInterval(hbT);hbT=setInterval(()=>vsend({t:'ping',role:role||'view',pid:myPid}),20000);
+    window.addEventListener('pagehide',()=>vsend({t:'bye'}));
+    clearInterval(clockT);clockT=setInterval(tvClock,1000)}
+  function vsend(o){try{if(vcli&&vcli.connected&&vcode)vcli.publish(TOP(vcode)+'/a',JSON.stringify(Object.assign({cid},o)))}catch(e){}}
   function tvClock(){if(!vstate||vstate.idle)return;const g=vstate.g,dt=g.ended||g.paused?0:Date.now()-vstate._rx;const a=document.querySelector('#tv .tv-clock'),b=document.querySelector('#tv .tv-tt');if(a)a.textContent=fmtT(g.game+dt);if(b)b.textContent=fmtT(g.turnMs+dt)}
   const ico=k=>ctrIcon(k);
   function renderClient(){if(!vstate)return;if(vstate.idle||!role)return role?renderTV():renderChooser();if(role==='player')return renderCtrl();renderTV()}
@@ -1458,7 +1469,7 @@ const LIVE=(()=>{let peer=null,conns=[],code=null,sendT=null,status='aus',vpeer=
       <div class="tv-pick">${d.players.map(p=>`<button data-tv="pick" data-r="player" data-p="${p.id}" style="--bg:${p.bg};--bg2:${p.bg2};color:${p.fg||'#fff'}"${(d.seats||[]).includes(p.id)?' class="taken"':''}><b>${esc(p.name)}</b><small>${(d.seats||[]).includes(p.id)?'schon verbunden':'eigener Zähler'}</small></button>`).join('')}</div>
       <button data-tv="pick" data-r="view">${I.tv} Nur zuschauen (TV-Ansicht)</button>`}<button data-tv="exit">Zurück</button></div>`}
   // ---- Controller (eigenes Handy) ----
-  function ctrlSend(a){if(vconn&&vconn.open)vconn.send(Object.assign({t:'act',pid:myPid},a));try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}}
+  function ctrlSend(a){vsend(Object.assign({t:'act',pid:myPid},a));try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}}
   let holdT=null,holdI=null,held=false;
   function ctrlDown(e){const z=e.target.closest('[data-cl]');if(!z||role!=='player')return;held=false;const d=+z.dataset.cl;
     holdT=setTimeout(()=>{held=true;ctrlSend({a:'life',d:d*10});holdI=setInterval(()=>ctrlSend({a:'life',d:d*10}),550)},450)}
@@ -2211,7 +2222,7 @@ function renderModal(){const t=ui.modal;if(!t)return closeModal();const X=`<butt
     <div id="lookres">${lookAreaHTML()}</div>
 `}
   else if(t==='live'){body=LIVE.modalHTML(X)}
-  else if(t==='watchin'){body=`<div class="card-h"><h2>Zuschauen</h2>${X}</div><p class="hint" style="font-size:15px">Code vom Spielgerät eingeben (Menü → Zuschauer &amp; TV):</p><div class="lookbar"><input id="watchin" maxlength="5" autocomplete="off" autocapitalize="characters" placeholder="z. B. K7M2Q" style="text-transform:uppercase;letter-spacing:.3em;font-size:22px"><button class="tb" data-act="watchgo">${I.tv} Verbinden</button></div>`}
+  else if(t==='watchin'){body=`<div class="card-h"><h2>Zuschauen</h2>${X}</div><p class="hint" style="font-size:15px">Code vom Spielgerät eingeben (Menü → Zuschauer &amp; TV):</p><div class="lookbar"><input id="watchin" maxlength="6" autocomplete="off" autocapitalize="characters" placeholder="z. B. K7M2QA" style="text-transform:uppercase;letter-spacing:.3em;font-size:22px"><button class="tb" data-act="watchgo">${I.tv} Verbinden</button></div>`}
   else if(t==='rules'){body=`<div class="card-h"><h2>Regeln</h2>${X}</div>
     <div class="grp"><h4>${RULES.length} Begriffe</h4>
       <input type="search" id="rulein" class="rulein" placeholder="Begriff suchen, z. B. Trampel, Fluch, Schatz" autocomplete="off" value="${esc(ui.ruleQ||'')}">
@@ -2250,7 +2261,7 @@ elModal.addEventListener('click',e=>{if(e.target===elModal)return closeModal();c
     case'livestart':LIVE.start();break;
     case'livestop':LIVE.stop();break;
     case'livelocal':LIVE.setLocal(true);break;
-    case'watchgo':{const v=document.getElementById('watchin').value;if(v.trim().length>=4)LIVE.watch(v);break}
+    case'watchgo':{const v=document.getElementById('watchin').value;if(v.trim().length>=5)LIVE.watch(v);break}
     case'zoom':{const z=document.createElement('div');z.className='zoomov';const sm=b.getAttribute('src'),lg=sm.replace('/normal/','/large/');z.innerHTML=`<img src="${lg}" alt="" onerror="if(this.src!=='${sm}')this.src='${sm}'"><span>Antippen zum Schließen</span>`;z.addEventListener('click',()=>{z.classList.remove('on');setTimeout(()=>z.remove(),250)});document.body.appendChild(z);requestAnimationFrame(()=>z.classList.add('on'));break}
     case'lookgo':lookList(document.getElementById('lookin').value);break;
     case'lookitem':{const x=ui.lookList&&ui.lookList.items[+b.dataset.i];if(x)lookup(x.name,true);break}
