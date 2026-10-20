@@ -340,6 +340,31 @@ button.map-seat{cursor:pointer;border:0}
 .lookbar{display:flex;gap:8px}.lookbar input{flex:1;min-width:0;height:48px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:#15171c;color:inherit;padding:0 14px;font-size:17px}
 .lookbar .tb{font-size:16px;min-height:48px;padding:0 16px;gap:8px}.lookbar .tb svg{width:20px;height:20px}
 .lookres h3 .msi{width:.9em;height:.9em}
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:6px}
+.lcard{position:relative;display:flex;flex-direction:column;gap:5px;align-items:stretch;text-align:center;padding:0;background:none;color:inherit;font-size:12.5px;line-height:1.25}
+.lcard img,.lcard .noimg{width:100%;aspect-ratio:63/88;border-radius:4.5%/3.3%;object-fit:cover;background:#22252c;box-shadow:0 4px 12px rgba(0,0,0,.45);transition:transform .15s}
+.lcard:active img{transform:scale(.96)}.lcard .noimg{display:block}
+.lcard em{position:absolute;top:6px;right:6px;font-style:normal;font-size:10px;font-weight:700;background:rgba(0,0,0,.7);color:#fff;padding:1px 5px;border-radius:4px}
+.lh{margin:4px 0 4px;font-size:15px;display:flex;align-items:center;gap:6px}.lh small{opacity:.6;font-weight:400}.lh svg{width:16px;height:16px;color:var(--brass)}
+.backb{margin-bottom:10px;font-size:14px;min-height:38px}
+.lhead{display:flex;align-items:flex-start;gap:10px;justify-content:space-between}.lhead h3{flex:1}
+.tb.star{font-size:13px;min-height:34px;padding:0 10px;gap:5px;flex:none}.tb.star svg{width:15px;height:15px}.tb.star.on{background:var(--brass);color:#1a1408}
+.scanb svg,.lookbar .tb svg{width:20px;height:20px}
+.kwl{display:grid;gap:6px}.kw{background:rgba(201,164,92,.1);border:1px solid rgba(201,164,92,.3);border-radius:10px;padding:8px 12px}
+.kw summary{cursor:pointer;font-weight:600;display:flex;align-items:center;gap:8px;list-style:none}.kw summary::-webkit-details-marker{display:none}.kw summary .ci{font-size:1.2em}.kw summary .ci svg{width:1em;height:1em}
+.kw>div{margin-top:6px;line-height:1.45;font-size:14.5px}
+#scanov{position:fixed;inset:0;z-index:300;background:#000;display:flex;flex-direction:column}
+#scanov video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#scanov .sframe{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);height:min(72vh,120vw);aspect-ratio:63/88;border-radius:4.5%/3.3%;box-shadow:0 0 0 200vmax rgba(0,0,0,.55);border:2px solid rgba(255,255,255,.7)}
+#scanov .sband{position:absolute;left:4%;right:18%;top:3.5%;height:8.5%;border:3px solid #e8c46a;border-radius:6px;box-shadow:0 0 18px rgba(232,196,106,.7);animation:sband 1.6s ease-in-out infinite}
+@keyframes sband{50%{box-shadow:0 0 4px rgba(232,196,106,.3)}}
+#scanov .sband::after{content:'Kartenname hier';position:absolute;left:0;right:0;top:100%;margin-top:6px;text-align:center;font-size:13px;color:#e8c46a;font-weight:600;text-shadow:0 1px 3px #000}
+#scanov .stop{position:relative;z-index:2;padding:max(14px,env(safe-area-inset-top)) 16px 10px;color:#fff;text-align:center;font-weight:600;text-shadow:0 1px 3px #000}
+#scanov .stop small{display:block;font-weight:400;opacity:.8;margin-top:3px}
+#scanov .sbtm{position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;gap:12px;justify-content:center;padding:14px 16px max(18px,env(safe-area-inset-bottom))}
+#scanov .sbtm button{min-height:52px;padding:0 22px;border-radius:14px;font-weight:700;font-size:16px;background:rgba(30,32,38,.9);color:#fff}
+#scanov .sbtm button.pri{background:var(--brass);color:#1a1408}
+#scanov .sread{color:#e8c46a;font-family:var(--f-num);font-size:18px;min-height:22px}
 .lookres{display:grid;grid-template-columns:minmax(0,240px) 1fr;gap:16px;align-items:start}
 .lookres>img{cursor:zoom-in;width:100%;border-radius:4.5%/3.3%;box-shadow:0 6px 24px rgba(0,0,0,.5);display:block}
 .lookres h3{margin:0 0 2px;font-family:var(--f-title);font-size:22px}.lookres .ty{opacity:.75;font-style:italic;margin-bottom:8px}
@@ -634,7 +659,7 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
-const VERSION='2.6';
+const VERSION='2.7';
 const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal'};
 const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#0c0b0d',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
 const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#2a292c',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(0,0,0,.75)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
@@ -647,6 +672,8 @@ const FS_OK=!STANDALONE_EARLY()&&!!(document.fullscreenEnabled||document.webkitF
 function STANDALONE_EARLY(){return!!(navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches))}
 const HASTOUCH=('ontouchstart' in window)||navigator.maxTouchPoints>0;
 const I={
+  star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.8 2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/></svg>',
+  cam:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
   book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 21V5M8 7h7"/></svg>',
   music:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>',
   search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>',
@@ -968,10 +995,10 @@ async function sfCard(name){
   const face=faceOf(c),iu=c.image_uris||face.image_uris||{};
   const out={name:c.name,art:iu.art_crop||null,img:iu.normal||null,cmc:typeof c.cmc==='number'?c.cmc:null,cost:c.mana_cost||face.mana_cost||'',ci:c.color_identity||[],
     type:c.type_line||'',text:cardText(c,'oracle_text'),pt:c.power!=null?c.power+'/'+c.toughness:(face.power!=null?face.power+'/'+face.toughness:''),oracle:c.oracle_id||null,full:true,rul:c.rulings_uri||null,sfu:c.scryfall_uri||null,leg:c.legalities?{Commander:c.legalities.commander,Standard:c.legalities.standard,Pioneer:c.legalities.pioneer,Modern:c.legalities.modern,Brawl:c.legalities.brawl}:null};
-  if(out.oracle){const j=await sfJSON('/cards/search?q='+encodeURIComponent('oracleid:'+out.oracle+' lang:de')+'&unique=prints&order=released&dir=desc');
-    const d=j&&j.data&&j.data[0];if(d){const df=faceOf(d),diu=d.image_uris||df.image_uris||{};
+  if(out.oracle){const j=await sfJSON('/cards/search?q='+encodeURIComponent('oracleid:'+out.oracle+' lang:de -is:promo')+'&unique=prints&order=released&dir=desc')||await sfJSON('/cards/search?q='+encodeURIComponent('oracleid:'+out.oracle+' lang:de')+'&unique=prints&order=released&dir=desc');
+    const d=j&&j.data&&(j.data.find(y=>!/placeholder|missing/.test(y.image_status||''))||j.data[0]);if(d){const df=faceOf(d),diu=d.image_uris||df.image_uris||{};
       out.nameDe=d.printed_name||(d.card_faces?d.card_faces.map(f=>f.printed_name).filter(Boolean).join(' // '):'')||null;
-      out.typeDe=d.printed_type_line||df.printed_type_line||'';out.textDe=cardText(d,'printed_text');out.imgDe=diu.normal||null}}
+      out.typeDe=d.printed_type_line||df.printed_type_line||'';out.textDe=cardText(d,'printed_text');out.imgDe=/placeholder|missing/.test(d.image_status||'')?null:(diu.normal||null)}}
   return out}
 async function enrich(cd){if(!cd||cd.full||cd.offline||!cd.name)return cd;const c=await sfCard(cd.name);return c||cd}
 function ciColor(ci){if(!ci||!ci.length)return'C';if(ci.length>1)return'M';return ci[0]}
@@ -1233,18 +1260,96 @@ function ruleListHTML(){const q=(ui.ruleQ||'').trim().toLowerCase(),cat=ui.rcat|
   return`<div class="chips-row rlist">${list.map(([r,i])=>`<button class="ch txt rk" data-act="rule" data-i="${i}" aria-pressed="${ui.rule===i}">${ruleIcon(r[0])}${manaInText(esc(r[1]))}</button>`).join('')||'<span class="hint">Nichts gefunden.</span>'}</div>
     ${ru?`<div class="rulebox"><h4>${ruleIcon(ru[0])}${manaInText(esc(ru[1]))}</h4><div class="rlab">Kurz erklärt</div>${manaInText(esc(ru[2]))}
       ${REM[ru[0]]?`<div class="rofc"><div class="rlab">Offizieller Erinnerungstext von Wizards</div><q>${manaInText(esc(REM[ru[0]][0]))}</q><small>Wortlaut wie auf der deutschen Karte „${esc(REM[ru[0]][1])}“ – Zahlen und Kosten sind dort kartenspezifisch.</small></div>`:''}</div>`:''}`}
+function isSaved(c){return(S.setup.saved||[]).some(x=>x.n===c.name)}
+function kwFound(c){const t=((c.textDe||'')+'\n'+(c.text||'')).toLowerCase();const out=[];
+  RULES.forEach((r,i)=>{if(r[3]==='spiel'&&!['partner','hourglass','saga','poison','energy','rad','speed','ring','bless','monarch','initiative'].includes(r[0]))return;
+    const names=r[1].replace(' …','').split(' / ').concat(r[0]==='hourglass'?['Aussetzen']:[]);
+    if(names.some(n=>{const nn=n.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return new RegExp('(^|[^a-zäöüß])'+nn+'($|[^a-zäöüß])').test(t)}))out.push(i)});return out}
+function lookAreaHTML(){if(ui.look&&!ui.look.err)return(ui.lookList?`<button class="tb backb" data-act="lookback">‹ Zurück zur Auswahl</button>`:'')+lookResHTML(ui.look);
+  if(ui.look&&ui.look.err)return lookResHTML(ui.look);
+  if(ui.lookList)return lookListHTML(ui.lookList);
+  const sv=S.setup.saved||[];return sv.length?`<h4 class="lh">${I.star} Gemerkte Karten</h4><div class="lgrid">${sv.map(x=>`<button class="lcard" data-act="lookpick" data-n="${esc(x.n)}">${x.i?`<img src="${esc(x.i)}" alt="" loading="lazy">`:''}<span>${esc(x.d||x.n)}</span></button>`).join('')}</div>`:'<p class="hint">Tipp: Name eintippen und „Suchen“ – dann siehst du alle passenden Karten als Bilder. Mit „Scannen“ erkennt die Kamera eine Karte am Titel.</p>'}
+function lookListHTML(L){if(L.loading)return`<p class="hint">Suche „${esc(L.q)}“ …</p>`;if(!L.items.length)return`<p class="hint">Keine Karten zu „${esc(L.q)}“ gefunden.${navigator.onLine===false?' Ohne Internet funktioniert die Suche nicht.':''}</p>`;
+  return`<h4 class="lh">${L.items.length}${L.more?'+':''} Treffer für „${esc(L.q)}“ <small>– antippen für Details</small></h4><div class="lgrid">${L.items.map((x,i)=>`<button class="lcard" data-act="lookitem" data-i="${i}">${x.imgDe||x.img?`<img src="${esc(x.imgDe||x.img)}" alt="" loading="lazy">`:'<i class="noimg"></i>'}${x.imgDe?'':'<em>EN</em>'}<span>${esc(x.nameDe||x.name)}</span></button>`).join('')}</div>`}
+async function sfList(q){const E=encodeURIComponent;
+  const [de,en]=await Promise.all([sfJSON('/cards/search?q='+E(q+' lang:de')+'&unique=cards&order=edhrec'),sfJSON('/cards/search?q='+E(q)+'&unique=cards&order=edhrec')]);
+  const m=new Map();
+  const add=(c,isDe)=>{const k=c.oracle_id||c.id;const f=faceOf(c);const iu=c.image_uris||f.image_uris||{};const e=m.get(k)||{oracle:c.oracle_id};
+    const okImg=!/placeholder|missing/.test(c.image_status||'');if(isDe){e.nameDe=c.printed_name||(c.card_faces?c.card_faces.map(x=>x.printed_name).filter(Boolean).join(' // '):'')||e.nameDe;if(okImg)e.imgDe=iu.normal||iu.small||e.imgDe;else e.needDe=1}
+    e.name=c.name;if(okImg||!isDe)e.img=e.img||iu.normal||iu.small;m.set(k,e)};
+  (de&&de.data||[]).slice(0,48).forEach(c=>add(c,true));(en&&en.data||[]).slice(0,48).forEach(c=>{if(!m.has(c.oracle_id||c.id)||!m.get(c.oracle_id).img)add(c,false)});
+  return{items:[...m.values()].slice(0,48),more:!!((de&&de.has_more)||(en&&en.has_more))}}
+async function lookList(q){q=(q||'').trim();if(!q)return;ui.look=null;const L={q,loading:true,items:[]};ui.lookList=L;const box=document.getElementById('lookres');if(box)box.innerHTML=lookAreaHTML();
+  const r=await sfList(q);if(ui.lookList!==L)return;L.loading=false;L.items=r.items;L.more=r.more;
+  if(L.items.length===1){lookup(L.items[0].name,true);return}
+  const b=document.getElementById('lookres');if(b&&!ui.look)b.innerHTML=lookAreaHTML();
+  // Deutsche Bilder für englische Treffer nachladen
+  for(const x of L.items.filter(x=>!x.imgDe&&x.oracle).slice(0,20)){if(ui.lookList!==L)return;await new Promise(r=>setTimeout(r,110));
+    const j=await sfJSON('/cards/search?q='+encodeURIComponent('oracleid:'+x.oracle+' lang:de -is:promo')+'&unique=prints&order=released&dir=desc');const d=j&&j.data&&j.data.find(y=>!/placeholder|missing/.test(y.image_status||''));
+    if(d){const df=faceOf(d),iu=d.image_uris||df.image_uris||{};x.imgDe=iu.normal||iu.small;x.nameDe=d.printed_name||(d.card_faces?d.card_faces.map(f=>f.printed_name).filter(Boolean).join(' // '):'')||x.nameDe;
+      if(!ui.look){const bb=document.getElementById('lookres');if(bb)bb.innerHTML=lookAreaHTML()}}}}
 function lookResHTML(c){if(!c)return'';if(c.err)return`<p class="hint">${esc(c.err)}</p>`;
   const img=c.imgDe||c.img,nm=c.nameDe||c.name,ty=c.typeDe||c.type,tx=c.textDe||c.text;
   const leg=c.leg?`<div class="legal">${Object.entries(c.leg).map(([k,v])=>`<span class="${v==='legal'?'':'no'}">${k}: ${v==='legal'?'erlaubt':v==='banned'?'verboten':v==='restricted'?'beschränkt':'nicht erlaubt'}</span>`).join('')}</div>`:'';
   const rul=c.rulings?(c.rulings.length?`<h4 style="margin:14px 0 0">Offizielle Regel-Hinweise <small style="opacity:.6;font-weight:400">(englisch)</small></h4><div class="rulings">${c.rulings.map(r=>`<div><time>${esc(r.published_at)}</time>${esc(r.comment)}</div>`).join('')}</div>`:'<p class="hint">Keine besonderen Regel-Hinweise zu dieser Karte.</p>'):(c.rul?'<p class="hint">Regel-Hinweise werden geladen …</p>':'');
-  return`<div class="lookres">${img?`<img src="${esc(img)}" alt="${esc(nm)}" data-act="zoom" title="Antippen zum Vergrößern">`:'<div></div>'}<div><h3>${esc(nm)} ${c.cost?`<span class="mc">${manaHTML(c.cost)}</span>`:''}</h3>${c.nameDe&&c.nameDe!==c.name?`<div class="en" style="margin:0 0 4px">${esc(c.name)}</div>`:''}
+  return`<div class="lookres">${img?`<img src="${esc(img)}" alt="${esc(nm)}" data-act="zoom" title="Antippen zum Vergrößern">`:'<div></div>'}<div><div class="lhead"><h3>${esc(nm)} ${c.cost?`<span class="mc">${manaHTML(c.cost)}</span>`:''}</h3><button class="tb star${isSaved(c)?' on':''}" data-act="lookstar" aria-pressed="${isSaved(c)}">${I.star}${isSaved(c)?'Gemerkt':'Merken'}</button></div>${c.nameDe&&c.nameDe!==c.name?`<div class="en" style="margin:0 0 4px">${esc(c.name)}</div>`:''}
     <div class="ty">${esc(ty)}</div>${tx?`<div class="tx">${manaInText(esc(tx))}</div>`:''}${c.textDe&&c.text?`<details class="en"><summary>Englischer Originaltext</summary>${manaInText(esc(c.text))}</details>`:''}
-    ${c.pt?`<div style="font-family:var(--f-num);font-weight:700;font-size:24px;margin-top:6px">${esc(c.pt)}</div>`:''}${leg}${rul}</div></div>`}
-async function lookup(q){q=(q||'').trim();if(!q)return;ui.look={err:'Suche „'+q+'“ …'};const box=document.getElementById('lookres');if(box)box.innerHTML=lookResHTML(ui.look);
-  const c=await sfCard(q);if(!c){ui.look={err:'Keine Karte gefunden. Ohne Internet funktioniert die Suche nicht.'};const b=document.getElementById('lookres');if(b)b.innerHTML=lookResHTML(ui.look);return}
+    ${c.pt?`<div style="font-family:var(--f-num);font-weight:700;font-size:24px;margin-top:6px">${esc(c.pt)}</div>`:''}${kwHTML(c)}${leg}${rul}</div></div>`}
+function kwHTML(c){const k=kwFound(c);if(!k.length)return'';return`<h4 style="margin:14px 0 4px">Fähigkeiten auf dieser Karte erklärt</h4><div class="kwl">${k.map(i=>{const r=RULES[i];return`<details class="kw"><summary>${ruleIcon(r[0])}${manaInText(esc(r[1]))}</summary><div>${manaInText(esc(r[2]))}${REM[r[0]]?`<div class="rofc"><div class="rlab">Offizieller Erinnerungstext</div><q>${manaInText(esc(REM[r[0]][0]))}</q></div>`:''}</div></details>`}).join('')}</div>`}
+async function lookup(q,keepList){q=(q||'').trim();if(!q)return;if(!keepList)ui.lookList=null;ui.look={err:'Lade „'+q+'“ …'};const box=document.getElementById('lookres');if(box)box.innerHTML=lookResHTML(ui.look);
+  const c=await sfCard(q);if(!c){if(!keepList){lookList(q);return}ui.look={err:'Keine Karte gefunden. Ohne Internet funktioniert die Suche nicht.'};const b=document.getElementById('lookres');if(b)b.innerHTML=lookResHTML(ui.look);return}
   ui.look=c;const r=S.setup.lookRecent||(S.setup.lookRecent=[]);const nm=c.nameDe||c.name;const i=r.indexOf(nm);if(i>=0)r.splice(i,1);r.unshift(nm);r.length=Math.min(r.length,8);save();
-  if(ui.modal==='look')renderModal();
-  if(c.rul){try{const j=await (await fetch(c.rul)).json();c.rulings=(j.data||[]).map(x=>({published_at:x.published_at,comment:x.comment}))}catch(e){c.rulings=null;c.rul=null}if(ui.look===c){const b=document.getElementById('lookres');if(b)b.innerHTML=lookResHTML(c)}}}
+  if(ui.modal==='look'){const b=document.getElementById('lookres');if(b){b.innerHTML=lookAreaHTML();b.scrollIntoView({block:'nearest'})}else renderModal()}
+  if(c.rul){try{const j=await (await fetch(c.rul)).json();c.rulings=(j.data||[]).map(x=>({published_at:x.published_at,comment:x.comment}))}catch(e){c.rulings=null;c.rul=null}if(ui.look===c){const b=document.getElementById('lookres');if(b)b.innerHTML=lookAreaHTML()}}}
+
+/* ---------- Karten scannen (Kamera + Texterkennung) ---------- */
+const SCAN=(()=>{let ov=null,video=null,stream=null,worker=null,loop=null,busy=false,tries=0;
+  const st=(a,b)=>{if(!ov)return;ov.querySelector('.stxt').textContent=a;if(b!=null)ov.querySelector('.sread').textContent=b};
+  function loadT(){if(window.Tesseract)return Promise.resolve();return new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';s.onload=res;s.onerror=()=>rej(new Error('load'));document.head.appendChild(s)})}
+  async function getWorker(){if(worker)return worker;st('Texterkennung wird geladen …','einmalig ca. 5 MB');await loadT();
+    worker=await Tesseract.createWorker('deu',1,{langPath:'https://cdn.jsdelivr.net/npm/@tesseract.js-data/deu/4.0.0_best_int'});
+    await worker.setParameters({tessedit_pageseg_mode:'7',preserve_interword_spaces:'1'});return worker}
+  function crop(){const v=video,vw=v.videoWidth,vh=v.videoHeight;if(!vw)return null;const r=v.getBoundingClientRect(),b=ov.querySelector('.sband').getBoundingClientRect();
+    const sc=Math.max(r.width/vw,r.height/vh),ox=(r.width-vw*sc)/2,oy=(r.height-vh*sc)/2;
+    const sx=(b.left-r.left-ox)/sc,sy=(b.top-r.top-oy)/sc,sw=b.width/sc,sh=b.height/sc;const k=Math.min(3,Math.max(1,900/sw));
+    const c=document.createElement('canvas');c.width=Math.round(sw*k);c.height=Math.round(sh*k);const g=c.getContext('2d');g.drawImage(v,sx,sy,sw,sh,0,0,c.width,c.height);
+    const d=g.getImageData(0,0,c.width,c.height),p=d.data;let mn=255,mx=0;for(let i=0;i<p.length;i+=4){const y=.3*p[i]+.59*p[i+1]+.11*p[i+2];p[i]=y;if(y<mn)mn=y;if(y>mx)mx=y}
+    let avg=0;for(let i=0;i<p.length;i+=4)avg+=p[i];avg/=p.length/4;const inv=avg<110;
+    for(let i=0;i<p.length;i+=4){let y=(p[i]-mn)/(Math.max(30,mx-mn))*255;if(inv)y=255-y;y=y<128?Math.max(0,y*.6):Math.min(255,y*1.15);p[i]=p[i+1]=p[i+2]=y}
+    g.putImageData(d,0,0);return c}
+  function clean(t){t=(t||'').split('\n').map(x=>x.trim()).sort((a,b)=>b.length-a.length)[0]||'';
+    t=t.replace(/[|_~^*#@{}\[\]<>=+0-9]/g,' ').replace(/[^A-Za-zÄÖÜäöüßéèáàâêîôûç',\- ]/g,' ').replace(/\s+/g,' ').trim();
+    t=t.split(' ').filter((w,i,a)=>!(i===a.length-1&&w.length<3)).join(' ');return t.length>=3?t:''}
+  const memo=new Map();
+  function lev(a,b){a=a.toLowerCase();b=b.toLowerCase();const m=a.length,n=b.length;if(!m||!n)return 0;let p=[...Array(n+1).keys()];
+    for(let i=1;i<=m;i++){const q=[i];for(let j=1;j<=n;j++)q[j]=Math.min(p[j]+1,q[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=q}return 1-p[n]/Math.max(m,n)}
+  async function match(t){if(memo.has(t))return memo.get(t);let res=null;
+    const c=await sfJSON('/cards/named?fuzzy='+encodeURIComponent(t));if(c&&c.object==='card')res=c.name;
+    if(!res){const words=t.split(/[ ,]+/).filter(x=>x.length>=4).sort((a,b)=>b.length-a.length).slice(0,2);let best=null,bs=0;
+      for(const w of words){const list=(await sfSearchDe(w)).slice(0,60);
+        list.forEach(x=>{const pn=x.printed_name||(x.card_faces&&x.card_faces[0].printed_name)||'';const sc=Math.max(lev(t,pn),lev(t,x.name));if(sc>bs){bs=sc;best=x.name}});if(bs>=.72)break}
+      if(bs>=.6)res=best}
+    memo.set(t,res);return res}
+  async function once(manual){if(busy||!ov)return;busy=true;try{const wk=await getWorker();if(!ov)return;st(manual?'Erkenne …':'Halte die Karte ruhig in den Rahmen');
+      const c=crop();if(!c)return;const r=await wk.recognize(c);const t=clean(r.data.text);tries++;st(manual?'Erkenne …':'Suche …',t?'„'+t+'“':'…');
+      if(!t){if(manual)st('Nichts erkannt – Titel genau in den goldenen Rahmen halten');return}
+      const n=await match(t);if(!ov)return;
+      if(n){try{navigator.vibrate&&navigator.vibrate(40)}catch(e){}sfx('turn',true);const inp=document.getElementById('lookin');if(inp)inp.value=t;close();lookup(n);ui.lookList=null;lookListSilent(t)}
+      else if(manual||tries%4===0)st('Noch nicht erkannt – näher ran, gerade halten, gutes Licht',t?'„'+t+'“':'')}
+    catch(e){st('Texterkennung nicht verfügbar',navigator.onLine===false?'Beim ersten Mal wird Internet gebraucht.':'Bitte später nochmal versuchen.')}finally{busy=false}}
+  async function lookListSilent(t){try{const r=await sfList(t);if(r.items.length>1)ui.lookList={q:t,items:r.items,more:r.more,loading:false};const b=document.getElementById('lookres');if(b&&ui.look)b.innerHTML=lookAreaHTML()}catch(e){}}
+  async function open(){if(ov)return;if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('Kamera wird hier nicht unterstützt',2500);return}
+    ov=document.createElement('div');ov.id='scanov';ov.innerHTML=`<video playsinline autoplay muted></video><div class="sframe"><div class="sband"></div></div>
+      <div class="stop"><span class="stxt">Kamera wird gestartet …</span><small>Karte in den Rahmen halten – der Name oben wird automatisch erkannt</small><div class="sread"></div></div>
+      <div class="sbtm"><button data-s="close">Abbrechen</button><button class="pri" data-s="shot">Jetzt erkennen</button></div>`;
+    document.body.appendChild(ov);video=ov.querySelector('video');tries=0;
+    ov.addEventListener('click',e=>{const b=e.target.closest('[data-s]');if(!b)return;if(b.dataset.s==='close')close();else once(true)});
+    try{stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}}});if(!ov){stream.getTracks().forEach(t=>t.stop());return}
+      video.srcObject=stream;await video.play().catch(()=>{});st('Karte in den Rahmen halten');
+      getWorker().then(()=>{if(ov){st('Karte in den Rahmen halten');loop=setInterval(()=>once(false),1400)}}).catch(()=>st('Texterkennung konnte nicht geladen werden','Beim ersten Mal wird Internet gebraucht.'))}
+    catch(e){st('Kein Zugriff auf die Kamera','Bitte in den Einstellungen die Kamera für diese App erlauben.')}}
+  function close(){clearInterval(loop);loop=null;if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;if(ov)ov.remove();ov=null}
+  return{open,close}})();
 
 /* ---------- Effekte mit Rundenbezug ---------- */
 const TMODES={down:'In deinem Zug −1',up:'In deinem Zug +1',round:'Jede Runde −1',eot:'Bis Ende des Zuges',next:'Bis zu deinem nächsten Zug'};
@@ -1867,9 +1972,9 @@ function renderModal(){const t=ui.modal;if(!t)return closeModal();const X=`<butt
       <button class="mbtn" data-act="initiative">${ctrIcon('initiative')}<span>Initiative<small>${S.g.initiative!=null?esc(P(S.g.initiative).name):'niemand'} · Spieler antippen</small></span></button>
       <button class="mbtn" data-act="dn">${S.g.dn===2?ctrIcon('night'):ctrIcon('day')}<span>Tag / Nacht<small>${S.g.dn===1?'Tag':S.g.dn===2?'Nacht':'aus'} · antippen zum Wechseln</small></span></button></div></div>`}
   else if(t==='look'){const rr=S.setup.lookRecent||[],ru=ui.rule!=null?RULES[ui.rule]:null;body=`<div class="card-h"><h2>Karte nachschlagen</h2>${X}</div>
-    <div class="grp"><div class="lookbar"><input type="search" id="lookin" list="dl-lookin" placeholder="Kartenname – deutsch oder englisch" autocomplete="off" enterkeyhint="search"><datalist id="dl-lookin"></datalist><button class="tb" data-act="lookgo">${I.search} Suchen</button></div>
+    <div class="grp"><div class="lookbar"><input type="search" id="lookin" list="dl-lookin" placeholder="Kartenname – deutsch oder englisch" autocomplete="off" enterkeyhint="search" value="${esc(ui.lookList?ui.lookList.q:'')}"><datalist id="dl-lookin"></datalist><button class="tb" data-act="lookgo">${I.search} Suchen</button><button class="tb scanb" data-act="scan">${I.cam} Scannen</button></div>
       ${rr.length?`<div class="chips-row" style="margin-top:8px">${rr.map(n=>`<button class="ch txt" data-act="lookpick" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div>`:''}</div>
-    <div id="lookres">${lookResHTML(ui.look)}</div>
+    <div id="lookres">${lookAreaHTML()}</div>
 `}
   else if(t==='rules'){body=`<div class="card-h"><h2>Regeln</h2>${X}</div>
     <div class="grp"><h4>${RULES.length} Begriffe</h4>
@@ -1906,7 +2011,11 @@ elModal.addEventListener('click',e=>{if(e.target===elModal)return closeModal();c
     case'rollall':rollAll();break;
     case'planar':rollPlanar();break;
     case'zoom':{const z=document.createElement('div');z.className='zoomov';const sm=b.getAttribute('src'),lg=sm.replace('/normal/','/large/');z.innerHTML=`<img src="${lg}" alt="" onerror="if(this.src!=='${sm}')this.src='${sm}'"><span>Antippen zum Schließen</span>`;z.addEventListener('click',()=>{z.classList.remove('on');setTimeout(()=>z.remove(),250)});document.body.appendChild(z);requestAnimationFrame(()=>z.classList.add('on'));break}
-    case'lookgo':lookup(document.getElementById('lookin').value);break;
+    case'lookgo':lookList(document.getElementById('lookin').value);break;
+    case'lookitem':{const x=ui.lookList&&ui.lookList.items[+b.dataset.i];if(x)lookup(x.name,true);break}
+    case'lookback':ui.look=null;{const bb=document.getElementById('lookres');if(bb)bb.innerHTML=lookAreaHTML()}break;
+    case'lookstar':{const c=ui.look;if(!c||!c.name)break;const sv=S.setup.saved||(S.setup.saved=[]);const i=sv.findIndex(x=>x.n===c.name);if(i>=0)sv.splice(i,1);else sv.unshift({n:c.name,d:c.nameDe||'',i:c.imgDe||c.img||''});sv.length=Math.min(sv.length,60);save();const bb=document.getElementById('lookres');if(bb)bb.innerHTML=lookAreaHTML();toast(i>=0?'Nicht mehr gemerkt':'Gemerkt');break}
+    case'scan':SCAN.open();break;
     case'lookpick':lookup(b.dataset.n);break;
     case'rule':ui.rule=ui.rule===+b.dataset.i?null:+b.dataset.i;{const rl=document.getElementById('rulelist');if(rl)rl.innerHTML=ruleListHTML()}break;
     case'rcat':ui.rcat=b.dataset.v;ui.ruleQ='';ui.rule=null;{const ri=document.getElementById('rulein');if(ri)ri.value=''}elModal.querySelectorAll('.rcats .ch').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));{const rl=document.getElementById('rulelist');if(rl)rl.innerHTML=ruleListHTML()}break;
@@ -1917,7 +2026,7 @@ elModal.addEventListener('click',e=>{if(e.target===elModal)return closeModal();c
   }});
 elModal.addEventListener('change',e=>{if(e.target.id==='m-sfx'){S.cfg.sfx=S.setup.sfx=e.target.checked;if(e.target.checked){ac();sfx('heal')}save()}if(e.target.id==='m-turns'){S.cfg.turns=S.setup.turns=e.target.checked;update();save()}if(e.target.id==='m-clock'){S.cfg.clock=S.setup.clock=e.target.checked;update();save()}if(e.target.id==='m-art'){S.cfg.art=S.setup.art=e.target.checked;update();save()}if(e.target.id==='m-cmdlife'){S.cfg.cmdLife=S.setup.cmdLife=e.target.checked;save()}if(e.target.id==='m-sound'){S.cfg.sound=S.setup.sound=e.target.checked;if(e.target.checked)ac();save()}});
 elModal.addEventListener('input',e=>{const t=e.target;if(t.id==='rulein'){ui.ruleQ=t.value;ui.rule=null;const rl=document.getElementById('rulelist');if(rl)rl.innerHTML=ruleListHTML();elModal.querySelectorAll('.rcats .ch').forEach(x=>x.setAttribute('aria-pressed',String(!ui.ruleQ&&x.dataset.v===(ui.rcat||'spiel'))));return}if(t.id!=='lookin')return;const dl=document.getElementById('dl-lookin');if(dl&&[...dl.options].some(o=>o.value===t.value)){lookup(t.value);t.blur();return}onCmdInput(t)});
-elModal.addEventListener('keydown',e=>{if(e.target.id==='lookin'&&e.key==='Enter'){e.preventDefault();lookup(e.target.value);e.target.blur()}});
+elModal.addEventListener('keydown',e=>{if(e.target.id==='lookin'&&e.key==='Enter'){e.preventDefault();lookList(e.target.value);e.target.blur()}});
 document.addEventListener('keydown',e=>{
   if(S.phase==='game'&&!ui.modal&&!(document.activeElement&&/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))&&!e.metaKey&&!e.ctrlKey&&!e.altKey){
     const k=e.key;
