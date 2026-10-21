@@ -259,22 +259,22 @@ button.map-seat{cursor:pointer;border:0}
 .ov{position:absolute;inset:0;z-index:6;display:none;flex-direction:column;background:var(--bg2);padding:3cqmin;gap:2cqmin}
 .ov.on{display:flex}
 .ov-h{display:flex;align-items:center;gap:2cqmin}
-.ov-h>div{flex:1;min-width:0}
+.ov-h>div{flex:1;min-width:0}.ov-h h3{overflow-wrap:anywhere}.tg>*{max-width:100%;white-space:normal;min-width:0}@container (max-width:300px){.ov-h{flex-wrap:wrap}.ov-h>div{flex:1 0 100%;order:-1}.ov{padding:2.5cqmin}}
 .ov-h h3{margin:0;font-family:var(--f-title);font-size:clamp(15px,5cqmin,23px);letter-spacing:.03em}
 .ov-h p{margin:0;font-size:clamp(11px,3.2cqmin,17px);opacity:.75}
 .x{width:max(44px,11cqmin);height:max(44px,11cqmin);border-radius:12px;background:rgba(0,0,0,.28);display:grid;place-items:center;flex:none}
 .x svg{width:55%;height:55%}
-.rows{flex:1;min-height:0;overflow:auto;display:grid;grid-template-columns:1fr;gap:1.6cqmin;align-content:start;touch-action:pan-y;-webkit-overflow-scrolling:touch}
-@container (min-width:520px){.rows{grid-template-columns:1fr 1fr}.rows .wide{grid-column:1/-1}}
-@container (min-width:900px) and (max-height:320px){.rows{grid-template-columns:repeat(3,1fr)}}
-.r{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;align-items:center;gap:1.6cqmin;padding:1.4cqmin 2cqmin;border-radius:12px;background:rgba(0,0,0,.2)}
+.rows{flex:1;min-height:0;overflow:auto;display:grid;grid-template-columns:minmax(0,1fr);gap:1.6cqmin;align-content:start;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+@container (min-width:520px){.rows{grid-template-columns:repeat(auto-fill,minmax(min(100%,clamp(360px,62cqmin,540px)),1fr))}.rows .wide{grid-column:1/-1}.rows>*{min-width:0}}
+
+.r{display:grid;grid-template-columns:minmax(min(8.5em,38%),1fr) auto auto auto;align-items:center;gap:1.6cqmin;padding:1.4cqmin 2cqmin;border-radius:12px;background:rgba(0,0,0,.2)}
 .r .lab{display:flex;align-items:center;gap:1.6cqmin;min-width:0;font-weight:600;font-size:clamp(13px,3.8cqmin,20px)}
-.r .lab span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r .lab span{overflow:hidden;text-overflow:ellipsis;white-space:normal;overflow-wrap:anywhere}
 .r .lab small{display:block;font-weight:400;opacity:.75;font-size:clamp(11px,3cqmin,17px)}
 .r .lab i,.dot{flex:none;width:max(12px,3.4cqmin);height:max(12px,3.4cqmin);border-radius:50%;background:var(--dot);box-shadow:0 0 0 1px rgba(255,255,255,.5);display:inline-block}
-.sb{width:max(44px,11cqmin);height:max(44px,11cqmin);border-radius:10px;background:rgba(255,255,255,.12);font-family:var(--f-num);font-size:max(22px,7cqmin);font-weight:700;line-height:1;touch-action:manipulation}
+.sb{width:clamp(44px,11cqmin,76px);height:clamp(44px,11cqmin,76px);border-radius:10px;background:rgba(255,255,255,.12);font-family:var(--f-num);font-size:clamp(22px,7cqmin,40px);font-weight:700;line-height:1;touch-action:manipulation}
 .sb:active,.sb.press{background:rgba(255,255,255,.3)}
-.r .v{min-width:max(40px,10cqmin);text-align:center;font-family:var(--f-num);font-weight:700;font-size:max(24px,8cqmin);font-variant-numeric:tabular-nums}
+.r .v{min-width:clamp(40px,10cqmin,72px);text-align:center;font-family:var(--f-num);font-weight:700;font-size:clamp(24px,8cqmin,50px);font-variant-numeric:tabular-nums}
 .r .v.hot{color:#ffb4a6}
 .fxsec{display:grid;gap:1.6cqmin;padding:2cqmin;border-radius:12px;background:rgba(0,0,0,.2);align-content:start}
 .fxsec h4{margin:0;font-size:max(11px,3.2cqmin);text-transform:uppercase;letter-spacing:.1em;opacity:.8}
@@ -290,7 +290,7 @@ button.map-seat{cursor:pointer;border:0}
 .padg .ok{background:var(--fg);color:var(--bg2)}
 .addrow{display:flex;gap:1.6cqmin}
 .addrow input{flex:1;min-width:0;height:max(44px,11cqmin);border-radius:10px;border:0;background:rgba(0,0,0,.3);color:var(--fg);padding:0 2.4cqmin;font-size:16px;font-family:var(--f-ui)}
-.r .del{width:max(32px,8cqmin);height:max(32px,8cqmin);border-radius:8px;background:rgba(0,0,0,.25);display:grid;place-items:center}
+.r .del{width:clamp(32px,8cqmin,56px);height:clamp(32px,8cqmin,56px);border-radius:8px;background:rgba(0,0,0,.25);display:grid;place-items:center}
 .r .del svg{width:60%;height:60%}
 .r.cust{grid-template-columns:minmax(0,1fr) auto auto auto auto}
 @container (max-width:420px){
@@ -304,7 +304,7 @@ button.map-seat{cursor:pointer;border:0}
 
 /* ---------- Leiste ---------- */
 .barwrap{container-type:inline-size;min-width:0}
-.bar{display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0;min-height:52px}
+.bar{display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0;min-height:52px}@container (max-width:600px){.bar{gap:4px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);padding-right:24px}.bb{min-width:42px;height:44px;padding:0 9px}.bb.turnb{max-width:132px;font-size:15px}}
 .bar::-webkit-scrollbar{display:none}
 .bb{flex:none;height:48px;min-width:48px;padding:0 12px;border-radius:12px;background:#1a1d22;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:14px;white-space:nowrap}
 .bb svg{width:20px;height:20px;flex:none}
@@ -318,11 +318,11 @@ button.map-seat{cursor:pointer;border:0}
 .clock svg{width:16px;height:16px}
 .banner{flex:1;display:flex;align-items:center;gap:10px;justify-content:center;font-weight:600;font-size:16px;color:var(--brass);white-space:nowrap}
 .banner svg{width:20px;height:20px}
-@container (max-width:980px){.bb .t{display:none}.bb{padding:0 10px}}
+@container (max-width:1250px){.bb .t{display:none}.bb{padding:0 10px}}
 @container (max-width:560px){.bb.turnb{max-width:170px;font-size:17px}.clock{display:none}}
 
 /* ---------- Modal ---------- */
-#modal{position:fixed;inset:0;z-index:50;display:none;place-items:center;background:rgba(0,0,0,.6);padding:16px}
+#modal{position:fixed;inset:0;z-index:70;display:none;place-items:center;background:rgba(0,0,0,.6);padding:16px}
 #modal.on{display:grid}
 .card{width:min(620px,100%);max-height:calc(100dvh - 32px);overflow:auto;background:#17191e;border:1px solid #2a2d34;border-radius:18px;padding:20px;display:grid;gap:16px;-webkit-overflow-scrolling:touch}
 .card-h{display:flex;align-items:center;gap:12px}
@@ -337,8 +337,8 @@ button.map-seat{cursor:pointer;border:0}
 .dieout b{font-family:var(--f-num);font-size:60px;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
 .dieout small{color:var(--muted);font-size:13px}
 .volrow input{flex:1;max-width:260px;accent-color:var(--brass)}
-.lookbar{display:flex;gap:8px}.lookbar input{flex:1;min-width:0;height:48px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:#15171c;color:inherit;padding:0 14px;font-size:17px}
-.lookbar .tb{font-size:16px;min-height:48px;padding:0 16px;gap:8px}.lookbar .tb svg{width:20px;height:20px}
+.lookbar{display:flex;gap:8px;min-width:0}.grp>*{min-width:0}.lookbar input{flex:1 1 0;width:0;min-width:0;height:48px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:#15171c;color:inherit;padding:0 14px;font-size:17px}
+.lookbar .tb{font-size:16px;min-height:48px;padding:0 16px;gap:8px}.lookbar .tb svg{width:20px;height:20px}.lookbar .tb{flex:none}@media (max-width:600px){.lookbar .tb .tl{display:none}.lookbar .tb{padding:0 13px}}#modal .card{min-width:0;max-width:100%;grid-template-columns:minmax(0,1fr)}.card-h h2{min-width:0;overflow-wrap:anywhere}@media (max-width:420px){.card-h h2{font-size:19px}}
 .lookres h3 .msi{width:.9em;height:.9em}
 .lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:6px}
 .lcard{position:relative;display:flex;flex-direction:column;gap:5px;align-items:stretch;text-align:center;padding:0;background:none;color:inherit;font-size:12.5px;line-height:1.25}
@@ -354,7 +354,10 @@ button.map-seat{cursor:pointer;border:0}
 .pr-row{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline}.pr{font-family:var(--f-num);font-size:24px;font-weight:700}.pr small{display:block;font-family:var(--f-ui);font-size:11px;font-weight:500;opacity:.6}.pr.foil{background:linear-gradient(90deg,#ffd27a,#9be7ff,#e5a7ff);-webkit-background-clip:text;background-clip:text;color:transparent}
 .pr-link{margin-left:auto;font-size:13px;color:#9fe0a8;text-decoration:none;border:1px solid rgba(159,224,168,.4);padding:5px 10px;border-radius:8px}.pr-ch{margin-top:6px;font-size:14px}.pr-ch small{opacity:.6}
 
-.tv-qr{position:absolute;right:1.6vmin;bottom:1.6vmin;z-index:5;background:#fff;border-radius:1.2vmin;padding:.8vmin;width:15vmin;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.5)}.tv-qr svg{width:100%;height:auto;display:block}.tv-qr small{display:block;color:#222;font-size:1.3vmin;font-weight:600;margin-top:.3vmin}
+.tv-qr{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:20;cursor:pointer;background:#fff;border-radius:2vmin;padding:2vmin;width:42vmin;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.5)}.tv-join{cursor:pointer}.tv-qri{display:inline-block;margin-left:.5em;padding:0 .4em;border:1px solid currentColor;border-radius:.3em;font-size:.75em;opacity:.7}.tvcn{font-size:.62em;opacity:.8;margin-right:.25em}
+.c-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.c-tools button{display:flex;align-items:center;justify-content:center;gap:6px;padding:11px 6px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:inherit;font:600 13px var(--f-ui)}.c-tools svg{width:16px;height:16px}
+.cr.pt .cn{display:flex;flex-direction:column;line-height:1.15;min-width:0}.cr.pt .cn small{font-size:11px;opacity:.6;font-weight:500}
+.tv-qr svg{width:100%;height:auto;display:block}.tv-qr small{display:block;color:#222;font-size:1.3vmin;font-weight:600;margin-top:.3vmin}
 #scanov.qrscan .qframe{position:absolute;left:50%;top:48%;width:min(62vw,62vh);aspect-ratio:1;transform:translate(-50%,-50%);border:3px solid #e8c46a;border-radius:18px;box-shadow:0 0 0 200vmax rgba(0,0,0,.55),0 0 18px rgba(232,196,106,.6)}
 .tv-join{background:rgba(201,164,92,.18);border:1px solid rgba(201,164,92,.5);border-radius:.5em;padding:.15em .6em;color:#f3e5ab}.tv-join b{letter-spacing:.15em;font-family:var(--f-num)}
 .tv-pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;width:min(92vw,640px)}.tv-pick button{background:radial-gradient(120% 120% at 50% 40%,var(--bg),var(--bg2));padding:18px 10px;border-radius:14px;display:grid;gap:4px;font-size:18px}.tv-pick button small{font-size:12px;opacity:.75}.tv-pick button.taken{opacity:.55}
@@ -722,7 +725,7 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
-const VERSION='3.4';
+const VERSION='3.5.1';
 const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal'};
 const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#0c0b0d',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
 const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#2a292c',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(0,0,0,.75)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
@@ -1401,7 +1404,7 @@ const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid='c'+Math.random()
   function snap(){if(S.phase!=='game'||!S.players.length||!S.g)return{v:1,idle:true};const dm=isDmg();
     return{v:1,fmt:FORMATS[S.cfg.fmt]?FORMATS[S.cfg.fmt].n:'',turns:S.cfg.turns,clock:S.cfg.clock,
       players:S.players.map(p=>{const c=col(p);return{id:p.id,name:p.name,bg:c.bg,bg2:c.bg2,fg:c.fg,life:p.life,poison:p.poison||0,energy:p.energy||0,exp:p.exp||0,rad:p.rad||0,speed:p.speed||0,ring:p.ring||0,bless:!!p.bless,
-        tax:[p.tax1||0,p.partner?p.tax2||0:0],cmd:dm?S.players.filter(q=>q.id!==p.id).map(q=>({n:q.name,c:col(q).bg,v:Math.max(p.cmd[q.id][0],q.partner?p.cmd[q.id][1]:0)})).filter(x=>x.v>0):[],
+        tax:[p.tax1||0,p.partner?p.tax2||0:0],cmd:dm?S.players.filter(q=>q.id!==p.id).flatMap(q=>(q.partner?[0,1]:[0]).map(k=>({f:q.id,k,o:q.name,n:q.partner?(cmdName(q,k)||(k?'Partner':'Commander')):'',c:col(q).bg,v:p.cmd[q.id][k]||0}))):[],
         dead:deadReason(p)||'',cmdr:isCmd()?(p.cmdr||[]).filter(Boolean).map((n,k)=>cmdName(p,k)||n):[],art:isCmd()&&p.cdata&&p.cdata[0]&&p.cdata[0].art||null,ci:isCmd()?(idColors(p)||[]):[]}}),
       g:{turn:S.g.turn,active:S.g.active,monarch:S.g.monarch,initiative:S.g.initiative,dn:S.g.dn,ended:S.g.ended,winner:S.g.winner,paused:S.g.paused,
         game:(S.g.ended?S.g.endedAt:nowG())-S.g.started,turnMs:S.g.turnStart?nowG()-S.g.turnStart:0,sent:Date.now()},
@@ -1471,6 +1474,7 @@ const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid='c'+Math.random()
     r.innerHTML=`<div class="tv-wait"><h1>Life &amp; Lore</h1>${d.idle?'<p>Verbunden – das Spiel wurde noch nicht gestartet …</p>':`<p>Wie möchtest du mitmachen?</p>
       <div class="tv-pick">${d.players.map(p=>`<button data-tv="pick" data-r="player" data-p="${p.id}" style="--bg:${p.bg};--bg2:${p.bg2};color:${p.fg||'#fff'}"${(d.seats||[]).includes(p.id)?' class="taken"':''}><b>${esc(p.name)}</b><small>${(d.seats||[]).includes(p.id)?'schon verbunden':'eigener Zähler'}</small></button>`).join('')}</div>
       <button data-tv="pick" data-r="view">${I.tv} Nur zuschauen (TV-Ansicht)</button>`}<button data-tv="exit">Zurück</button></div>`}
+  let tvQR=false;
   // ---- Controller (eigenes Handy) ----
   function ctrlSend(a){vsend(Object.assign({t:'act',pid:myPid},a));try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}}
   let holdT=null,holdI=null,held=false;
@@ -1478,12 +1482,12 @@ const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid='c'+Math.random()
     holdT=setTimeout(()=>{held=true;ctrlSend({a:'life',d:d*10});holdI=setInterval(()=>ctrlSend({a:'life',d:d*10}),550)},450)}
   function ctrlUp(e){const z=e.target.closest&&e.target.closest('[data-cl]');clearTimeout(holdT);clearInterval(holdI);if(e.type==='pointerup'&&z&&!held&&role==='player')ctrlSend({a:'life',d:+z.dataset.cl});held=false}
   function ctrlClick(b){const t=b.dataset.tv;if(t==='c')ctrlSend({a:'ctr',k:b.dataset.k,d:+b.dataset.d});else if(t==='m')ctrlSend({a:'cmd',from:+b.dataset.f,k:+b.dataset.kk||0,d:+b.dataset.d});else if(t==='next')ctrlSend({a:'next'});
-    else if(t==='roll')ctrlSend({a:'roll',sides:b.dataset.s,n:ctrlUI.n||1});else if(t==='n'){ctrlUI.n=Math.max(1,Math.min(6,(ctrlUI.n||1)+ +b.dataset.d));renderCtrl()}else if(t==='more'){ctrlUI.more=!ctrlUI.more;renderCtrl()}}
+    else if(t==='roll')ctrlSend({a:'roll',sides:b.dataset.s,n:ctrlUI.n||1});else if(t==='n'){ctrlUI.n=Math.max(1,Math.min(6,(ctrlUI.n||1)+ +b.dataset.d));renderCtrl()}else if(t==='more'){ctrlUI.more=!ctrlUI.more;renderCtrl()}else if(t==='look')openModal('look');else if(t==='rules')openModal('rules');else if(t==='scan'){try{SCAN.open()}catch(x){openModal('look')}}else if(t==='qr'){tvQR=!tvQR;renderTV()}}
   function renderCtrl(){const r=vroot(),d=vstate;r.className='ctrl';const p=d.players.find(x=>x.id===myPid);if(!p){role=null;return renderChooser()}const g=d.g;
     const f=vfx[p.id],prev=vprev[p.id];if(prev!=null&&prev!==p.life)vfx[p.id]={v:(f&&Date.now()-f.t<1600?f.v:0)+p.life-prev,t:Date.now()};vprev[p.id]=p.life;const ff=vfx[p.id];
     const row=(k,n,v,ic)=>`<div class="cr"><span class="cl">${ic?ico(ic):''}${n}</span><button data-tv="c" data-k="${k}" data-d="-1">−</button><b>${v}</b><button data-tv="c" data-k="${k}" data-d="1">+</button></div>`;
     const opp=d.players.filter(x=>x.id!==p.id);
-    const cmdRows=d.players.length&&d.fmt&&/Commander|Brawl/.test(d.fmt)?opp.map(o=>{const v=(p.cmd.find(c=>c.n===o.name)||{}).v||0;return`<div class="cr"><span class="cl"><i class="dot" style="--dot:${o.bg}"></i>Cmd-Schaden von ${esc(o.name)}</span><button data-tv="m" data-f="${o.id}" data-d="-1">−</button><b class="${v>=15?'hot':''}">${v}</b><button data-tv="m" data-f="${o.id}" data-d="1">+</button></div>`}).join(''):'';
+    const cmdRows=d.players.length&&d.fmt&&/Commander|Brawl/.test(d.fmt)?opp.map(o=>{const es=p.cmd.filter(c=>c.f===o.id);const list=es.length?es:[{k:0,n:'',v:(p.cmd.find(c=>c.n===o.name)||{}).v||0}];const pt=list.length>1;return list.map(c=>`<div class="cr${pt?' pt':''}"><span class="cl"><i class="dot" style="--dot:${o.bg}"></i>${pt?`<span class="cn">${esc(c.n)}<small>Cmd-Schaden · ${esc(o.name)}</small></span>`:`Cmd-Schaden von ${esc(o.name)}`}</span><button data-tv="m" data-f="${o.id}" data-kk="${c.k}" data-d="-1">−</button><b class="${c.v>=15?'hot':''}">${c.v}</b><button data-tv="m" data-f="${o.id}" data-kk="${c.k}" data-d="1">+</button></div>`).join('')}).join(''):'';
     const act=d.turns&&g.active===p.id&&!g.ended;
     r.innerHTML=`<div class="c-main${p.dead?' dead':''}" style="--bg:${p.bg};--bg2:${p.bg2};color:${p.art?'#f7f3ea':(p.fg||'#f7f3ea')}">${p.art?`<div class="tv-art" style="background-image:url('${esc(p.art)}')"></div>`:''}
         <div class="c-head"><b>${esc(p.name)}</b>${p.cmdr.length?`<small>${esc(p.cmdr.join(' & '))}</small>`:''}${act?'<span class="tv-turn">am Zug</span>':''}</div>
@@ -1491,13 +1495,14 @@ const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid='c'+Math.random()
         <div class="c-life">${p.life}</div>${ff&&Date.now()-ff.t<1800&&ff.v?`<div class="tv-delta ${ff.v>0?'up':'down'}" style="animation-delay:-${(Date.now()-ff.t)/1000}s">${ff.v>0?'+':'−'}${Math.abs(ff.v)}</div>`:''}
         ${p.dead?`<div class="tv-dead"><b>${g.ended&&g.winner===p.id?'Sieg':'Ausgeschieden'}</b><small>${esc(p.dead)}</small></div>`:''}<div class="c-hint">tippen ±1 · halten ±10</div></div>
       <div class="c-panel">${act?`<button class="c-next" data-tv="next">${I.next} Zug beenden</button>`:''}
-        ${row('poison','Gift',p.poison,'poison')}${cmdRows}${d.fmt&&/Commander/.test(d.fmt)?row('tax1','Commander-Steuer',p.tax[0],'tax1'):''}
+        ${row('poison','Gift',p.poison,'poison')}${cmdRows}${d.fmt&&/Commander/.test(d.fmt)?(p.cmdr.length>1?row('tax1','Steuer: '+esc(p.cmdr[0]),p.tax[0],'tax1')+row('tax2','Steuer: '+esc(p.cmdr[1]),p.tax[1],'tax2'):row('tax1','Commander-Steuer',p.tax[0],'tax1')):''}
         <button class="c-more" data-tv="more">${ctrlUI.more?'Weniger':'Weitere Marken'} ▾</button>
         ${ctrlUI.more?row('energy','Energie',p.energy,'energy')+row('exp','Erfahrung',p.exp,'exp')+row('rad','Strahlung',p.rad,'rad')+row('speed','Tempo',p.speed,'speed')+row('ring','Ring',p.ring,'ring'):''}
         <div class="c-dice"><span class="cl">${I.dice} Würfeln</span><div>${['coin',6,20].map(s=>`<button data-tv="roll" data-s="${s}">${s==='coin'?'Münze':'W'+s}</button>`).join('')}${[4,8,10,12].map(s=>`<button data-tv="roll" data-s="${s}" class="sm">W${s}</button>`).join('')}</div>
           <div class="c-n"><button data-tv="n" data-d="-1">−</button><b>${ctrlUI.n||1}</b><button data-tv="n" data-d="1">+</button><small>Würfel – Ergebnis erscheint auf dem TV</small></div></div>
         ${d.ev&&d.ev.pid===p.id&&Date.now()-d.ev.t<8000?`<div class="c-roll">Dein Wurf: <b>${d.ev.res.length>1?d.ev.res.join(' + ')+' = '+d.ev.res.reduce((a,b)=>a+b,0):d.ev.res[0]}</b></div>`:''}
         <div class="c-others">${opp.map(o=>`<span style="--dot:${o.bg}"><i class="dot"></i>${esc(o.name)} <b>${o.life}</b></span>`).join('')}</div>
+        <div class="c-tools"><button data-tv="look">${I.search||''} Karte suchen</button><button data-tv="scan">${I.cam||''} Scannen</button><button data-tv="rules">${I.book} Regeln</button></div>
         <div class="c-foot"><button data-tv="role">Spieler wechseln</button><button data-tv="exit">Verlassen</button><span class="tv-stat">verbunden</span></div></div>`}
   function diceOverlay(r,e,d){if(!e||e.id===shownEv)return;shownEv=e.id;if(Date.now()-(e.t||0)>(d._rx?Math.max(6000,Date.now()-d._rx+6000):6000))return;
     let ov=r.querySelector('.tv-dice');if(ov)ov.remove();ov=document.createElement('div');ov.className='tv-dice';
@@ -1511,7 +1516,7 @@ const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid='c'+Math.random()
     const tiles=d.players.map(p=>{const prev=vprev[p.id];let fx='';if(prev!=null&&prev!==p.life){vfx[p.id]={v:(vfx[p.id]&&Date.now()-vfx[p.id].t<1600?vfx[p.id].v:0)+p.life-prev,t:Date.now()}}
       const f=vfx[p.id];if(f&&Date.now()-f.t<1800&&f.v)fx=`<div class="tv-delta ${f.v>0?'up':'down'}" style="animation-delay:-${(Date.now()-f.t)/1000}s">${f.v>0?'+':'−'}${Math.abs(f.v)}</div>`;vprev[p.id]=p.life;
       const chips=[];if(g.monarch===p.id)chips.push(`<span class="tvc gold">${ico('monarch')}Monarch</span>`);if(g.initiative===p.id)chips.push(`<span class="tvc gold">${ico('initiative')}Initiative</span>`);
-      if(p.poison)chips.push(`<span class="tvc${p.poison>=7?' warn':''}">${ico('poison')}${p.poison}</span>`);p.cmd.forEach(c=>chips.push(`<span class="tvc${c.v>=15?' warn':''}"><i class="dot" style="--dot:${c.c}"></i>${c.v}</span>`));
+      if(p.poison)chips.push(`<span class="tvc${p.poison>=7?' warn':''}">${ico('poison')}${p.poison}</span>`);p.cmd.filter(c=>c.v>0).forEach(c=>chips.push(`<span class="tvc${c.v>=15?' warn':''}"><i class="dot" style="--dot:${c.c}"></i>${c.n?`<small class="tvcn">${esc(c.n.split(/[ ,]/)[0])}</small>`:''}${c.v}</span>`));
       if(p.tax[0])chips.push(`<span class="tvc">${ico('tax1')}+${p.tax[0]*2}</span>`);if(p.tax[1])chips.push(`<span class="tvc">${ico('tax2')}+${p.tax[1]*2}</span>`);
       [['energy','energy'],['exp','exp'],['rad','rad'],['speed','speed'],['ring','ring']].forEach(([k,ic])=>{if(p[k])chips.push(`<span class="tvc">${ico(ic)}${p[k]}</span>`)});if(p.bless)chips.push(`<span class="tvc">${ico('bless')}</span>`);
       const act=d.turns&&g.active===p.id&&!g.ended,win=g.ended&&g.winner===p.id;
@@ -1523,8 +1528,8 @@ const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid='c'+Math.random()
     r.innerHTML=`<div class="tv-bar"><span class="tv-brand">Life &amp; Lore</span><span>${esc(d.fmt)}</span>${d.turns?`<span>Zug ${g.turn}${ap?' · '+esc(ap.name):''}</span>`:''}${g.dn?`<span>${g.dn===1?ico('day')+' Tag':ico('night')+' Nacht'}</span>`:''}${d.clock?`<span class="tv-clock"></span>`:''}<span class="tv-sp"></span><span class="tv-stat">verbunden</span><button data-tv="fs" aria-label="Vollbild">${I.full}</button><button data-tv="exit" aria-label="Beenden">${I.x}</button></div>
       <div class="tv-grid" style="--cols:${cols}">${tiles}</div>${d.hist&&d.hist.length?`<div class="tv-hist">${d.hist.map(h=>`<span>${esc(h)}</span>`).join('')}</div>`:''}`;
     if(keep)r.appendChild(keep);
-    if(d.code){const jb=document.createElement('div');jb.className='tv-join';jb.innerHTML=`Mitspielen: <b>${esc(d.code)}</b>`;r.querySelector('.tv-bar').insertBefore(jb,r.querySelector('.tv-sp'));
-      const q=document.createElement('div');q.className='tv-qr';q.innerHTML=qrSvg(PUBLIC+'?watch='+d.code)+'<small>Mit Life &amp; Lore scannen</small>';r.appendChild(q)}
+    if(d.code){const jb=document.createElement('div');jb.className='tv-join';jb.dataset.tv='qr';jb.title='QR-Code ein-/ausblenden';jb.innerHTML=`Mitspielen: <b>${esc(d.code)}</b> <span class="tv-qri">QR</span>`;r.querySelector('.tv-bar').insertBefore(jb,r.querySelector('.tv-sp'));
+      if(tvQR){const q=document.createElement('div');q.className='tv-qr';q.dataset.tv='qr';q.innerHTML=qrSvg(PUBLIC+'?watch='+d.code)+'<small>Mit Life &amp; Lore scannen · antippen zum Schließen</small>';r.appendChild(q)}}
     diceOverlay(r,d.ev,d);tvClock()}
   // ---- Beitreten per QR-Code (Kamera in der App) ----
   let qov=null,qstream=null,qloop=null,det=null;
@@ -2238,7 +2243,7 @@ function renderModal(){const t=ui.modal;if(!t)return closeModal();const X=`<butt
       <button class="mbtn" data-act="initiative">${ctrIcon('initiative')}<span>Initiative<small>${S.g.initiative!=null?esc(P(S.g.initiative).name):'niemand'} · Spieler antippen</small></span></button>
       <button class="mbtn" data-act="dn">${S.g.dn===2?ctrIcon('night'):ctrIcon('day')}<span>Tag / Nacht<small>${S.g.dn===1?'Tag':S.g.dn===2?'Nacht':'aus'} · antippen zum Wechseln</small></span></button></div></div>`}
   else if(t==='look'){const rr=S.setup.lookRecent||[],ru=ui.rule!=null?RULES[ui.rule]:null;body=`<div class="card-h"><h2>Karte nachschlagen</h2>${X}</div>
-    <div class="grp"><div class="lookbar"><input type="search" id="lookin" list="dl-lookin" placeholder="Kartenname – deutsch oder englisch" autocomplete="off" enterkeyhint="search" value="${esc(ui.lookList?ui.lookList.q:'')}"><datalist id="dl-lookin"></datalist><button class="tb" data-act="lookgo">${I.search} Suchen</button><button class="tb scanb" data-act="scan">${I.cam} Scannen</button></div>
+    <div class="grp"><div class="lookbar"><input type="search" id="lookin" list="dl-lookin" placeholder="Kartenname – deutsch oder englisch" autocomplete="off" enterkeyhint="search" value="${esc(ui.lookList?ui.lookList.q:'')}"><datalist id="dl-lookin"></datalist><button class="tb" data-act="lookgo">${I.search}<span class="tl">Suchen</span></button><button class="tb scanb" data-act="scan" aria-label="Scannen">${I.cam}<span class="tl">Scannen</span></button></div>
       ${rr.length?`<div class="chips-row" style="margin-top:8px">${rr.map(n=>`<button class="ch txt" data-act="lookpick" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div>`:''}</div>
     <div id="lookres">${lookAreaHTML()}</div>
 `}
