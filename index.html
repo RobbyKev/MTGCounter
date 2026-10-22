@@ -798,7 +798,7 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
-const VERSION='3.8';
+const VERSION='3.9';
 const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal',arcane:'Arkan (Violett & Gold)'};
 const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#0c0b0d',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
 const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#2a292c',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(0,0,0,.75)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
@@ -929,40 +929,13 @@ function noise(a,t,dur,vol,freq,ftype){const n=a.createBuffer(1,Math.floor(a.sam
 function osc(a,t,type,f0,f1,dur,vol){const o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f0,t);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+dur+.02)}
 function bell(a,t,f,dur,vol){[[1,1],[2.76,.45],[5.4,.2]].forEach(([m,g])=>osc(a,t,'sine',f*m,null,dur/m**.3,vol*g))}
 const RADIO={rivendell:{n:'Radio Rivendell',d:'Fantasy, Epik, Rollenspiel',url:'https://play.radiorivendell.com/radio/8000/radio.mp3'},epic:{n:'Epic Soundtracks',d:'Film- und Spielmusik',url:'https://mml2.prostream.se/listen/epic_soundtracks_only/radio.mp3'},kobold:{n:'Kobold.FM',d:'Tabletop & Dungeon-Synth',url:'https://kobold.messy.quest/listen/kobold.fm/radio.mp3'},celt:{n:'CeltCast',d:'Keltisch & Folk',url:'https://caster04.streampakket.com/proxy/8982/CeltCast'}};
-const MUSIC=(()=>{let master=null,rev=null,timer=null,step=0,nextT=0,playing=false;
-  const mtof=m=>440*Math.pow(2,(m-69)/12);
-  const PRE={
-    classic:{bpm:62,root:50,prog:[[0,3,7],[-4,0,3],[3,7,10],[-2,2,5]],pad:'sawtooth',padF:700,padV:.05,lead:'sine',leadV:.07,arp:[0,,,2,,,1,,,,2,,4,,,,],bass:'triangle',bassV:.09},
-    card:{bpm:70,root:57,prog:[[0,3,7],[5,8,12],[-2,2,5],[3,7,10]],pad:'triangle',padF:1400,padV:.045,lead:'triangle',leadV:.08,pluck:true,arp:[0,1,2,3,4,3,2,1,0,,2,,4,,,,],bass:'sine',bassV:.08},
-    light:{bpm:76,root:60,prog:[[0,4,7],[7,11,14],[9,12,16],[5,9,12]],pad:'sine',padF:2000,padV:.04,lead:'sine',leadV:.09,pluck:true,arp:[3,,,,1,,2,,,,4,,,,,,],bass:'sine',bassV:.07},
-    parchment:{bpm:72,root:50,prog:[[0,3,7],[5,9,12],[0,3,7],[-2,2,5]],pad:'triangle',padF:900,padV:.05,drone:true,lead:'triangle',leadV:.09,pluck:true,arp:[0,,2,1,,3,,2,0,,4,,3,2,,1],bass:'triangle',bassV:.06},
-    identity:{bpm:58,root:52,prog:[[0,4,7],[5,9,12],[9,12,16],[7,11,14]],pad:'sine',padF:1600,padV:.035,bells:true,leadV:.05,arp:[4,,,,,,2,,,,,3,,,,,],bass:'sine',bassV:.06},
-    arcane:{bpm:56,root:49,prog:[[0,3,7],[-4,0,3],[-7,-3,0],[-2,2,5]],pad:'sine',padF:1300,padV:.05,bells:true,lead:'triangle',leadV:.05,arp:[0,,4,,7,,,,3,,7,,,,2,,],bass:'sine',bassV:.08},
-    terminal:{bpm:96,root:52,prog:[[0,3,7],[-4,0,3],[-2,2,5],[0,3,7]],pad:'sawtooth',padF:900,padV:.035,lead:'square',leadV:.035,arp:[0,1,2,4,2,1,3,2,0,1,2,4,5,4,2,1],bass:'sawtooth',bassV:.07,pulse:true}};
-  function irBuf(a){const len=Math.floor(a.sampleRate*2.8),b=a.createBuffer(2,len,a.sampleRate);for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6)}return b}
-  function voice(a,t,f,dur,type,vol,att,rel,fF){const o=a.createOscillator(),g=a.createGain(),fl=a.createBiquadFilter();o.type=type;o.frequency.setValueAtTime(f,t);fl.type='lowpass';fl.frequency.setValueAtTime(fF||2500,t);
-    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+att);g.gain.setValueAtTime(vol,t+Math.max(att,dur-rel));g.gain.exponentialRampToValueAtTime(.0001,t+dur);
-    o.connect(fl);fl.connect(g);g.connect(master);o.start(t);o.stop(t+dur+.05)}
-  function pluck(a,t,f,type,vol,fF){voice(a,t,f,1.6,type,vol,.005,1.55,fF||1800)}
-  function tick(){const a=AC;if(!a||!playing)return;const P=PRE[skin()]||PRE.classic,sd=60/P.bpm/2;
-    while(nextT<a.currentTime+.8){const s=step%16,ch=P.prog[Math.floor(step/16)%P.prog.length],t=nextT;
-      if(s===0){ch.forEach(n=>voice(a,t,mtof(P.root+n-12),sd*16+1.2,P.pad,P.padV,1.4,1.6,P.padF));
-        if(P.drone){voice(a,t,mtof(P.root-24),sd*16+1.2,'triangle',.05,1.2,1.4,500);voice(a,t,mtof(P.root-17),sd*16+1.2,'triangle',.035,1.2,1.4,600)}}
-      if(P.pulse)voice(a,t,mtof(P.root+ch[0]-24),sd*.9,P.bass,P.bassV,.01,.12,420+300*Math.sin(step/9));
-      else if(s===0||s===8)voice(a,t,mtof(P.root+ch[0]-24),sd*7.5,P.bass,P.bassV,.05,1.2,500);
-      const ai=P.arp[s];if(ai!=null&&!(Math.random()<.12)){const n=ch[ai%3]+12*Math.floor(ai/3);const f=mtof(P.root+n+(P.bells?12:0));
-        if(P.bells)bell(a,t,f,2.2,P.leadV);else if(P.pluck)pluck(a,t,f,P.lead,P.leadV);else voice(a,t,f,sd*1.6,P.lead,P.leadV,.01,sd*1.2,P.lead==='square'?1400:2200)}
-      step++;nextT+=sd}}
+const MUSIC=(()=>{let master=null;
   let comp=null,ana=null;
-  function mkMaster(a){master=a.createGain();master.gain.value=0;comp=a.createDynamicsCompressor();comp.threshold.value=-18;comp.knee.value=12;comp.ratio.value=4;comp.attack.value=.01;comp.release.value=.3;
-    const out=a.createGain();out.gain.value=1.4;ana=a.createAnalyser();ana.fftSize=1024;
-    rev=a.createConvolver();rev.buffer=irBuf(a);const rg=a.createGain();rg.gain.value=.5;
-    master.connect(comp);master.connect(rev);rev.connect(rg);rg.connect(comp);comp.connect(out);out.connect(a.destination);out.connect(ana)}
+  function mkMaster(a){master=a.createGain();master.gain.value=0;comp=a.createDynamicsCompressor();comp.threshold.value=-18;comp.knee.value=12;comp.ratio.value=3;comp.attack.value=.01;comp.release.value=.3;
+    const out=a.createGain();out.gain.value=1.4;ana=a.createAnalyser();ana.fftSize=1024;master.connect(comp);comp.connect(out);out.connect(a.destination);out.connect(ana)}
   function level(){if(!ana)return 0;const d=new Float32Array(ana.fftSize);ana.getFloatTimeDomainData(d);let q=0;for(const v of d)q+=v*v;return Math.sqrt(q/d.length)}
-  function vol(){if(rad&&!rad.cors)rad.el.volume=Math.min(1,(S.setup.musVol||40)/100);if(master&&AC)master.gain.setTargetAtTime((S.setup.musVol||40)/100*(fileOn?1.1:2.4),AC.currentTime,.3)}
-  function start(){const a=ac();if(!a)return;if(!master)mkMaster(a);
-    if(playing)return;playing=true;step=0;nextT=a.currentTime+.15;vol();tick();timer=setInterval(tick,200)}
-  function stop(){playing=false;clearInterval(timer);timer=null;if(master&&AC)master.gain.setTargetAtTime(0,AC.currentTime,.25)}
+  function vol(){if(rad&&!rad.cors)rad.el.volume=Math.min(1,(S.setup.musVol||40)/100);if(master&&AC)master.gain.setTargetAtTime((S.setup.musVol||40)/100*1.1,AC.currentTime,.3)}
+  function stop(){}
   // --- Musikdateien (Ordner music/) mit Überblendung je Farbe ---
   const FILES={menu:'music/menu.mp3',W:'music/white.mp3',U:'music/blue.mp3',B:'music/black.mp3',R:'music/red.mp3',G:'music/green.mp3'},FGAIN={menu:1,W:2.6,U:.8,B:.97,R:.68,G:1.7};
   let avail=null,checking=null,decks=[],cur=null,curKey=null,fileOn=false;
@@ -995,11 +968,10 @@ const MUSIC=(()=>{let master=null,rev=null,timer=null,step=0,nextT=0,playing=fal
   function stopRadio(){if(!rad)return;const r=rad;rad=null;if(r.g&&AC)r.g.gain.setTargetAtTime(0,AC.currentTime,.25);setTimeout(()=>{try{r.el.pause();r.el.removeAttribute('src');r.el.load()}catch(e){}},500)}
   function sync(){const want=S.setup.music&&document.visibilityState==='visible';if(want)audioUnlock();
     if(!want){stop();stopFiles();stopRadio();return}
-    if(S.setup.musSrc==='radio'){stop();if(cur)stopFiles();startRadio();return}stopRadio();
+    if(S.setup.musSrc==='radio'){if(cur)stopFiles();startRadio();return}
     check().then(()=>{if(!(S.setup.music&&document.visibilityState==='visible'))return;
-      if(hasFiles()&&S.setup.musSrc!=='synth'){stop();startFiles()}
-      else{stopFiles();start()}})}
-  return{start,stop,sync,vol,follow,check,level,get on(){return playing||fileOn||!!rad},get radio(){return rad?rad.url:null},get files(){return avail?Object.keys(avail):null}}})();
+      if(hasFiles()){stopRadio();startFiles()}else{stopFiles();startRadio()}})}
+  return{stop,sync,vol,follow,check,level,get on(){return fileOn||!!rad},get radio(){return rad?rad.url:null},get files(){return avail?Object.keys(avail):null}}})();
 document.addEventListener('pointerdown',()=>{if(S.setup&&S.setup.music&&!MUSIC.on)MUSIC.sync()},{passive:true});
 document.addEventListener('visibilitychange',()=>MUSIC.sync());
 function sfx(kind,force){const on=S.cfg?S.cfg.sfx:S.setup.sfx;if(!on&&!force)return;const now=performance.now();if(!force&&now-sfxT<90)return;sfxT=now;const a=ac();if(!a)return;const t=a.currentTime+.01;const sk=skin();
@@ -1954,13 +1926,13 @@ function renderSetup(){
         <label class="tog"><input type="checkbox" id="sound" ${st.sound?'checked':''}> Beim Ausscheiden und Spielende</label>
         <label class="tog"><input type="checkbox" id="sfxopt" ${st.sfx?'checked':''}> Bei Schaden, Heilung, Gift und Zugwechsel</label>
         <p class="hint">Jedes Design hat eigene Töne. Probehören (${SKINS[skin()]}):</p>
-        <label class="tog top"><input type="checkbox" id="musicopt" ${st.music?'checked':''}><span>Hintergrundmusik<small>Erzeugt im Gerät passend zum Design, als Internetradio oder aus eigenen Dateien.</small></span></label>
+        <label class="tog top"><input type="checkbox" id="musicopt" ${st.music?'checked':''}><span>Hintergrundmusik<small>Fantasy-Stücke passend zur Commander-Farbe oder ein Internetradio-Sender.</small></span></label>
         <label class="tog volrow">Lautstärke <input type="range" id="musvol" min="5" max="100" step="5" value="${st.musVol||40}"></label>
         ${(()=>{const fl=MUSIC.files;if(fl==null){MUSIC.check().then(()=>{if(ui.scr==='settings')renderSetup()});return''}
-          const src=st.musSrc==='radio'?'radio':st.musSrc==='synth'||!fl.length?'synth':'files';
-          return`<div class="chips-row"><button class="ch txt" data-act="mussrc" data-v="synth" aria-pressed="${src==='synth'}">Erzeugte Musik</button><button class="ch txt" data-act="mussrc" data-v="radio" aria-pressed="${src==='radio'}">Internetradio</button>${fl.length?`<button class="ch txt" data-act="mussrc" data-v="files" aria-pressed="${src==='files'}">Musikdateien (${fl.length})</button>`:''}</div>`+
+          const src=st.musSrc==='radio'||!fl.length?'radio':'files';
+          return`${fl.length?`<div class="chips-row"><button class="ch txt" data-act="mussrc" data-v="files" aria-pressed="${src==='files'}">Fantasy-Musik der App</button><button class="ch txt" data-act="mussrc" data-v="radio" aria-pressed="${src==='radio'}">Internetradio</button></div>`:''}`+
           (src==='radio'?`<div class="radlist">${Object.entries(RADIO).map(([k,r])=>`<button class="radst" data-act="radio" data-v="${k}" aria-pressed="${(st.radio||'rivendell')===k}"><b>${r.n}</b><small>${r.d}</small></button>`).join('')}</div><p class="hint">Live-Stream von freien Internetradios – braucht Internet, nichts muss hochgeladen werden. Zwischendurch kann es kurze Senderansagen geben.</p>`
-          :src==='files'?`<p class="hint">Die Musik wechselt mit dem Spieler am Zug passend zur Farbe seines Commanders.</p><p class="hint small">Musik: <b>Tabletop Audio</b> (tabletopaudio.com) – Arcane Athenaeum, Cathedral, Ethereal Plane, Necropolis, Red Dragon Dawn, Elven Glade. Lizenz CC BY-NC-ND 4.0.</p>`:'')+(fl.length?'':`<p class="hint">Eigene Musik: Lege im Ordner <b>music/</b> neben der index.html die Dateien menu.mp3, white.mp3, blue.mp3, black.mp3, red.mp3 und green.mp3 ab. Dann wechselt die Musik mit dem Spieler am Zug passend zur Commander-Farbe – mit Überblendung.</p>`)})()}
+          :src==='files'?`<p class="hint">Die Musik wechselt mit dem Spieler am Zug passend zur Farbe seines Commanders.</p><p class="hint small">Musik: <b>Tabletop Audio</b> (tabletopaudio.com) – Arcane Athenaeum, Cathedral, Ethereal Plane, Necropolis, Red Dragon Dawn, Elven Glade. Lizenz CC BY-NC-ND 4.0.</p>`:'')+(fl.length?'':`<p class="hint small">Die Fantasy-Musik der App ist hier nicht verfügbar (Ordner <b>music/</b> fehlt neben der index.html) – deshalb läuft Internetradio.</p>`)})()}
         <div class="chips-row">${[['dmg','Schaden'],['big','10 Schaden'],['heal','Heilung'],['cmd','Commander'],['poison','Gift'],['turn','Zug'],['end','Spielende']].map(([k,l])=>`<button class="ch txt" data-act="sndtest" data-k="${k}">${l}</button>`).join('')}</div></section>
       </div>
       <p class="hint ver">Version ${VERSION}</p>`}
