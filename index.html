@@ -259,7 +259,7 @@ button.map-seat{cursor:pointer;border:0}
 .ov{position:absolute;inset:0;z-index:6;display:none;flex-direction:column;background:var(--bg2);padding:3cqmin;gap:2cqmin}
 .ov.on{display:flex}
 .ov-h{display:flex;align-items:center;gap:2cqmin}
-.ov-h>div{flex:1;min-width:0}.ov-h h3{overflow-wrap:anywhere}.tg>*{max-width:100%;white-space:normal;min-width:0}@container (max-width:330px){.ov-h h3{font-size:15px}.ov-h p{font-size:11px}}@container (max-width:230px){.ov-h{flex-wrap:wrap}.ov-h>div{flex:1 0 100%;order:-1}.ov{padding:2.5cqmin}}
+.ov-h>div{flex:1;min-width:0}.ov-h h3{overflow-wrap:anywhere}.tg>*{max-width:100%;white-space:normal;min-width:0}@container (max-width:330px){.ov-h h3{font-size:15px}.ov-h p{font-size:11px}}@container (max-width:180px){.ov-h{flex-wrap:wrap}.ov-h>div{flex:1 0 100%;order:-1}.ov{padding:2.5cqmin}}
 .ov-h h3{margin:0;font-family:var(--f-title);font-size:clamp(15px,5cqmin,23px);letter-spacing:.03em}
 .ov-h p{margin:0;font-size:clamp(11px,3.2cqmin,17px);opacity:.75}
 .x{width:max(44px,11cqmin);height:max(44px,11cqmin);border-radius:12px;background:rgba(0,0,0,.28);display:grid;place-items:center;flex:none}
@@ -692,7 +692,7 @@ table.t .dot{width:10px;height:10px;margin-right:6px;vertical-align:middle}
 .livedev{display:grid;gap:6px;margin-top:4px}.livedev>div{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.05)}.livedev span{flex:1}.livedev small{display:block;opacity:.6;font-size:12px}
 .tv-spin{width:34px;height:34px;border-radius:50%;border:3px solid rgba(255,255,255,.15);border-top-color:#d9b25f;animation:tvsp 1s linear infinite;margin:6px auto}@keyframes tvsp{to{transform:rotate(360deg)}}
 .radlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin-top:8px}.radst{text-align:left;padding:10px 12px;border-radius:12px;background:var(--chip);border:1px solid transparent}.radst b{display:block;font-size:15px}.radst small{display:block;opacity:.7;font-size:12px;margin-top:2px}.radst[aria-pressed="true"]{border-color:var(--brass);box-shadow:0 0 0 1px var(--brass)}
-.homerow.four{grid-template-columns:repeat(4,1fr)}@media (max-width:520px){.homerow.four{grid-template-columns:repeat(2,1fr)}}
+.homerow.four{grid-template-columns:repeat(4,1fr)}.homerow.four .bigbtn{white-space:nowrap;padding-left:8px;padding-right:8px}@media (max-width:520px){.homerow.four{grid-template-columns:repeat(2,1fr)}}
 .chatlog{display:flex;flex-direction:column;gap:10px;max-height:min(52vh,520px);min-height:160px;overflow:auto;padding:4px 2px;-webkit-overflow-scrolling:touch}
 .msg{max-width:88%;padding:10px 13px;border-radius:14px;line-height:1.45;font-size:15px;overflow-wrap:anywhere}
 .msg.user{align-self:flex-end;background:var(--brass);color:#1a1408;border-bottom-right-radius:4px}
@@ -708,34 +708,53 @@ table.t .dot{width:10px;height:10px;margin-right:6px;vertical-align:middle}
 :root[data-skin="parchment"] .msg.ai{background:rgba(90,55,15,.1)} :root[data-skin="parchment"] .chatin textarea{background:#f6ecd2;color:#2b1d10;border-color:#8a6a3e}
 :root[data-skin="arcane"] .msg.user{background:linear-gradient(180deg,#8b5cf6,#6d3fe0);color:#fff} :root[data-skin="arcane"] .chatin textarea{background:#120d1d;border-color:#3a2d5a}
 :root[data-skin="terminal"] .msg.user{background:#39ff88;color:#000} :root[data-skin="terminal"] .chatin textarea{background:#000;color:#7dffb0;border-color:#1d5a38}
-/* ---------- Skin: Arkan (Violett & Gold) ---------- */
-:root[data-skin="arcane"]{--table:#0c0913;--ink:#ece6f6;--muted:#9c90b5;--brass:#d9b25f;--chip:#1a1428;--line:#2a2140;--b1:#241c38;--b2:#3a2d5a;--b3:#6b55a6;--acc:#8b5cf6;--acc2:#6d3fe0;--accg:rgba(139,92,246,.45);--f-num:"Spline Sans Mono",ui-monospace,Menlo,monospace;--f-ui:"Inter",system-ui,-apple-system,sans-serif;--f-title:"Cinzel",Georgia,serif}
-:root[data-skin="arcane"] body{background:radial-gradient(120% 70% at 50% -10%,#2a1748 0%,#120c1e 45%,#0c0913 80%) fixed}
-:root[data-skin="arcane"] .s-head h1,:root[data-skin="arcane"] .card-h h2,:root[data-skin="arcane"] .ov-h h3{color:var(--brass);text-shadow:0 0 18px rgba(217,178,95,.25)}
-:root[data-skin="arcane"] .tile,:root[data-skin="arcane"] .bigbtn,:root[data-skin="arcane"] .setbox,:root[data-skin="arcane"] .prow,:root[data-skin="arcane"] .arch-item,:root[data-skin="arcane"] .kpi,:root[data-skin="arcane"] .chart,:root[data-skin="arcane"] .dieout{background:linear-gradient(180deg,#1a1329,#140f21);border:1px solid var(--b2);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
-:root[data-skin="arcane"] .bigbtn.pri{background:linear-gradient(180deg,var(--acc),var(--acc2));border-color:#a07bff;color:#fff;box-shadow:0 6px 24px var(--accg),inset 0 1px 0 rgba(255,255,255,.25)}
-:root[data-skin="arcane"] .bigbtn:not(.pri):hover,:root[data-skin="arcane"] .tile:hover{border-color:var(--b3)}
-:root[data-skin="arcane"] .ch{background:var(--chip);border:1px solid var(--b2)}
-:root[data-skin="arcane"] .ch[aria-pressed="true"]{background:var(--acc);border-color:#a07bff;color:#fff}
-:root[data-skin="arcane"] .num-in,:root[data-skin="arcane"] .sel,:root[data-skin="arcane"] .prow input[type=text],:root[data-skin="arcane"] .cmdin input,:root[data-skin="arcane"] .lookbar input,:root[data-skin="arcane"] .addrow input{background:#120d1d;border:1px solid var(--b2);color:var(--ink)}
-:root[data-skin="arcane"] .card{background:linear-gradient(180deg,#171125,#110c1b);border:1px solid var(--b2);box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(139,92,246,.08)}
-:root[data-skin="arcane"] .card .x,:root[data-skin="arcane"] .mbtn,:root[data-skin="arcane"] .dice button,:root[data-skin="arcane"] .tb,:root[data-skin="arcane"] .x{background:#1d1630;border:1px solid var(--b2)}
-:root[data-skin="arcane"] .tb[aria-pressed="true"],:root[data-skin="arcane"] .tb.go2{background:var(--acc);border-color:#a07bff;color:#fff}
-:root[data-skin="arcane"] .panel{border-radius:16px;background:radial-gradient(130% 85% at 50% 0%,color-mix(in srgb,var(--pc) 42%,#1a1030) 0%,color-mix(in srgb,var(--pc) 14%,#120c1e) 55%,#0c0913 100%);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--pc) 45%,var(--b2)),inset 0 1px 0 rgba(255,255,255,.07)}
-:root[data-skin="arcane"] .panel.active{box-shadow:inset 0 0 0 1px var(--brass),0 0 0 2px var(--brass),0 0 30px rgba(217,178,95,.35);animation:arcpulse 2.6s ease-in-out infinite}
-@keyframes arcpulse{50%{box-shadow:inset 0 0 0 1px var(--brass),0 0 0 2px var(--brass),0 0 44px rgba(217,178,95,.55)}}
-:root[data-skin="arcane"] .num{font-weight:600;letter-spacing:-.04em;text-shadow:0 0 3cqmin color-mix(in srgb,var(--pc) 55%,transparent),0 .4cqmin 0 rgba(0,0,0,.4)}
-:root[data-skin="arcane"] .name{font-family:var(--f-title);letter-spacing:.06em;color:#f3e7c8}
-:root[data-skin="arcane"] .pbtn,:root[data-skin="arcane"] .sb,:root[data-skin="arcane"] .padg button,:root[data-skin="arcane"] .badge,:root[data-skin="arcane"] .pchip,:root[data-skin="arcane"] .cmdr{background:rgba(20,14,34,.55);border:1px solid color-mix(in srgb,var(--pc) 35%,var(--b2));backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-:root[data-skin="arcane"] .badge.turn{background:var(--brass);color:#1a1206;border-color:var(--brass)}
-:root[data-skin="arcane"] .r,:root[data-skin="arcane"] .fxsec,:root[data-skin="arcane"] .padv{background:rgba(255,255,255,.035);border:1px solid var(--b1)}
-:root[data-skin="arcane"] .ov{background:linear-gradient(180deg,#171026,#0f0a19)}
-:root[data-skin="arcane"] .bb,:root[data-skin="arcane"] .bb.turnb{background:#16101f;border:1px solid var(--b2);color:var(--ink)}
-:root[data-skin="arcane"] .bb{font-size:13px;gap:6px} :root[data-skin="arcane"] .bb.turnb{font-family:var(--f-ui);font-weight:600;font-size:16px;letter-spacing:0;background:linear-gradient(180deg,var(--acc),var(--acc2));border-color:#a07bff;color:#fff;box-shadow:0 4px 18px var(--accg)}
-:root[data-skin="arcane"] .bb.on{background:var(--brass);color:#1a1206;border-color:var(--brass)}
-:root[data-skin="arcane"] .startp{background:rgba(14,9,24,.96);border-color:var(--b3)} :root[data-skin="arcane"] .startp .big{background:linear-gradient(180deg,var(--acc),var(--acc2));color:#fff}
-:root[data-skin="arcane"] .map-box{background:#120d1d}
-@media (prefers-reduced-motion:reduce){:root[data-skin="arcane"] .panel.active{animation:none}}
+/* ---------- Skin: Arkan (Violett & Gold) – nach dem Design-Kit ---------- */
+:root[data-skin="arcane"]{--table:#0b0814;--ink:#e2e8f0;--head:#f4f0ff;--muted:rgba(196,181,253,.88);--dim:#94a3b8;--brass:#d4b06a;--chip:rgba(10,7,18,.55);--line:rgba(168,85,247,.22);
+  --vio:#7c3aed;--vio2:#9333ea;--lav:#c4b5fd;--vline:rgba(168,85,247,.45);--vline2:rgba(168,85,247,.22);--vglow:rgba(124,58,237,.55);
+  --gold:#d4b06a;--gtext:rgba(235,215,175,.92);--gline:rgba(212,176,106,.45);--gfill:rgba(212,176,106,.13);
+  --surf:radial-gradient(80% 95% at 74% 46%,rgba(124,58,237,.24),transparent 72%),linear-gradient(90deg,rgba(10,7,18,.92),rgba(18,12,32,.86) 48%,rgba(24,15,43,.8));
+  --shadow:0 16px 44px rgba(10,6,20,.5);--ease:cubic-bezier(.22,1,.36,1);
+  --f-num:"Spline Sans Mono",ui-monospace,Menlo,monospace;--f-ui:"Inter",system-ui,-apple-system,sans-serif;--f-title:"Cinzel",Georgia,serif}
+:root[data-skin="arcane"] body{background-color:#0b0814;background-image:radial-gradient(60% 40% at 50% 0%,rgba(124,58,237,.18),transparent 70%),radial-gradient(40% 30% at 85% 90%,rgba(147,51,234,.10),transparent 70%);background-attachment:fixed;-webkit-font-smoothing:antialiased}
+/* Typo: Cinzel nur fürs Logo, sonst Inter mit kräftigen Gewichten */
+:root[data-skin="arcane"] .s-head h1,:root[data-skin="arcane"] .brand h1,:root[data-skin="arcane"] .brand .title{font-family:var(--f-title);font-weight:700;color:var(--gold);text-shadow:0 2px 0 #3b2a10,0 0 24px rgba(212,176,106,.35)}
+:root[data-skin="arcane"] .card-h h2,:root[data-skin="arcane"] .ov-h h3,:root[data-skin="arcane"] .setbox h3{font-family:var(--f-ui);font-weight:800;letter-spacing:0;color:var(--head);text-shadow:none}
+:root[data-skin="arcane"] .s-lab,:root[data-skin="arcane"] .fxsec h4,:root[data-skin="arcane"] .grp h4,:root[data-skin="arcane"] .setbox h3{font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted)}
+:root[data-skin="arcane"] .hint,:root[data-skin="arcane"] .bigbtn small,:root[data-skin="arcane"] .mbtn small,:root[data-skin="arcane"] .r .lab small,:root[data-skin="arcane"] .ov-h p{color:var(--muted)}
+/* Flächen: dunkel, seitlicher Lila-Schein, dünne halbtransparente Rahmen */
+:root[data-skin="arcane"] .tile,:root[data-skin="arcane"] .bigbtn,:root[data-skin="arcane"] .setbox,:root[data-skin="arcane"] .prow,:root[data-skin="arcane"] .arch-item,:root[data-skin="arcane"] .kpi,:root[data-skin="arcane"] .chart,:root[data-skin="arcane"] .dieout,:root[data-skin="arcane"] .livedev>div,:root[data-skin="arcane"] .askcard{background:var(--surf);border:1px solid var(--vline2);border-radius:11px;box-shadow:none}
+:root[data-skin="arcane"] .card{background:var(--surf),#0f0a1a;border:1px solid var(--vline);border-radius:14px;box-shadow:var(--shadow),inset 0 1px rgba(255,255,255,.04)}
+:root[data-skin="arcane"] .ov{background:radial-gradient(80% 95% at 74% 40%,rgba(124,58,237,.22),transparent 72%),linear-gradient(90deg,#0b0814,#140d24)}
+:root[data-skin="arcane"] .r,:root[data-skin="arcane"] .fxsec,:root[data-skin="arcane"] .padv{background:rgba(10,7,18,.45);border:1px solid var(--vline2);border-radius:8px}
+/* Eine Hauptaktion leuchtet, alles andere ist Outline */
+:root[data-skin="arcane"] .bigbtn.pri,:root[data-skin="arcane"] .tb.go2,:root[data-skin="arcane"] .startp .big,:root[data-skin="arcane"] .chatin .tb{background:linear-gradient(180deg,var(--vio2),var(--vio));border:1px solid rgba(196,181,253,.5);color:#fff;box-shadow:0 0 0 1px rgba(124,58,237,.3),0 6px 22px var(--vglow)}
+:root[data-skin="arcane"] .bigbtn{transition:transform .2s var(--ease),border-color .15s,box-shadow .2s}
+:root[data-skin="arcane"] .bigbtn.pri:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgba(196,181,253,.6),0 10px 30px var(--vglow)}
+:root[data-skin="arcane"] .bigbtn:not(.pri):hover,:root[data-skin="arcane"] .tb:hover,:root[data-skin="arcane"] .mbtn:hover,:root[data-skin="arcane"] .bb:hover{border-color:var(--lav)}
+:root[data-skin="arcane"] .tb,:root[data-skin="arcane"] .mbtn,:root[data-skin="arcane"] .x,:root[data-skin="arcane"] .card .x,:root[data-skin="arcane"] .dice button,:root[data-skin="arcane"] .sb,:root[data-skin="arcane"] .padg button,:root[data-skin="arcane"] .stepper .sb{background:rgba(10,7,18,.35);border:1px solid rgba(255,255,255,.22);border-radius:6px;box-shadow:none;color:var(--head)}
+:root[data-skin="arcane"] .mbtn{border-radius:8px;background:var(--surf);border-color:var(--vline2)}
+/* Gold = ausgewählt */
+:root[data-skin="arcane"] .ch{border-radius:999px;background:var(--chip);border:1px solid rgba(196,181,253,.3);color:rgba(237,233,254,.92)}
+:root[data-skin="arcane"] .ch[aria-pressed="true"],:root[data-skin="arcane"] .tb[aria-pressed="true"],:root[data-skin="arcane"] .radst[aria-pressed="true"],:root[data-skin="arcane"] .mbtn[aria-pressed="true"]{background:var(--gfill);border-color:var(--gline);color:var(--gtext);box-shadow:none}
+:root[data-skin="arcane"] .radst{background:var(--chip);border:1px solid rgba(196,181,253,.25);border-radius:8px}
+:root[data-skin="arcane"] .num-in,:root[data-skin="arcane"] .sel,:root[data-skin="arcane"] .prow input[type=text],:root[data-skin="arcane"] .cmdin input,:root[data-skin="arcane"] .lookbar input,:root[data-skin="arcane"] .addrow input,:root[data-skin="arcane"] .rulein,:root[data-skin="arcane"] .chatin textarea{background:rgba(10,7,18,.6);border:1px solid rgba(255,255,255,.14);color:var(--head);border-radius:8px}
+:root[data-skin="arcane"] input:focus-visible,:root[data-skin="arcane"] textarea:focus-visible,:root[data-skin="arcane"] button:focus-visible{outline:2px solid var(--lav);outline-offset:2px}
+/* Spielerfelder: Farbe des Spielers als seitlicher Schein */
+:root[data-skin="arcane"] .panel{border-radius:14px;background:radial-gradient(85% 95% at 74% 30%,color-mix(in srgb,var(--pc) 42%,transparent),transparent 72%),linear-gradient(100deg,rgba(10,7,18,.96),color-mix(in srgb,var(--pc) 14%,#120c20) 55%,color-mix(in srgb,var(--pc) 22%,#180f2b));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--pc) 50%,rgba(168,85,247,.22)),inset 0 1px rgba(255,255,255,.05)}
+:root[data-skin="arcane"] .panel.active{box-shadow:inset 0 0 0 1px var(--gold),0 0 0 2px var(--gline),0 0 28px rgba(212,176,106,.28)}
+:root[data-skin="arcane"] .num{font-weight:600;letter-spacing:-.04em;color:var(--head);text-shadow:0 0 3cqmin color-mix(in srgb,var(--pc) 45%,transparent),0 .4cqmin 0 rgba(0,0,0,.45)}
+:root[data-skin="arcane"] .name{font-family:var(--f-ui);font-weight:800;letter-spacing:.02em;color:var(--head)}
+:root[data-skin="arcane"] .pbtn,:root[data-skin="arcane"] .badge,:root[data-skin="arcane"] .pchip,:root[data-skin="arcane"] .cmdr{background:rgba(10,7,18,.55);border:1px solid rgba(255,255,255,.18);border-radius:6px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+:root[data-skin="arcane"] .badge.turn{background:var(--gfill);color:var(--gtext);border-color:var(--gline)}
+/* Leiste */
+:root[data-skin="arcane"] .bb{background:rgba(10,7,18,.55);border:1px solid rgba(255,255,255,.16);border-radius:6px;color:var(--head);font-size:13px;gap:6px}
+:root[data-skin="arcane"] .bb.turnb{font-family:var(--f-ui);font-weight:700;font-size:16px;letter-spacing:0;background:linear-gradient(180deg,var(--vio2),var(--vio));border-color:rgba(196,181,253,.5);color:#fff;box-shadow:0 0 0 1px rgba(124,58,237,.3),0 4px 18px var(--vglow)}
+:root[data-skin="arcane"] .bb.on{background:var(--gfill);border-color:var(--gline);color:var(--gtext)}
+:root[data-skin="arcane"] .startp{background:rgba(11,8,20,.96);border-color:var(--vline)}
+:root[data-skin="arcane"] .map-box{background:rgba(10,7,18,.6)}
+:root[data-skin="arcane"] .msg.user{background:rgba(124,58,237,.38);border:1px solid var(--vline);color:var(--head)} :root[data-skin="arcane"] .msg.ai{background:rgba(10,7,18,.55);border:1px solid var(--vline2)}
+:root[data-skin="arcane"] #liveask{background:#120c20;border-color:var(--vline)} :root[data-skin="arcane"] #liveask button.ok{background:linear-gradient(180deg,var(--vio2),var(--vio));color:#fff}
+@media (prefers-reduced-motion:reduce){:root[data-skin="arcane"] *{transition:none!important}}
 </style>
 
 </head><body>
@@ -779,7 +798,7 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
-const VERSION='3.7';
+const VERSION='3.8';
 const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal',arcane:'Arkan (Violett & Gold)'};
 const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#0c0b0d',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
 const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#2a292c',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(0,0,0,.75)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
@@ -945,11 +964,12 @@ const MUSIC=(()=>{let master=null,rev=null,timer=null,step=0,nextT=0,playing=fal
     if(playing)return;playing=true;step=0;nextT=a.currentTime+.15;vol();tick();timer=setInterval(tick,200)}
   function stop(){playing=false;clearInterval(timer);timer=null;if(master&&AC)master.gain.setTargetAtTime(0,AC.currentTime,.25)}
   // --- Musikdateien (Ordner music/) mit Überblendung je Farbe ---
-  const FILES={menu:'music/menu.mp3',W:'music/white.mp3',U:'music/blue.mp3',B:'music/black.mp3',R:'music/red.mp3',G:'music/green.mp3'};
+  const FILES={menu:'music/menu.mp3',W:'music/white.mp3',U:'music/blue.mp3',B:'music/black.mp3',R:'music/red.mp3',G:'music/green.mp3'},FGAIN={menu:1,W:2.6,U:.8,B:.97,R:.68,G:1.7};
   let avail=null,checking=null,decks=[],cur=null,curKey=null,fileOn=false;
   function check(){if(avail)return Promise.resolve(avail);if(checking)return checking;
     if(!/^https?:/.test(location.protocol)&&!/capacitor|localhost/.test(location.href)){avail={};return Promise.resolve(avail)}
-    checking=Promise.all(Object.entries(FILES).map(([k,u])=>fetch(u,{method:'HEAD',cache:'no-store'}).then(r=>[k,r.ok&&!/text\/html/.test(r.headers.get('content-type')||'')]).catch(()=>[k,false])))
+    const okR=r=>r.ok&&!/text\/html/.test(r.headers.get('content-type')||'');
+    checking=Promise.all(Object.entries(FILES).map(([k,u])=>fetch(u,{method:'HEAD',cache:'no-store'}).then(r=>okR(r)?[k,true]:Promise.reject()).catch(()=>fetch(u).then(r=>{try{r.body&&r.body.cancel()}catch(e){}return[k,okR(r)]}).catch(()=>[k,false]))))
       .then(l=>{avail={};l.forEach(([k,ok])=>{if(ok)avail[k]=FILES[k]});return avail});return checking}
   function hasFiles(){return avail&&Object.keys(avail).length>0}
   function wantKey(){if(!avail)return null;let k='menu';
@@ -959,7 +979,7 @@ const MUSIC=(()=>{let master=null,rev=null,timer=null,step=0,nextT=0,playing=fal
   function deck(k){const a=ac();const el=new Audio();el.src=avail[k];el.loop=true;el.preload='auto';el.crossOrigin='anonymous';
     const src=a.createMediaElementSource(el),g=a.createGain();g.gain.value=0;src.connect(g);g.connect(master);return{el,g,k}}
   function fadeTo(k){const a=AC;if(!a||!k||k===curKey)return;curKey=k;const old=cur;cur=deck(k);const t=a.currentTime;
-    cur.el.play().catch(()=>{});cur.g.gain.setValueAtTime(0,t);cur.g.gain.linearRampToValueAtTime(1,t+1.5);
+    cur.el.play().catch(()=>{});cur.g.gain.setValueAtTime(0,t);cur.g.gain.linearRampToValueAtTime(FGAIN[k]||1,t+1.5);
     if(old){old.g.gain.setValueAtTime(old.g.gain.value,t);old.g.gain.linearRampToValueAtTime(0,t+1.5);setTimeout(()=>{try{old.el.pause();old.el.src=''}catch(e){}},1700)}}
   function startFiles(){fileOn=true;start0();fadeTo(wantKey())}
   function stopFiles(){fileOn=false;if(cur){const c=cur;cur=null;curKey=null;if(AC){c.g.gain.setTargetAtTime(0,AC.currentTime,.3)}setTimeout(()=>{try{c.el.pause();c.el.src=''}catch(e){}},1200)}}
@@ -1940,7 +1960,7 @@ function renderSetup(){
           const src=st.musSrc==='radio'?'radio':st.musSrc==='synth'||!fl.length?'synth':'files';
           return`<div class="chips-row"><button class="ch txt" data-act="mussrc" data-v="synth" aria-pressed="${src==='synth'}">Erzeugte Musik</button><button class="ch txt" data-act="mussrc" data-v="radio" aria-pressed="${src==='radio'}">Internetradio</button>${fl.length?`<button class="ch txt" data-act="mussrc" data-v="files" aria-pressed="${src==='files'}">Musikdateien (${fl.length})</button>`:''}</div>`+
           (src==='radio'?`<div class="radlist">${Object.entries(RADIO).map(([k,r])=>`<button class="radst" data-act="radio" data-v="${k}" aria-pressed="${(st.radio||'rivendell')===k}"><b>${r.n}</b><small>${r.d}</small></button>`).join('')}</div><p class="hint">Live-Stream von freien Internetradios – braucht Internet, nichts muss hochgeladen werden. Zwischendurch kann es kurze Senderansagen geben.</p>`
-          :src==='files'?`<p class="hint">Die Musik wechselt mit dem Spieler am Zug passend zur Farbe seines Commanders.</p>`:'')+(fl.length?'':`<p class="hint">Eigene Musik: Lege im Ordner <b>music/</b> neben der index.html die Dateien menu.mp3, white.mp3, blue.mp3, black.mp3, red.mp3 und green.mp3 ab. Dann wechselt die Musik mit dem Spieler am Zug passend zur Commander-Farbe – mit Überblendung.</p>`)})()}
+          :src==='files'?`<p class="hint">Die Musik wechselt mit dem Spieler am Zug passend zur Farbe seines Commanders.</p><p class="hint small">Musik: <b>Tabletop Audio</b> (tabletopaudio.com) – Arcane Athenaeum, Cathedral, Ethereal Plane, Necropolis, Red Dragon Dawn, Elven Glade. Lizenz CC BY-NC-ND 4.0.</p>`:'')+(fl.length?'':`<p class="hint">Eigene Musik: Lege im Ordner <b>music/</b> neben der index.html die Dateien menu.mp3, white.mp3, blue.mp3, black.mp3, red.mp3 und green.mp3 ab. Dann wechselt die Musik mit dem Spieler am Zug passend zur Commander-Farbe – mit Überblendung.</p>`)})()}
         <div class="chips-row">${[['dmg','Schaden'],['big','10 Schaden'],['heal','Heilung'],['cmd','Commander'],['poison','Gift'],['turn','Zug'],['end','Spielende']].map(([k,l])=>`<button class="ch txt" data-act="sndtest" data-k="${k}">${l}</button>`).join('')}</div></section>
       </div>
       <p class="hint ver">Version ${VERSION}</p>`}
