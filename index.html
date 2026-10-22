@@ -811,7 +811,7 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
-const VERSION='4.0';
+const VERSION='4.2';
 const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal',arcane:'Arkan'};
 const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#0c0b0d',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
 const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#2a292c',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(0,0,0,.75)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
@@ -950,26 +950,34 @@ const MUSIC=(()=>{let master=null;
   function vol(){if(rad&&!rad.cors)rad.el.volume=Math.min(1,(S.setup.musVol||40)/100);if(outG&&AC)outG.gain.setTargetAtTime(volF(),AC.currentTime,.12)}
   function stop(){}
   // --- Musikdateien (Ordner music/) mit Überblendung je Farbe ---
-  const FILES={menu:'music/menu.mp3',W:'music/white.mp3',U:'music/blue.mp3',B:'music/black.mp3',R:'music/red.mp3',G:'music/green.mp3'},FGAIN={menu:1,W:2.6,U:.8,B:.97,R:.68,G:1.7};
-  let avail=null,checking=null,decks=[],cur=null,curKey=null,fileOn=false;
+  // Musik wie bei Moxgate: Startseite = gemischte Playlist, im Spiel = zufälliges Stück, das durchläuft (kein Wechsel pro Zug)
+  const MUS_PUB='https://robbykev.github.io/MTGCounter/music/';
+  const TRK={m1:['Ancient Echoes',0.60],m2:['Lost Horizons',1.66],m3:['Starlit Path',1.57],m4:['Veil of Mist',0.86],m5:['Hidden Ruins',1.29],m6:['Elden Trail',3.00],m7:['Whispering Woods',1.33],m8:['Timeless Journey',1.82],g1:['Moonspire',2.69],g2:['Elven Dawn',1.48],g3:['Winds of Valor',1.12],g4:['Darkwood Path',1.35],g5:['Frostbound',1.93],g6:['Emberlight',1.50],g7:['Silverbrook',0.94],g8:['Mystic Grove',1.38],g9:['Throne of Storms',1.30],g10:['Sorrow’s Edge',0.75]};
+  let avail=null,checking=null,cur=null,curKey=null,fileOn=false,curSet=null,order={menu:[],game:[]};
   function check(){if(avail)return Promise.resolve(avail);if(checking)return checking;
     if(!/^https?:/.test(location.protocol)&&!/capacitor|localhost/.test(location.href)){avail={};return Promise.resolve(avail)}
     const okR=r=>r.ok&&!/text\/html/.test(r.headers.get('content-type')||'');
-    checking=Promise.all(Object.entries(FILES).map(([k,u])=>fetch(u,{method:'HEAD',cache:'no-store'}).then(r=>okR(r)?[k,true]:Promise.reject()).catch(()=>fetch(u).then(r=>{try{r.body&&r.body.cancel()}catch(e){}return[k,okR(r)]}).catch(()=>[k,false]))))
-      .then(l=>{avail={};l.forEach(([k,ok])=>{if(ok)avail[k]=FILES[k]});return avail});return checking}
+    const probe=u=>fetch(u,{method:'HEAD',cache:'no-store'}).then(r=>okR(r)?u:Promise.reject()).catch(()=>fetch(u,{headers:{Range:'bytes=0-1'}}).then(r=>{try{r.body&&r.body.cancel()}catch(e){}return okR(r)?u:null}).catch(()=>null));
+    const remote=location.hostname!=='robbykev.github.io';
+    checking=Promise.all(Object.keys(TRK).map(k=>probe('music/'+k+'.mp3').then(u=>u||(remote?probe(MUS_PUB+k+'.mp3'):null)).then(u=>[k,u])))
+      .then(l=>{avail={};l.forEach(([k,u])=>{if(u)avail[k]=u});return avail});return checking}
   function hasFiles(){return avail&&Object.keys(avail).length>0}
-  function wantKey(){if(!avail)return null;let k='menu';
-    if(S.phase==='game'&&S.g&&S.players.length){const p=S.g.active!=null?P(S.g.active):null;const ids=p&&isCmd()?idColors(p):null;
-      if(ids){const c=ids.length===1?ids[0]:ids[p.id%ids.length];if(c!=='C')k=c}}
-    if(!avail[k])k=avail.menu?'menu':(avail.U?'U':Object.keys(avail)[0]);return k}
-  function deck(k){const a=ac();const el=new Audio();el.src=avail[k];el.loop=true;el.preload='auto';el.crossOrigin='anonymous';
-    const src=a.createMediaElementSource(el),g=a.createGain();g.gain.value=0;src.connect(g);g.connect(master);return{el,g,k}}
-  function fadeTo(k){const a=AC;if(!a||!k)return;if(k===curKey){if(cur&&cur.el.paused)cur.el.play().catch(()=>{});return}curKey=k;const old=cur;cur=deck(k);const t=a.currentTime;
-    cur.el.play().catch(()=>{});cur.g.gain.setValueAtTime(0,t);cur.g.gain.linearRampToValueAtTime(FGAIN[k]||1,t+1.5);
-    if(old){old.g.gain.setValueAtTime(old.g.gain.value,t);old.g.gain.linearRampToValueAtTime(0,t+1.5);setTimeout(()=>{try{old.el.pause();old.el.src=''}catch(e){}},1700)}}
-  function startFiles(){fileOn=true;start0();fadeTo(wantKey())}
-  function stopFiles(){fileOn=false;if(cur){const c=cur;cur=null;curKey=null;if(AC){c.g.gain.setTargetAtTime(0,AC.currentTime,.3)}setTimeout(()=>{try{c.el.pause();c.el.src=''}catch(e){}},1200)}}
-  function follow(){if(fileOn)fadeTo(wantKey())}
+  const setNow=()=>S.phase==='game'&&S.g&&S.players&&S.players.length&&!S.g.ended?'game':'menu';
+  function nextKey(set){let ks=Object.keys(avail).filter(k=>k[0]===(set==='game'?'g':'m'));if(!ks.length)ks=Object.keys(avail);if(!ks.length)return null;
+    let o=order[set];if(!o.length){o=ks.slice().sort(()=>Math.random()-.5);if(o.length>1&&o[0]===curKey)o.push(o.shift());order[set]=o}return o.shift()}
+  function deck(k){const a=ac();const el=new Audio();el.src=avail[k];el.loop=false;el.preload='auto';el.crossOrigin='anonymous';
+    const src=a.createMediaElementSource(el),g=a.createGain();g.gain.value=0;src.connect(g);g.connect(master);const d={el,g,k};
+    el.addEventListener('timeupdate',()=>{if(cur===d&&!d.nx&&el.duration&&el.duration-el.currentTime<4){d.nx=1;playNext(4)}});
+    el.addEventListener('ended',()=>{if(cur===d&&!d.nx){d.nx=1;playNext(1)}});return d}
+  function fadeTo(k,fade,startAt){const a=AC;if(!a||!k)return;fade=fade||1.5;curKey=k;const old=cur;cur=deck(k);const t=a.currentTime;
+    if(startAt)cur.el.addEventListener('loadedmetadata',()=>{try{if(cur&&cur.el.duration>startAt*3)cur.el.currentTime=startAt}catch(e){}},{once:true});
+    cur.el.play().catch(()=>{});cur.g.gain.setValueAtTime(0,t);cur.g.gain.linearRampToValueAtTime(TRK[k]?TRK[k][1]:1,t+fade);
+    if(old){old.g.gain.setValueAtTime(old.g.gain.value,t);old.g.gain.linearRampToValueAtTime(0,t+fade);setTimeout(()=>{try{old.el.pause();old.el.src=''}catch(e){}},fade*1000+300)}}
+  function playNext(fade,first){const set=setNow();curSet=set;const k=nextKey(set);if(k)fadeTo(k,fade||(set==='game'?3:1.5),first&&set==='game'?10:0)}
+  function startFiles(){fileOn=true;start0();if(cur&&curSet===setNow()){if(cur.el.paused)cur.el.play().catch(()=>{});return}playNext(0,true)}
+  function stopFiles(){fileOn=false;if(cur){const c=cur;cur=null;curKey=null;curSet=null;if(AC){c.g.gain.setTargetAtTime(0,AC.currentTime,.3)}setTimeout(()=>{try{c.el.pause();c.el.src=''}catch(e){}},1200)}}
+  function follow(){if(fileOn&&cur&&curSet!==setNow())playNext(0,true)}
+  function skip(){if(fileOn&&cur)playNext(1.5)}
   function start0(){const a=ac();if(!a)return;if(!master)mkMaster(a);vol()}
   // ---- Internetradio (Streams von freien Sendern, nichts wird hochgeladen) ----
   let rad=null;
@@ -984,7 +992,7 @@ const MUSIC=(()=>{let master=null;
     if(S.setup.musSrc==='radio'){if(cur)stopFiles();startRadio();if(rad&&rad.el.paused)rad.el.play().catch(()=>{});vol();return}
     const go=()=>{if(!(S.setup.music&&document.visibilityState==='visible'))return;if(hasFiles()){stopRadio();startFiles()}else{stopFiles();startRadio()}vol()};
     if(avail)go();else check().then(go)}
-  return{stop,sync,vol,follow,check,level,get on(){return!!((cur&&!cur.el.paused)||(rad&&!rad.el.paused))},get radio(){return rad?rad.url:null},get files(){return avail?Object.keys(avail):null}}})();
+  return{stop,sync,vol,follow,check,level,get on(){return!!((cur&&!cur.el.paused)||(rad&&!rad.el.paused))},get radio(){return rad?rad.url:null},get now(){return cur&&TRK[cur.k]?TRK[cur.k][0]:null},get _el(){return cur&&cur.el},skip,get count(){return avail?Object.keys(avail).length:0},get files(){return avail?Object.keys(avail):null}}})();
 document.addEventListener('pointerdown',()=>{if(S.setup&&S.setup.music&&!MUSIC.on)MUSIC.sync()},{passive:true});
 try{MUSIC.check()}catch(e){}
 document.addEventListener('visibilitychange',()=>MUSIC.sync());
@@ -1947,7 +1955,7 @@ function renderSetup(){
           const src=st.musSrc==='radio'||!fl.length?'radio':'files';
           return`${fl.length?`<div class="chips-row"><button class="ch txt" data-act="mussrc" data-v="files" aria-pressed="${src==='files'}">Fantasy-Musik der App</button><button class="ch txt" data-act="mussrc" data-v="radio" aria-pressed="${src==='radio'}">Internetradio</button></div>`:''}`+
           (src==='radio'?`<div class="radlist">${Object.entries(RADIO).map(([k,r])=>`<button class="radst" data-act="radio" data-v="${k}" aria-pressed="${(st.radio||'rivendell')===k}"><b>${r.n}</b><small>${r.d}</small></button>`).join('')}</div><p class="hint">Live-Stream von freien Internetradios – braucht Internet, nichts muss hochgeladen werden. Zwischendurch kann es kurze Senderansagen geben.</p>`
-          :src==='files'?`<p class="hint">Die Musik wechselt mit dem Spieler am Zug passend zur Farbe seines Commanders.</p><p class="hint small">Musik: <b>Tabletop Audio</b> (tabletopaudio.com) – Arcane Athenaeum, Cathedral, Ethereal Plane, Necropolis, Red Dragon Dawn, Elven Glade. Lizenz CC BY-NC-ND 4.0.</p>`:'')+(fl.length?'':`<p class="hint small">Die Fantasy-Musik der App ist hier nicht verfügbar (Ordner <b>music/</b> fehlt neben der index.html) – deshalb läuft Internetradio.</p>`)})()}
+          :src==='files'?`<p class="hint">Wie bei Moxgate: Auf der Startseite läuft eine gemischte Playlist, im Spiel ein zufälliges Stück, das ruhig durchläuft – ohne Wechsel bei jedem Zug. ${fl.length} Stücke${MUSIC.now?' · gerade: <b>'+esc(MUSIC.now)+'</b>':''}</p><button class="ch txt" data-act="musskip">Nächstes Stück ›</button><p class="hint small">Musik: <b>AlkaKrab</b> (alkakrab.itch.io)</p>`:'')+(fl.length?'':`<p class="hint small">Die Fantasy-Musik der App ist hier nicht verfügbar (Ordner <b>music/</b> fehlt neben der index.html) – deshalb läuft Internetradio.</p>`)})()}
         <div class="chips-row">${[['dmg','Schaden'],['big','10 Schaden'],['heal','Heilung'],['cmd','Commander'],['poison','Gift'],['turn','Zug'],['end','Spielende']].map(([k,l])=>`<button class="ch txt" data-act="sndtest" data-k="${k}">${l}</button>`).join('')}</div></section>
       </div>
       <p class="hint ver">Version ${VERSION}</p>`}
@@ -1988,7 +1996,7 @@ elSetup.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!
     case'arcacc':st.arcAcc=b.dataset.v;applySkin();break;
     case'arcfont':st.arcFont=b.dataset.v;applySkin();break;
     case'intro':INTRO.play();break;
-    case'mussrc':S.setup.musSrc=b.dataset.v;if(b.dataset.v==='radio'&&!S.setup.music){S.setup.music=true}save();MUSIC.sync();renderSetup();break;case'radio':S.setup.radio=b.dataset.v;S.setup.musSrc='radio';S.setup.music=true;save();MUSIC.sync();renderSetup();break;
+    case'musskip':MUSIC.skip();setTimeout(()=>{if(ui.scr==='settings')renderSetup()},400);break;case'mussrc':S.setup.musSrc=b.dataset.v;if(b.dataset.v==='radio'&&!S.setup.music){S.setup.music=true}save();MUSIC.sync();renderSetup();break;case'radio':S.setup.radio=b.dataset.v;S.setup.musSrc='radio';S.setup.music=true;save();MUSIC.sync();renderSetup();break;
     case'sndtest':{ac();const k=b.dataset.k;if(k==='end')tone([[523,.16],[659,.16],[784,.16],[1047,.5]],true);else sfx(k,true);return}
     case'fmt':st.fmt=b.dataset.v;{const l=fmtLife(st.fmt,st.n);if(l)st.start=l}if(st.fmt!=='commander'&&st.fmt!=='custom')st.arch=-1;goScr('count');return;
     case'n':st.n=+b.dataset.v;{const l=fmtLife(st.fmt,st.n);if(l&&st.fmt==='brawl')st.start=l}if(st.table==='upright'){if(st.arch>=st.n)st.arch=-1;break}if(st.table==='head2'&&st.n<4)st.table=st.n>=3?'head1':'long';if(st.table==='head1'&&st.n<3)st.table='long';if(st.arch>=st.n)st.arch=-1;break;
