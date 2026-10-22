@@ -1,0 +1,9 @@
+Musik: Tabletop Audio (https://tabletopaudio.com)
+Lizenz: Creative Commons BY-NC-ND 4.0 (https://creativecommons.org/licenses/by-nc-nd/4.0/)
+menu.mp3  = Arcane Athenaeum
+white.mp3 = Cathedral
+blue.mp3  = Ethereal Plane
+black.mp3 = Necropolis
+red.mp3   = Red Dragon Dawn
+green.mp3 = Elven Glade
+Nur umkodiert (96 kbit/s), nicht inhaltlich bearbeitet. Nicht kommerziell.
