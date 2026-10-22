@@ -811,7 +811,7 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
-const VERSION='4.2';
+const VERSION='4.2.1';
 const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal',arcane:'Arkan'};
 const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#0c0b0d',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
 const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#2a292c',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(0,0,0,.75)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
@@ -941,7 +941,7 @@ function noise(a,t,dur,vol,freq,ftype){const n=a.createBuffer(1,Math.floor(a.sam
   const src=a.createBufferSource();src.buffer=n;const f=a.createBiquadFilter();f.type=ftype||'lowpass';f.frequency.value=freq;const g=a.createGain();g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);src.connect(f);f.connect(g);g.connect(a.destination);src.start(t)}
 function osc(a,t,type,f0,f1,dur,vol){const o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f0,t);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+dur+.02)}
 function bell(a,t,f,dur,vol){[[1,1],[2.76,.45],[5.4,.2]].forEach(([m,g])=>osc(a,t,'sine',f*m,null,dur/m**.3,vol*g))}
-const RADIO={rivendell:{n:'Radio Rivendell',d:'Fantasy, Epik, Rollenspiel',url:'https://play.radiorivendell.com/radio/8000/radio.mp3'},epic:{n:'Epic Soundtracks',d:'Film- und Spielmusik',url:'https://mml2.prostream.se/listen/epic_soundtracks_only/radio.mp3'},kobold:{n:'Kobold.FM',d:'Tabletop & Dungeon-Synth',url:'https://kobold.messy.quest/listen/kobold.fm/radio.mp3'},celt:{n:'CeltCast',d:'Keltisch & Folk',url:'https://caster04.streampakket.com/proxy/8982/CeltCast'}};
+const RADIO={rivendell:{n:'Radio Rivendell',d:'Fantasy, Epik, Rollenspiel',url:'https://play.radiorivendell.com/radio/8000/radio.mp3'},lorien:{n:'Lothlórien',d:'Rivendell: Fantasy mit Gesang',url:'https://play.radiorivendell.com/radio/8020/radio.mp3'},greendragon:{n:'The Green Dragon',d:'Rivendell: Taverne, flotter',url:'https://play.radiorivendell.com/radio/8010/radio.mp3'},epic:{n:'Epic Soundtracks',d:'Film- und Spielmusik',url:'https://mml2.prostream.se/listen/epic_soundtracks_only/radio.mp3'},kobold:{n:'Kobold.FM',d:'Tabletop & Dungeon-Synth',url:'https://kobold.messy.quest/listen/kobold.fm/radio.mp3'},celt:{n:'CeltCast',d:'Keltisch & Folk',url:'https://caster04.streampakket.com/proxy/8982/CeltCast'}};
 const MUSIC=(()=>{let master=null;
   let comp=null,ana=null,outG=null;const volF=()=>{const v=(S.setup.musVol||40)/100;return v*v*3};
   function mkMaster(a){master=a.createGain();master.gain.value=0;comp=a.createDynamicsCompressor();comp.threshold.value=-18;comp.knee.value=12;comp.ratio.value=3;comp.attack.value=.01;comp.release.value=.3;
