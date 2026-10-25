@@ -442,6 +442,11 @@ body.tvmode{overflow:hidden}
 .rulebox{margin-top:10px;padding:12px 14px;border-radius:12px;background:rgba(201,164,92,.12);border:1px solid rgba(201,164,92,.35);line-height:1.45}
 .rulebox h4{margin:0 0 4px;display:flex;align-items:center;gap:8px;font-size:17px}.rulebox .ci{font-size:1.3em}
 @media (max-width:620px){.lookres{grid-template-columns:1fr}.lookres>img{max-width:260px;margin:0 auto}}
+.lookimg{display:grid;gap:10px;align-content:start;min-width:0}
+.lookimg>img{cursor:zoom-in;width:100%;border-radius:4.5%/3.3%;box-shadow:0 6px 24px rgba(0,0,0,.5);display:block}
+.bigbtn.explainbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;padding:12px 16px;font-size:18px;text-align:center}
+.bigbtn.explainbtn svg{width:22px;height:22px;flex:none}
+@media (max-width:620px){.lookimg>img{max-width:260px;margin:0 auto}}
 .mbtn{min-height:52px;border-radius:12px;background:#22252c;padding:8px 16px;text-align:left;font-weight:600;font-size:16px;display:flex;align-items:center;gap:12px}
 .mbtn svg{width:22px;height:22px;flex:none;color:var(--brass)}
 .mbtn small{display:block;font-weight:400;color:var(--muted);font-size:13px}
@@ -843,7 +848,7 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
-const VERSION='4.6.1';
+const VERSION='4.7';
 const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal',arcane:'Arkan'};
 const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#0c0b0d',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
 const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#2a292c',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(0,0,0,.75)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
@@ -1503,7 +1508,7 @@ function lookResHTML(c){if(!c)return'';if(c.err)return`<p class="hint">${esc(c.e
   const img=c.imgDe||c.img,nm=c.nameDe||c.name,ty=c.typeDe||c.type,tx=c.textDe||c.text;
   const leg=c.leg?`<div class="legal">${Object.entries(c.leg).map(([k,v])=>`<span class="${v==='legal'?'':'no'}">${k}: ${v==='legal'?'erlaubt':v==='banned'?'verboten':v==='restricted'?'beschränkt':'nicht erlaubt'}</span>`).join('')}</div>`:'';
   const rul=c.rulings?(c.rulings.length?`<h4 style="margin:14px 0 0">Offizielle Regel-Hinweise <small style="opacity:.6;font-weight:400">(englisch)</small></h4><div class="rulings">${c.rulings.map(r=>`<div><time>${esc(r.published_at)}</time>${esc(r.comment)}</div>`).join('')}</div>`:'<p class="hint">Keine besonderen Regel-Hinweise zu dieser Karte.</p>'):(c.rul?'<p class="hint">Regel-Hinweise werden geladen …</p>':'');
-  return`<div class="lookres">${img?`<img src="${esc(img)}" alt="${esc(nm)}" data-act="zoom" title="Antippen zum Vergrößern">`:'<div></div>'}<div><div class="lhead"><h3>${esc(nm)} ${c.cost?`<span class="mc">${manaHTML(c.cost)}</span>`:''}</h3><button class="tb star${isSaved(c)?' on':''}" data-act="lookstar" aria-pressed="${isSaved(c)}">${I.star}${isSaved(c)?'Gemerkt':'Merken'}</button><button class="tb" data-act="askcard">${I.chat}KI fragen</button></div>${c.nameDe&&c.nameDe!==c.name?`<div class="en" style="margin:0 0 4px">${esc(c.name)}</div>`:''}
+  return`<div class="lookres"><div class="lookimg">${img?`<img src="${esc(img)}" alt="${esc(nm)}" data-act="zoom" title="Antippen zum Vergrößern">`:''}<button class="bigbtn pri explainbtn" data-act="askexplain">${I.chat}<span>Einfach erklären</span></button></div><div><div class="lhead"><h3>${esc(nm)} ${c.cost?`<span class="mc">${manaHTML(c.cost)}</span>`:''}</h3><button class="tb star${isSaved(c)?' on':''}" data-act="lookstar" aria-pressed="${isSaved(c)}">${I.star}${isSaved(c)?'Gemerkt':'Merken'}</button><button class="tb" data-act="askcard">${I.chat}KI fragen</button></div>${c.nameDe&&c.nameDe!==c.name?`<div class="en" style="margin:0 0 4px">${esc(c.name)}</div>`:''}
     <div class="ty">${esc(ty)}</div>${tx?`<div class="tx">${manaInText(esc(tx))}</div>`:''}${c.textDe&&c.text?`<details class="en"><summary>Englischer Originaltext</summary>${manaInText(esc(c.text))}</details>`:''}
     ${c.pt?`<div style="font-family:var(--f-num);font-weight:700;font-size:24px;margin-top:6px">${esc(c.pt)}</div>`:''}${priceHTML(c)}${kwHTML(c)}${leg}${rul}</div></div>`}
 const eur=v=>v!=null&&v!==''?(+v).toLocaleString('de-DE',{style:'currency',currency:'EUR'}):null;
@@ -2618,6 +2623,8 @@ elModal.addEventListener('click',e=>{if(e.target===elModal)return closeModal();c
     case'rule':ui.rule=ui.rule===+b.dataset.i?null:+b.dataset.i;{const rl=document.getElementById('rulelist');if(rl)rl.innerHTML=ruleListHTML()}break;
     case'ask':if(ui.chatCtx){ui.chat=[];ui.chatCtx=null}ui.askCard=null;openModal('ask');break;
     case'askcard':{const c=ui.look&&ui.look.name?ui.look:null;if((c&&c.name)!==ui.chatCtx){ui.chat=[];ui.chatCtx=c&&c.name}ui.askCard=c;openModal('ask');break}
+    case'askexplain':{const c=ui.look&&ui.look.name?ui.look:null;if(!c)break;ui.chat=[];ui.chatCtx=c.name;ui.askCard=c;ui.askBusy=false;openModal('ask');
+      askSend('Erkläre mir diese Karte ganz einfach, wie einem Mitspieler am Tisch: Was macht sie? Wann ist sie stark? Worauf muss ich achten? Bitte kurz, in einfachen Worten.');break}
     case'askuncard':ui.askCard=null;ui.chat=[];ui.chatCtx=null;renderModal();break;
     case'askclear':ui.chat=[];renderModal();break;
     case'asksend':{const i=document.getElementById('askin');if(i&&i.value.trim()){const v=i.value;i.value='';askSend(v)}break}
