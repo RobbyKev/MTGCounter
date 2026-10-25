@@ -811,7 +811,7 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
-const VERSION='4.3';
+const VERSION='4.4';
 const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal',arcane:'Arkan'};
 const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#0c0b0d',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
 const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#2a292c',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(0,0,0,.75)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
@@ -994,7 +994,7 @@ const MUSIC=(()=>{let master=null;
     if(avail)go();else check().then(go)}
   return{stop,sync,vol,follow,check,level,get on(){return!!((cur&&!cur.el.paused)||(rad&&!rad.el.paused))},get radio(){return rad?rad.url:null},get now(){return cur&&TRK[cur.k]?TRK[cur.k][0]:null},get _el(){return cur&&cur.el},skip,get count(){return avail?Object.keys(avail).length:0},get files(){return avail?Object.keys(avail):null}}})();
 document.addEventListener('pointerdown',()=>{if(S.setup&&S.setup.music&&!MUSIC.on)MUSIC.sync()},{passive:true});
-try{MUSIC.check()}catch(e){}
+try{if(S.setup.music)MUSIC.check()}catch(e){}
 document.addEventListener('visibilitychange',()=>MUSIC.sync());
 function sfx(kind,force){const on=S.cfg?S.cfg.sfx:S.setup.sfx;if(!on&&!force)return;const now=performance.now();if(!force&&now-sfxT<90)return;sfxT=now;const a=ac();if(!a)return;const t=a.currentTime+.01;const sk=skin();
   if(sk==='parchment'){
@@ -1046,7 +1046,7 @@ function sfx(kind,force){const on=S.cfg?S.cfg.sfx:S.setup.sfx;if(!on&&!force)ret
 function afterChange(by){
   logLives();
   S.players.forEach(p=>{const dr=deadReason(p);
-    if(dr&&!p.elim){p.elim={t:Date.now(),turn:S.g.turn,by:by??null,reason:dr};ev(p.name+' ist ausgeschieden ('+dr+')',p.id);
+    if(dr&&!p.elim){p.elim={t:Date.now(),turn:S.g.turn,by:by!=null&&by!==p.id?by:null,reason:dr};ev(p.name+' ist ausgeschieden ('+dr+')',p.id);
       ui.shake[p.id]=1;setTimeout(()=>{delete ui.shake[p.id];update()},600);tone([[220,.25,'triangle'],[165,.3,'triangle'],[110,.6,'triangle']])}
     else if(!dr&&p.elim){p.elim=null}});
   const al=alive();
@@ -1471,7 +1471,7 @@ async function lookup(q,keepList){q=(q||'').trim();if(!q)return;if(!keepList)ui.
 const ASK_URL='https://text.pollinations.ai/openai';
 const ASK_SYS='Du bist der Regel-Assistent der App „Life & Lore“ für Magic: The Gathering. Antworte auf Deutsch, freundlich und leicht verständlich, wie ein erfahrener Mitspieler am Tisch: kurze Sätze, keine Fachsprache ohne Erklärung, meist 3 bis 6 Sätze oder eine kurze Aufzählung. Halte dich streng an die mitgelieferten Kartentexte – erfinde nichts dazu und erwähne keine anderen Karten, außer der Nutzer fragt danach. Wenn dir eine Karte nicht vorliegt und du sie nicht sicher kennst, sag das ehrlich und bitte darum, den Namen in [[doppelte eckige Klammern]] zu schreiben. Ist eine Regel unsicher oder strittig, sag es offen. Beantworte nur Fragen rund um Magic.';
 function cardBrief(c){if(!c||!c.name)return'';return`${c.nameDe&&c.nameDe!==c.name?c.nameDe+' ('+c.name+')':c.name}${c.cost?' '+c.cost:''} — ${c.typeDe||c.type||''}${c.pt?' '+c.pt:''}\n${c.textDe||c.text||'(kein Text bekannt)'}`}
-async function askCtx(q){const out=[];const inGame=S.phase==='game'&&S.g&&S.players&&S.players.length;
+async function askCtx(q){const out=[];const inGame=S.phase==='game'&&S.g&&S.players&&S.players.length&&!LIVE.watching;
   const cards=[];const seen=new Set();const add=c=>{if(c&&c.name&&!seen.has(c.name)){seen.add(c.name);cards.push(c)}};
   if(ui.askCard)add(ui.askCard);
   const names=[...q.matchAll(/\[\[([^\]]{2,60})\]\]|„([^“]{2,60})“|"([^"]{2,60})"/g)].map(m=>m[1]||m[2]||m[3]).slice(0,3);
@@ -1479,7 +1479,7 @@ async function askCtx(q){const out=[];const inGame=S.phase==='game'&&S.g&&S.play
   if(cards.length)out.push('Karte(n), um die es geht (offizieller Text):\n'+cards.map(cardBrief).join('\n\n'));
   if(inGame&&!ui.askCard){try{const cmd=isCmd();
     out.push('Laufendes Spiel: '+(FORMATS[S.cfg.fmt]?FORMATS[S.cfg.fmt].n:'')+', Zug '+S.g.turn+'.\n'+S.players.map(p=>`- ${p.name}: ${p.life} Leben${p.poison?', '+p.poison+' Gift':''}${cmd?', Commander: '+([0,1].map(k=>cmdName(p,k)).filter(Boolean).join(' + ')||'–'):''}`).join('\n')+(cmd?'\nCommander-Regeln: 40 Leben, 21 Kampfschaden von demselben Commander = verloren (Partner zählen getrennt), Commander-Steuer +2 pro früherem Wirken.':''));
-    if(cmd){const cc=[];S.players.forEach(p=>(p.cdata||[]).forEach(c=>{if(c&&c.text&&!seen.has(c.name)&&new RegExp((c.nameDe||c.name).split(/[ ,]/)[0],'i').test(q)){seen.add(c.name);cc.push(c)}}));if(cc.length)out.push('Erwähnte Commander:\n'+cc.map(cardBrief).join('\n\n'))}}catch(e){}}
+    if(cmd){const cc=[];S.players.forEach(p=>(p.cdata||[]).forEach(c=>{if(c&&c.text&&!seen.has(c.name)&&new RegExp((c.nameDe||c.name).split(/[ ,]/)[0].replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'i').test(q)){seen.add(c.name);cc.push(c)}}));if(cc.length)out.push('Erwähnte Commander:\n'+cc.map(cardBrief).join('\n\n'))}}catch(e){}}
   const ql=q.toLowerCase();const rh=RULES.filter(r=>r[1]&&r[1].length>3&&ql.includes(r[1].toLowerCase().split(/[ (]/)[0])).slice(0,4);
   if(rh.length)out.push('Begriffe:\n'+rh.map(r=>r[1]+': '+r[2]).join('\n'));
   return out.join('\n\n')}
@@ -1499,30 +1499,56 @@ function askRender(){if(ui.modal!=='ask')return;const l=document.getElementById(
 function askLogHTML(){const ch=ui.chat||[];if(!ch.length)return`<div class="chat-empty"><p>${ui.askCard?'Frag alles zu <b>'+esc(ui.askCard.nameDe||ui.askCard.name)+'</b> – die KI bekommt den offiziellen Kartentext.':'Stell eine Regelfrage'+(S.phase==='game'&&S.g?' – die KI kennt euren Spielstand.':'.')} Weitere Kartennamen am besten in <b>[[Klammern]]</b> schreiben, dann holt die App den offiziellen Text dazu.</p><p style="display:none"> Kartennamen am besten in <b>[[Klammern]]</b> schreiben, dann holt die App den offiziellen Text dazu.</p>
   <div class="chips-row">${(ui.askCard?['Wie funktioniert diese Karte genau?','Gibt es Combos oder Fallstricke mit dieser Karte?']:['Wie zählt Commander-Schaden bei Partnern?','Was passiert, wenn mein Commander ins Exil geht?','Wie funktioniert Trampelschaden?']).map(x=>`<button class="ch txt" data-act="askex">${x}</button>`).join('')}</div></div>`;
   return ch.map(m=>`<div class="msg ${m.r}">${m.r==='ai'?askMd(m.t):esc(m.t)}</div>`).join('')+(ui.askBusy?'<div class="msg ai busy"><i></i><i></i><i></i></div>':'')}
-const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid=(()=>{try{let c=localStorage.getItem('ll-cid');if(!c){c='c'+Math.random().toString(36).slice(2,12);localStorage.setItem('ll-cid',c)}return c}catch(e){return'c'+Math.random().toString(36).slice(2,12)}})(),approved=new Map(),rejected=new Set(),askQ=[],hbT=null,gotT=null,code=null,sendT=null,status='aus',vpeer=null,vconn=null,vcode=null,vstate=null,vprev={},retryT=null,clockT=null,vfx={},lastEv=null,evId=0,local=false,role=null,myPid=null,shownEv=0,ctrlUI={};
+const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid=(()=>{const gen=()=>'c'+[...crypto.getRandomValues(new Uint8Array(16))].map(b=>b.toString(16).padStart(2,'0')).join('');try{let c=localStorage.getItem('ll-cid');if(!c||c.length<30){c=gen();localStorage.setItem('ll-cid',c)}return c}catch(e){return gen()}})(),myH=null,hC=new Map(),hk=null,vk=null,seenA=new Map(),lastTxt='',lastTs=0,pubQ=Promise.resolve(),vQ=Promise.resolve(),approved=new Map(),rejected=new Set(),askQ=[],hbT=null,gotT=null,code=null,sendT=null,status='aus',vpeer=null,vconn=null,vcode=null,vstate=null,vprev={},retryT=null,clockT=null,vfx={},lastEv=null,evId=0,local=false,role=null,myPid=null,shownEv=0,ctrlUI={};
   const MQ='https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js',BROKERS=['wss://public.cloud.shiftr.io','wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt'];
-  const TOP=c=>'lifelore/v1/'+c;
-  // Verbindung über einen öffentlichen Relay-Server (Port 443) – funktioniert in jedem Netz
-  function mconnect(onc,onstat){let i=0,cur=null,ok=false;
-    const tryB=()=>{ok=false;const c=mqtt.connect(BROKERS[i],{username:'public',password:'public',clientId:'ll_'+Math.random().toString(36).slice(2,12),connectTimeout:7000,reconnectPeriod:3000,keepalive:30,clean:true});cur=c;
-      c.on('connect',()=>{ok=true;onstat&&onstat('ok');onc(c)});c.on('reconnect',()=>onstat&&onstat('reconnect'));c.on('offline',()=>onstat&&onstat('offline'));c.on('error',()=>{});
-      setTimeout(()=>{if(!ok&&cur===c&&i<BROKERS.length-1){try{c.end(true)}catch(e){}i++;tryB()}},9000);return c};
-    return tryB()}
+  const TOP=t=>'lifelore/v2/'+t;
+  // Ende-zu-Ende-Verschlüsselung: Topic-Name und Schlüssel werden aus dem Code abgeleitet. Die öffentlichen Server sehen nur einen zufälligen Topic-Namen und verschlüsselte Daten – ohne Code kann niemand mitlesen oder etwas einschleusen.
+  const hex=u=>[...u].map(b=>b.toString(16).padStart(2,'0')).join('');
+  const kdfC={};
+  async function kdf(c){c=c.toUpperCase();if(kdfC[c])return kdfC[c];const en=new TextEncoder();
+    const base=await crypto.subtle.importKey('raw',en.encode(c),'PBKDF2',false,['deriveBits']);
+    const bits=new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',salt:en.encode('lifelore-v2'),iterations:150000,hash:'SHA-256'},base,384));
+    return kdfC[c]={topic:hex(bits.slice(0,16)),key:await crypto.subtle.importKey('raw',bits.slice(16),{name:'AES-GCM'},false,['encrypt','decrypt'])}}
+  async function seal(k,o){const iv=crypto.getRandomValues(new Uint8Array(12)),ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},k.key,new TextEncoder().encode(JSON.stringify(o)))),u=new Uint8Array(12+ct.length);u.set(iv);u.set(ct,12);
+    let s='';for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s)}
+  async function unseal(k,t){try{const u=Uint8Array.from(atob(t),c=>c.charCodeAt(0));if(u.length<29)return null;return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:u.subarray(0,12)},k.key,u.subarray(12))))}catch(e){return null}}
+  // Öffentlich wird nur ein Hash der Geräte-ID gezeigt – die ID selbst bleibt geheim und dient als Berechtigung
+  async function hcid(c){return hex(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode('ll-cid:'+c)))).slice(0,32)}
+  const cryptoOK=()=>!!(window.crypto&&crypto.subtle&&window.isSecureContext!==false);
+  // Verbindung über öffentliche Relay-Server (Port 443) – gleichzeitig zu allen, damit Spielgerät und Zuschauer sich finden, solange beide mindestens einen gemeinsam erreichen
+  function mmulti(onMsg,onStat,onConn){let last=null;const st=()=>{const ok=cs.some(c=>c.connected);if(ok!==last){last=ok;onStat(ok)}};
+    const cs=BROKERS.map(u=>{const c=mqtt.connect(u,{username:'public',password:'public',clientId:'ll_'+hex(crypto.getRandomValues(new Uint8Array(6))),connectTimeout:7000,reconnectPeriod:5000,keepalive:30,clean:true});
+      c.on('connect',()=>{onConn(c);st()});c.on('close',st);c.on('offline',st);c.on('error',()=>{});c.on('message',(tp,m)=>onMsg(m.toString()));return c});
+    return{get connected(){return cs.some(c=>c.connected)},publish(t,p,o){cs.forEach(c=>{if(c.connected)try{c.publish(t,p,o)}catch(e){}})},end(){cs.forEach(c=>{try{c.end(true)}catch(e){}})}}}
+  // Eingehenden Spielstand prüfen: nur erwartete Typen und Werte, Farben nur als #hex, Bilder nur von Scryfall
+  const HEXC=/^#[0-9a-f]{3,8}$/i,own=(o,k)=>Object.prototype.hasOwnProperty.call(o,k),arr=v=>Array.isArray(v)?v:[];
+  const num=(v,a,b)=>{v=Math.round(+v);return Number.isFinite(v)?Math.max(a,Math.min(b,v)):0},str=(v,n)=>typeof v==='string'?v.slice(0,n):'',idn=v=>v==null?null:num(v,0,15),colr=(v,f)=>HEXC.test(v)?v:f;
+  function clean(d){if(!d||typeof d!=='object')return null;const ts=+d.ts||0;if(d.idle)return{v:2,ts,idle:true};if(!Array.isArray(d.players))return null;
+    const players=d.players.slice(0,10).map(p=>(p&&typeof p==='object'?{id:num(p.id,0,15),name:str(p.name,40),bg:colr(p.bg,'#646b74'),bg2:colr(p.bg2,'#383d43'),fg:colr(p.fg,'#f3f5f7'),life:num(p.life,-99999,99999),poison:num(p.poison,0,999),energy:num(p.energy,0,9999),exp:num(p.exp,0,9999),rad:num(p.rad,0,9999),speed:num(p.speed,0,4),ring:num(p.ring,0,99),bless:!!p.bless,
+      tax:[num(arr(p.tax)[0],0,99),num(arr(p.tax)[1],0,99)],cmd:arr(p.cmd).slice(0,20).map(c=>({f:num(c&&c.f,0,15),k:c&&c.k?1:0,o:str(c&&c.o,40),n:str(c&&c.n,60),c:colr(c&&c.c,'#646b74'),v:num(c&&c.v,0,999)})),dead:str(p.dead,100),
+      cmdr:arr(p.cmdr).slice(0,2).map(x=>str(x,80)),art:typeof p.art==='string'&&/^https:\/\/cards\.scryfall\.io\/[\w\/.\-?=&%]+$/.test(p.art)?p.art:null,ci:arr(p.ci).filter(x=>/^[WUBRGC]$/.test(x)).slice(0,6)}:null)).filter(Boolean);
+    const g=d.g&&typeof d.g==='object'?d.g:{},e=d.ev&&typeof d.ev==='object'?d.ev:null;let ev=null;
+    if(e&&['coin','planar',4,6,8,10,12,20].includes(e.sides)&&Array.isArray(e.res)&&e.res.length&&e.res.length<=6)
+      ev={id:num(e.id,0,1e9),t:+e.t||0,k:'roll',who:str(e.who,40),pid:idn(e.pid),sides:e.sides,res:e.res.map(x=>e.sides==='coin'?(x==='Zahl'?'Zahl':'Kopf'):e.sides==='planar'?(x==='Planeswalk'||x==='Chaos'?x:'Nichts'):num(x,1,e.sides))};
+    return{v:2,ts,fmt:str(d.fmt,40),turns:!!d.turns,clock:!!d.clock,players,
+      g:{turn:num(g.turn,0,99999),active:idn(g.active),monarch:idn(g.monarch),initiative:idn(g.initiative),dn:num(g.dn,0,2),ended:!!g.ended,winner:idn(g.winner),paused:!!g.paused,game:num(g.game,0,1e10),turnMs:num(g.turnMs,0,1e10)},
+      hist:arr(d.hist).slice(0,4).map(h=>str(h,200)),ev,code:typeof d.code==='string'&&/^[A-Z0-9]{4,8}$/.test(d.code)?d.code:null,diceCol:typeof d.diceCol==='string'&&own(DICE.COLS,d.diceCol)?d.diceCol:'ivory',
+      seats:arr(d.seats).map(idn),ask:!!d.ask,ok:arr(d.ok).filter(x=>typeof x==='string'),rej:arr(d.rej).filter(x=>typeof x==='string')}}
   const QR='https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js';
   function load(src,ok){if(ok())return Promise.resolve();return new Promise((res,rej)=>{const sc=document.createElement('script');sc.src=src;sc.onload=res;sc.onerror=()=>rej(new Error('load'));document.head.appendChild(sc)})}
-  const mk=()=>Array.from({length:6},()=>'ABCDEFGHJKMNPQRSTUVWXYZ23456789'[Math.random()*31|0]).join('');
+  const mk=()=>Array.from({length:6},()=>'ABCDEFGHJKMNPQRSTUVWXYZ23456789'[rnd(31)]).join('');
   const pid=c=>'lifelore-tv-'+c.toUpperCase();
   const PUBLIC='https://robbykev.github.io/MTGCounter/';
   const url=()=>(/^https?:$/.test(location.protocol)&&!/^(localhost|127\.)/.test(location.hostname)?location.origin+location.pathname:PUBLIC)+'?watch='+code;
-  function snap(){if(S.phase!=='game'||!S.players.length||!S.g)return{v:1,idle:true};const dm=isDmg();
-    return{v:1,fmt:FORMATS[S.cfg.fmt]?FORMATS[S.cfg.fmt].n:'',turns:S.cfg.turns,clock:S.cfg.clock,
+  function snap(){if(S.phase!=='game'||!S.players.length||!S.g)return{v:2,ts:Date.now(),idle:true};const dm=isDmg();
+    return{v:2,ts:Date.now(),fmt:FORMATS[S.cfg.fmt]?FORMATS[S.cfg.fmt].n:'',turns:S.cfg.turns,clock:S.cfg.clock,
       players:S.players.map(p=>{const c=col(p);return{id:p.id,name:p.name,bg:c.bg,bg2:c.bg2,fg:c.fg,life:p.life,poison:p.poison||0,energy:p.energy||0,exp:p.exp||0,rad:p.rad||0,speed:p.speed||0,ring:p.ring||0,bless:!!p.bless,
         tax:[p.tax1||0,p.partner?p.tax2||0:0],cmd:dm?S.players.filter(q=>q.id!==p.id).flatMap(q=>(q.partner?[0,1]:[0]).map(k=>({f:q.id,k,o:q.name,n:q.partner?(cmdName(q,k)||(k?'Partner':'Commander')):'',c:col(q).bg,v:p.cmd[q.id][k]||0}))):[],
         dead:deadReason(p)||'',cmdr:isCmd()?(p.cmdr||[]).filter(Boolean).map((n,k)=>cmdName(p,k)||n):[],art:isCmd()&&p.cdata&&p.cdata[0]&&p.cdata[0].art||null,ci:isCmd()?(idColors(p)||[]):[]}}),
       g:{turn:S.g.turn,active:S.g.active,monarch:S.g.monarch,initiative:S.g.initiative,dn:S.g.dn,ended:S.g.ended,winner:S.g.winner,paused:S.g.paused,
         game:(S.g.ended?S.g.endedAt:nowG())-S.g.started,turnMs:S.g.turnStart?nowG()-S.g.turnStart:0,sent:Date.now()},
       hist:S.hist.slice(-4).reverse().map(h=>histLine(h).replace(/<time>[^<]*<\/time>/,'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()),ev:lastEv,code:code||null,diceCol:S.setup.diceCol||'ivory',
-      seats:[...clients.values()].filter(c=>c.role==='player'&&isOk(c)).map(c=>c.pid),ask:askOn(),ok:[...approved.keys()],rej:[...rejected]}}
+      seats:[...clients.values()].filter(c=>c.role==='player'&&isOk(c)).map(c=>c.pid),ask:askOn(),ok:[...approved.keys()].map(c=>hC.get(c)).filter(Boolean),rej:[...rejected].map(c=>hC.get(c)).filter(Boolean)}}
   const askOn=()=>S.setup.liveAsk!==false;
   function isOk(c){return!askOn()||approved.get(c.cid)===c.pid}
   function askShow(){let el=document.getElementById('liveask');askQ=askQ.filter(q=>{const c=clients.get(q.cid);return c&&c.role==='player'&&c.pid===q.pid&&approved.get(q.cid)!==q.pid&&!rejected.has(q.cid)});
@@ -1530,12 +1556,16 @@ const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid=(()=>{try{let c=l
       el.addEventListener('click',e=>{const b=e.target.closest('[data-la]');if(!b)return;const q=askQ.shift();if(!q)return;if(b.dataset.la==='ok'){approved.set(q.cid,q.pid);rejected.delete(q.cid);toast((P(q.pid)?P(q.pid).name:'Spieler')+' spielt am eigenen Handy mit',1800)}else{rejected.add(q.cid)}askShow();upd();push(true)})}
     el.innerHTML=`<span>${I.tv}</span><div><b>Ein Handy möchte als ${esc(P(q.pid)?P(q.pid).name:'?')} mitspielen</b><small>Nur zulassen, wenn es jemand am Tisch ist${askQ.length>1?' · noch '+(askQ.length-1)+' weitere':''}</small></div><button data-la="no">Ablehnen</button><button data-la="ok" class="ok">Zulassen</button>`}
   function kick(c){approved.delete(c);rejected.add(c);const cl=clients.get(c);if(cl)cl.role='view';upd();push(true)}
-  function push(now){if(!local&&!peer)return;clearTimeout(sendT);const go=()=>{const d=snap();if(peer&&peer.connected&&code)try{peer.publish(TOP(code)+'/s',JSON.stringify(d),{retain:true,qos:0})}catch(e){}if(local){vstate=d;vstate._rx=Date.now();renderTV()}};if(now)go();else sendT=setTimeout(go,120)}
+  function push(now){if(!local&&!peer)return;clearTimeout(sendT);const go=()=>{const d=snap();if(peer&&peer.connected&&hk){const p=peer,k=hk;pubQ=pubQ.then(()=>seal(k,d)).then(t=>{if(peer===p)p.publish(TOP(k.topic)+'/s',t,{retain:true,qos:0})}).catch(()=>{})}if(local){vstate=d;vstate._rx=Date.now();renderTV()}};if(now)go();else sendT=setTimeout(go,120)}
   function event(e){if(!peer&&!local)return;e.id=++evId;e.t=Date.now();lastEv=e;push(true)}
   function rollFor(pid,sides,n){n=Math.max(1,Math.min(6,n||1));const res=[];for(let i=0;i<(sides==='coin'||sides==='planar'?1:n);i++)res.push(sides==='coin'?(rnd(2)?'Kopf':'Zahl'):sides==='planar'?['Planeswalk','Chaos','Nichts','Nichts','Nichts','Nichts'][rnd(6)]:rnd(sides)+1);
     const who=pid!=null&&P(pid)?P(pid).name:'';const label=sides==='coin'?'Münze':sides==='planar'?'Planarwürfel':(res.length>1?res.length+'×':'')+'W'+sides;
     ev((who?who+': ':'')+label+': '+(res.length>1?res.join('+')+' = '+res.reduce((a,b)=>a+b,0):res[0]),pid);toast((who?who+' würfelt ':'')+label+': '+(res.length>1?res.reduce((a,b)=>a+b,0):res[0]),2200);event({k:'roll',who,pid,sides,res});save()}
-  function handle(d){if(!d||typeof d!=='object')return;
+  // Nachrichten der Zuschauer: entschlüsseln, Doppelte (mehrere Server) und alte Wiederholungen verwerfen
+  async function onA(t){if(!t||!hk)return;const now=Date.now();if(seenA.has(t))return;seenA.set(t,now);while(seenA.size>2000)seenA.delete(seenA.keys().next().value);
+    const d=await unseal(hk,t);if(!d||typeof d.ts!=='number'||Math.abs(now-d.ts)>300000)return;handle(d)}
+  function handle(d){if(!d||typeof d!=='object'||typeof d.cid!=='string'||d.cid.length>80)return;
+    if(!hC.has(d.cid)){hC.set(d.cid,null);hcid(d.cid).then(h=>{hC.set(d.cid,h);push(true)}).catch(()=>{})}
     if(d.t==='bye'){clients.delete(d.cid);askShow();upd();push();return}
     if(d.t==='hello'||d.t==='ping'){const old=clients.get(d.cid);clients.set(d.cid,{role:d.role||'view',pid:d.pid,seen:Date.now()});
       clients.get(d.cid).cid=d.cid;
@@ -1551,14 +1581,19 @@ const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid=(()=>{try{let c=l
     else if(d.a==='roll')rollFor(pid,d.sides==='coin'||d.sides==='planar'?d.sides:[4,6,8,10,12,20].includes(+d.sides)?+d.sides:20,+d.n||1)}
   function upd(){if(ui.modal==='live')renderModal()}
   const qrCache={};function qrSvg(t){if(qrCache[t])return qrCache[t];if(!window.qrcode){load(QR,()=>window.qrcode).then(()=>{if(vstate)renderClient()}).catch(()=>{});return''}try{const q=qrcode(0,'M');q.addData(t);q.make();return qrCache[t]=q.createSvgTag({cellSize:4,margin:1,scalable:true})}catch(e){return''}}
-  async function start(){if(peer)return;status='startet';upd();
+  async function start(){if(peer||status==='startet')return;status='startet';upd();
+    if(!cryptoOK()){status='fehler';upd();return}
     try{await load(MQ,()=>window.mqtt)}catch(e){status='fehler';upd();return}
-    code=mk();clients.clear();
-    peer=mconnect(c=>{if(peer!==c){peer=c;c.on('message',(tp,m)=>{let d;try{d=JSON.parse(m.toString())}catch(e){return}handle(d)})}status='bereit';c.subscribe(TOP(code)+'/a');push(true);upd()},st=>{if(st!=='ok'&&status==='bereit'){status='verbinde';upd()}else if(st==='ok'&&status!=='bereit'){status='bereit';upd()}});
-    peer.on('message',(tp,m)=>{let d;try{d=JSON.parse(m.toString())}catch(e){return}handle(d)});peer._h=1;
+    const c=mk();let k;try{k=await kdf(c)}catch(e){status='fehler';upd();return}
+    if(status!=='startet')return;
+    code=c;hk=k;clients.clear();hC.clear();seenA.clear();
+    peer=mmulti(onA,ok=>{status=ok?'bereit':'verbinde';if(ok)push(true);upd()},cl=>cl.subscribe(TOP(k.topic)+'/a'));
     clearInterval(clockT);clockT=setInterval(()=>{const now=Date.now();let ch=false;clients.forEach((v,k)=>{if(now-v.seen>65000){clients.delete(k);ch=true}});if(ch){askShow();upd();push()}if(S.g&&!S.g.ended&&now%15000<1000)push()},1000)}
-  function stop(){if(local)setLocal(false);clearInterval(clockT);try{if(peer&&code){peer.publish(TOP(code)+'/s','',{retain:true,qos:0});setTimeout(()=>{try{peer&&peer.end()}catch(e){}peer=null},300)}else peer=null}catch(e){peer=null}clients.clear();approved.clear();rejected.clear();askQ=[];askShow();code=null;status='aus';upd()}
-  function modalHTML(X){const on=!!peer;let qr='';
+  function stop(){if(local)setLocal(false);clearInterval(clockT);const p=peer,k=hk;peer=null;hk=null;
+    // Verschlüsselte Ende-Nachricht ersetzt den gespeicherten Spielstand auf den Servern
+    if(p&&k)pubQ=pubQ.then(()=>seal(k,{v:2,ts:Date.now(),end:true})).then(t=>{p.publish(TOP(k.topic)+'/s',t,{retain:true,qos:0});setTimeout(()=>p.end(),400)}).catch(()=>p.end());else if(p)p.end();
+    clients.clear();approved.clear();rejected.clear();hC.clear();askQ=[];askShow();code=null;status='aus';upd()}
+  function modalHTML(X){const on=!!peer||status==='startet';let qr='';
     if(on&&code&&window.qrcode){try{const q=qrcode(0,'M');q.addData(url());q.make();qr=q.createSvgTag({cellSize:5,margin:2,scalable:true})}catch(e){}}
     else if(on&&code)load(QR,()=>window.qrcode).then(upd).catch(()=>{});
     return`<div class="card-h"><h2>Zuschauer &amp; TV</h2>${X}</div>
@@ -1573,7 +1608,7 @@ const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid=(()=>{try{let c=l
       <button class="mbtn" data-act="liveask" aria-pressed="${askOn()}">${I.lock||I.tv}<span>Mitspieler bestätigen: ${askOn()?'an':'aus'}<small>${askOn()?'Jedes Handy, das einen Zähler steuern will, musst du hier erst zulassen':'Jeder mit dem Code kann einen Zähler steuern'}</small></span></button>
       <button class="mbtn" data-act="livelocal">${I.tv}<span>Dieses Gerät als TV-Anzeige<small>Für Laptop/Mac am Fernseher: zeigt hier die große Übersicht, alle spielen am eigenen Handy</small></span></button>
       <button class="mbtn" data-act="livestop">${I.x}<span>Übertragung beenden</span></button>`}
-    <p class="hint">Mit demselben Code kann jeder am eigenen Handy <b>mitspielen</b> (eigener Zähler) oder nur <b>zuschauen</b>. Die Geräte müssen nicht im selben WLAN sein – Handy-Netz geht auch. Übertragen werden nur Spielstand und Namen.</p>`}
+    <p class="hint">Mit demselben Code kann jeder am eigenen Handy <b>mitspielen</b> (eigener Zähler) oder nur <b>zuschauen</b>. Die Geräte müssen nicht im selben WLAN sein – Handy-Netz geht auch. Übertragen werden nur Spielstand und Namen – Ende-zu-Ende-verschlüsselt mit dem Code.</p>`}
   function setLocal(on){local=on;if(on){closeModal();document.body.classList.add('tvmode');vstate=snap();vstate._rx=Date.now();renderTV();clearInterval(clockT);clockT=setInterval(()=>{tvClock()},1000);wake()}
     else{document.body.classList.remove('tvmode');const r=document.getElementById('tv');if(r)r.remove();vstate=null;show()}}
   // ---------- Zuschauer-Seite ----------
@@ -1582,15 +1617,19 @@ const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid=(()=>{try{let c=l
       r.addEventListener('pointerdown',ctrlDown);['pointerup','pointercancel','pointerleave'].forEach(x=>r.addEventListener(x,ctrlUp))}return r}
   function vstatus(t){const r=vroot();if(!vstate)r.innerHTML=`<div class="tv-wait"><img class="tv-logo" src="${(document.querySelector('.logoimg')||{}).src||''}" alt=""><h1>Life &amp; Lore</h1><p>${t}</p><div class="tv-code">${esc(vcode||'')}</div><button data-tv="exit">Zurück</button></div>`;else{const st=r.querySelector('.tv-stat');if(st)st.textContent=t;r.classList.toggle('lost',!/verbunden/.test(t))}}
   async function watch(c){vcode=(c||'').trim().toUpperCase();if(!vcode)return;try{const sr=JSON.parse(sessionStorage.getItem('ll-role-'+vcode)||'null');if(sr){role=sr.role;myPid=sr.myPid}}catch(e){}document.body.classList.add('tvmode');elSetup.hidden=true;elGame.hidden=true;closeModal();vstatus('Verbinde …');wake();
+    if(!cryptoOK()){vstatus('Dieser Browser kann keine verschlüsselte Verbindung aufbauen. Bitte die App über https öffnen.');return}
     try{await load(MQ,()=>window.mqtt)}catch(e){vstatus('Konnte nicht laden – Internet prüfen');return}
-    let any=false;clearTimeout(gotT);gotT=setTimeout(()=>{if(!any)vstatus('Keine Übertragung mit diesem Code gefunden. Läuft sie am Spielgerät? Ich warte weiter …')},9000);
-    vcli=mconnect(c=>{if(vcli!==c){vcli=c;c.on('message',onMsg)}c.subscribe(TOP(vcode)+'/s');if(role)vsend({t:'hello',role,pid:myPid});else vsend({t:'ping',role:'view'});if(any)vstatus('verbunden')},st=>{if(st!=='ok')vstatus('Verbindung unterbrochen – verbinde neu …')});
-    function onMsg(tp,m){const txt=m.toString();if(!txt){if(any){vstate=null;vstatus('Die Übertragung wurde am Spielgerät beendet.')}return}let d;try{d=JSON.parse(txt)}catch(e){return}any=true;vstate=d;vstate._rx=Date.now();renderClient()}
-    vcli.on('message',onMsg);
+    try{vk=await kdf(vcode);myH=await hcid(cid)}catch(e){vstatus('Verschlüsselung nicht verfügbar');return}
+    let any=false;lastTxt='';lastTs=0;clearTimeout(gotT);gotT=setTimeout(()=>{if(!any)vstatus('Keine Übertragung mit diesem Code gefunden. Läuft sie am Spielgerät? Ich warte weiter …')},9000);
+    vcli=mmulti(onMsg,ok=>{if(ok){if(role)vsend({t:'hello',role,pid:myPid});else vsend({t:'ping',role:'view'});if(any)vstatus('verbunden')}else vstatus('Verbindung unterbrochen – verbinde neu …')},c=>c.subscribe(TOP(vk.topic)+'/s'));
+    // Gleicher Text kommt über mehrere Server – nur einmal verarbeiten; ältere Stände (Wiederholungen) ignorieren
+    async function onMsg(txt){if(!txt||txt===lastTxt)return;const raw=await unseal(vk,txt);if(!raw)return;lastTxt=txt;
+      if(raw.end){if(any){vstate=null;lastTs=0;vstatus('Die Übertragung wurde am Spielgerät beendet.')}return}
+      const d=clean(raw);if(!d||d.ts<lastTs)return;lastTs=d.ts;any=true;vstate=d;vstate._rx=Date.now();renderClient()}
     clearInterval(hbT);hbT=setInterval(()=>vsend({t:'ping',role:role||'view',pid:myPid}),20000);
     window.addEventListener('pagehide',()=>vsend({t:'bye'}));
     clearInterval(clockT);clockT=setInterval(tvClock,1000)}
-  function vsend(o){try{if(vcli&&vcli.connected&&vcode)vcli.publish(TOP(vcode)+'/a',JSON.stringify(Object.assign({cid},o)))}catch(e){}}
+  function vsend(o){if(!(vcli&&vcli.connected&&vk))return;const c=vcli,k=vk,m=Object.assign({cid,ts:Date.now()},o);vQ=vQ.then(()=>seal(k,m)).then(t=>c.publish(TOP(k.topic)+'/a',t)).catch(()=>{})}
   function tvClock(){if(!vstate||vstate.idle)return;const g=vstate.g,dt=g.ended||g.paused?0:Date.now()-vstate._rx;const a=document.querySelector('#tv .tv-clock'),b=document.querySelector('#tv .tv-tt');if(a)a.textContent=fmtT(g.game+dt);if(b)b.textContent=fmtT(g.turnMs+dt)}
   const ico=k=>ctrIcon(k);
   function renderClient(){if(!vstate)return;if(vstate.idle||!role)return role?renderTV():renderChooser();if(role==='player')return renderCtrl();renderTV()}
@@ -1608,7 +1647,7 @@ const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid=(()=>{try{let c=l
   function ctrlClick(b){const t=b.dataset.tv;if(t==='c')ctrlSend({a:'ctr',k:b.dataset.k,d:+b.dataset.d});else if(t==='m')ctrlSend({a:'cmd',from:+b.dataset.f,k:+b.dataset.kk||0,d:+b.dataset.d});else if(t==='next')ctrlSend({a:'next'});
     else if(t==='roll')ctrlSend({a:'roll',sides:b.dataset.s,n:ctrlUI.n||1});else if(t==='n'){ctrlUI.n=Math.max(1,Math.min(6,(ctrlUI.n||1)+ +b.dataset.d));renderCtrl()}else if(t==='more'){ctrlUI.more=!ctrlUI.more;renderCtrl()}else if(t==='look')openModal('look');else if(t==='rules')openModal('rules');else if(t==='ask'){if(ui.chatCtx){ui.chat=[];ui.chatCtx=null}ui.askCard=null;openModal('ask')}else if(t==='scan'){try{SCAN.open()}catch(x){openModal('look')}}else if(t==='qr'){tvQR=!tvQR;renderTV()}}
   function renderCtrl(){const r=vroot(),d=vstate;r.className='ctrl';const p=d.players.find(x=>x.id===myPid);if(!p){role=null;return renderChooser()}const g=d.g;
-    if(d.ask&&!(d.ok||[]).includes(cid)){const rj=(d.rej||[]).includes(cid);r.className='';r.innerHTML=`<div class="tv-wait"><h1>Life &amp; Lore</h1><p>${rj?'Am Spielgerät wurde das Mitspielen abgelehnt.':`Warte auf Bestätigung am Spielgerät …<br><small>Dort erscheint gleich: „Ein Handy möchte als <b>${esc(p.name)}</b> mitspielen“.</small>`}</p>${rj?'':'<div class="tv-spin"></div>'}<button data-tv="role">Anderen Platz wählen</button><button data-tv="pick" data-r="view">Nur zuschauen</button><button data-tv="exit">Zurück</button></div>`;return}
+    if(d.ask&&!(d.ok||[]).includes(myH)){const rj=(d.rej||[]).includes(myH);r.className='';r.innerHTML=`<div class="tv-wait"><h1>Life &amp; Lore</h1><p>${rj?'Am Spielgerät wurde das Mitspielen abgelehnt.':`Warte auf Bestätigung am Spielgerät …<br><small>Dort erscheint gleich: „Ein Handy möchte als <b>${esc(p.name)}</b> mitspielen“.</small>`}</p>${rj?'':'<div class="tv-spin"></div>'}<button data-tv="role">Anderen Platz wählen</button><button data-tv="pick" data-r="view">Nur zuschauen</button><button data-tv="exit">Zurück</button></div>`;return}
     const f=vfx[p.id],prev=vprev[p.id];if(prev!=null&&prev!==p.life)vfx[p.id]={v:(f&&Date.now()-f.t<1600?f.v:0)+p.life-prev,t:Date.now()};vprev[p.id]=p.life;const ff=vfx[p.id];
     const row=(k,n,v,ic)=>`<div class="cr"><span class="cl">${ic?ico(ic):''}${n}</span><button data-tv="c" data-k="${k}" data-d="-1">−</button><b>${v}</b><button data-tv="c" data-k="${k}" data-d="1">+</button></div>`;
     const opp=d.players.filter(x=>x.id!==p.id);
@@ -1673,7 +1712,7 @@ const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid=(()=>{try{let c=l
       if(!txt)return;const m=txt.match(/[?&]watch=([A-Za-z0-9]{4,8})/)||txt.trim().match(/^([A-Za-z0-9]{5,6})$/);
       if(m){try{navigator.vibrate&&navigator.vibrate(40)}catch(e){}qclose();watch(m[1])}else qov.querySelector('.sread').textContent='Das ist kein Life-&-Lore-Code.'},280)}
   function qclose(){clearInterval(qloop);qloop=null;if(qstream)qstream.getTracks().forEach(t=>t.stop());qstream=null;if(qov)qov.remove();qov=null}
-  return{start,stop,push,event,modalHTML,watch,setLocal,scanJoin,kick,get on(){return!!peer},get local(){return local}}})();
+  return{start,stop,push,event,modalHTML,watch,setLocal,scanJoin,kick,get on(){return!!peer},get local(){return local},get watching(){return!!vcode}}})();
 
 /* ---------- Karten scannen (Kamera + Texterkennung) ---------- */
 const SCAN=(()=>{let ov=null,video=null,stream=null,worker=null,loop=null,busy=false,tries=0;
@@ -2021,7 +2060,7 @@ function applyEdits(){const st=S.setup;if(st.n!==S.players.length)return;
   Object.assign(S.cfg,{cmdLife:st.cmdLife,sound:st.sound,sfx:st.sfx,turns:st.turns,table:st.table,clock:st.clock,art:st.art});
   ui.back=null;ui.scr='home';S.phase='game';show();save();wake();toast('Übernommen')}
 function startGame(){readSetupInputs();const st=S.setup;
-  const fcmd=fmtCmdSetup(st),fdmg=fmtDmgSetup(st);if(st.n<3)st.arch=-1;
+  const fcmd=fmtCmdSetup(st),fdmg=fmtDmgSetup(st);if(st.n<3||!fcmd)st.arch=-1;
   S.cfg={fmt:st.fmt,cmd:fcmd,dmg:fdmg,start:st.start,cmdLife:st.cmdLife,sound:st.sound,sfx:st.sfx,turns:st.turns,table:st.table,arch:st.arch,clock:st.clock,art:st.art};
   S.players=st.players.slice(0,st.n).map((p,i)=>{const sl=st.arch>=0?(i===st.arch?40:20):st.start;
     return{id:i,name:p.name,color:p.color,partner:p.partner,rot:p.rot,cmdr:p.cmdr.slice(),cdata:p.cdata.map(cmdObj),custom:[],startLife:sl,life:sl,poison:0,energy:0,exp:0,rad:0,speed:0,ring:0,bless:false,timers:[],tax1:0,tax2:0,misc:0,cmd:{},elim:null,time:0}});
@@ -2036,7 +2075,7 @@ const mWins=id=>S.match?S.match.results.filter(r=>r.winner===id).length:0;
 const mOver=()=>!!S.match&&S.players.some(p=>mWins(p.id)>=2);
 function lastLoser(){if(!S.match||!S.match.results.length)return null;const r=S.match.results[S.match.results.length-1];return r.winner==null?null:S.players.find(p=>p.id!==r.winner).id}
 function newG(){return{paused:false,pausedAt:null,turn:1,active:null,first:null,monarch:null,initiative:null,dn:0,storm:0,planar:0,started:Date.now(),turnStart:null,ended:false,endedAt:null,winner:null}}
-function restartSame(){pushUndo();if(S.match){if(mOver()){S.match={game:1,results:[]};ev('Neues Match')}else S.match.game++}S.players.forEach(p=>{Object.assign(p,{life:p.startLife,poison:0,energy:0,exp:0,rad:0,speed:0,ring:0,bless:false,timers:[],tax1:0,tax2:0,misc:0,elim:null,time:0});(p.custom||[]).forEach(c=>c.v=0);for(const f in p.cmd)p.cmd[f]=[0,0]});
+function restartSame(){pushUndo();if(S.match){if(mOver()){S.match={game:1,results:[]};ev('Neues Match')}else if(S.match.results.some(r=>r.game===S.match.game))S.match.game++}S.players.forEach(p=>{Object.assign(p,{life:p.startLife,poison:0,energy:0,exp:0,rad:0,speed:0,ring:0,bless:false,timers:[],tax1:0,tax2:0,misc:0,elim:null,time:0});(p.custom||[]).forEach(c=>c.v=0);for(const f in p.cmd)p.cmd[f]=[0,0]});
   S.g=newG();S.lifeLog=[];logLives();ev(S.match?'Spiel '+S.match.game+' von 3':'Neue Runde');ui.ov={};ui.fx={};ui.delta={};ui.startPrompt=true;closeModal();update();save()}
 
 /* ---------- Spielansicht ---------- */
@@ -2240,9 +2279,9 @@ setInterval(tickClock,1000);
 const presses=new Map();
 elGame.addEventListener('pointerdown',e=>{
   const h=e.target.closest('.half');
-  if(h&&!ui.assign){e.preventDefault();const pid=+h.dataset.pid,d=+h.dataset.dir;pushUndo('life'+pid);h.classList.add('press');
-    const st={el:h,held:false,tap:()=>changeLife(pid,d)};
-    st.t=setTimeout(()=>{st.held=true;changeLife(pid,d*10);st.iv=setInterval(()=>changeLife(pid,d*10),550)},450);
+  if(h&&!ui.assign){e.preventDefault();const pid=+h.dataset.pid,d=+h.dataset.dir;h.classList.add('press');
+    const st={el:h,held:false,tap:()=>{pushUndo('life'+pid);changeLife(pid,d)}};
+    st.t=setTimeout(()=>{st.held=true;pushUndo('life'+pid);changeLife(pid,d*10);st.iv=setInterval(()=>changeLife(pid,d*10),550)},450);
     presses.set(e.pointerId,st);try{h.setPointerCapture(e.pointerId)}catch(_){}return}
   const r=e.target.closest('[data-rep]');
   if(r){const act=()=>runAct(r);r.classList.add('press');const st={el:r,held:false,tap:act,n:0};
