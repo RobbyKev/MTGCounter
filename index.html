@@ -1551,10 +1551,11 @@ async function askCtx(q){const out=[];const inGame=S.phase==='game'&&S.g&&S.play
   if(rh.length)out.push('Begriffe:\n'+rh.map(r=>r[1]+': '+r[2]).join('\n'));
   return out.join('\n\n')}
 function askMd(t){return esc(t).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/(^|[^*])\*([^*\n]+)\*/g,'$1<i>$2</i>').replace(/\[\[([^\]]+)\]\]/g,'<b>$1</b>').replace(/^#{1,4}\s*(.+)$/gm,'<b>$1</b>').replace(/^\s*[-*]\s+/gm,'• ').replace(/\n/g,'<br>')}
-async function askSend(q){q=(q||'').trim();if(!q||ui.askBusy)return;const ch=ui.chat||(ui.chat=[]);ch.push({r:'user',t:q});ui.askBusy=true;askRender();
+// full: ausführliche Anweisung an die KI – im Chat erscheint nur die kurze Frage q
+async function askSend(q,full){q=(q||'').trim();if(!q||ui.askBusy)return;const ch=ui.chat||(ui.chat=[]);ch.push({r:'user',t:q,full:full||null});ui.askBusy=true;askRender();
   let txt='';try{const ctx=await askCtx(q);const msgs=[{role:'system',content:ASK_SYS}];
-    const hist=ch.slice(0,-1).slice(-6);hist.forEach(m=>msgs.push({role:m.r==='user'?'user':'assistant',content:aiOut(m.t)}));
-    msgs.push({role:'user',content:(ctx?ctx+'\n\n---\nFrage: ':'')+aiOut(q)});
+    const hist=ch.slice(0,-1).slice(-6);hist.forEach(m=>msgs.push({role:m.r==='user'?'user':'assistant',content:aiOut(m.full||m.t)}));
+    msgs.push({role:'user',content:(ctx?ctx+'\n\n---\nFrage: ':'')+aiOut(full||q)});
     const go=async()=>{const ab=new AbortController();const tm=setTimeout(()=>ab.abort(),45000);try{return await fetch(ASK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:msgs,referrer:'lifelore',temperature:.3}),signal:ab.signal})}finally{clearTimeout(tm)}};
     let r=await go();if(r.status===429||r.status>=500){await new Promise(x=>setTimeout(x,5000));r=await go()}
     if(r.status===429)txt='⏳ Der kostenlose Dienst ist gerade ausgelastet. Bitte in ein paar Sekunden nochmal fragen.';
@@ -1562,6 +1563,9 @@ async function askSend(q){q=(q||'').trim();if(!q||ui.askBusy)return;const ch=ui.
     else{const j=await r.json();txt=((j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||'').replace(/<think>[\s\S]*?<\/think>/g,'').trim();txt=txt?aiIn(txt):'Keine Antwort erhalten – bitte nochmal versuchen.'}
   }catch(e){txt=navigator.onLine===false?'Keine Internetverbindung – die KI-Hilfe braucht Internet.':'Keine Verbindung zum KI-Dienst. Bitte nochmal versuchen.'}
   ch.push({r:'ai',t:txt});ui.askBusy=false;askRender()}
+// „Einfach erklären“: die KI bekommt die genaue Anweisung samt den Erklärungen der Fähigkeiten, die die App auf der Karte findet
+function explainPrompt(c){const kw=kwFound(c).map(i=>RULES[i][1]+': '+RULES[i][2]);
+  return'Ich verstehe diese Karte nicht ganz. Erkläre sie mir bitte ganz einfach, als hätte ich wenig Regelwissen: Was passiert, wenn ich sie spiele oder benutze? Erkläre jede Fähigkeit und jedes Fachwort auf der Karte in einfachen Worten, gern mit einem kurzen Beispiel. Kurze Sätze, kein Fachjargon.'+(kw.length?'\n\nErklärungen der Fähigkeiten aus der App zum Nachschlagen:\n'+kw.join('\n'):'')}
 function askRender(){if(ui.modal!=='ask')return;const l=document.getElementById('chatlog');if(!l){renderModal();return}l.innerHTML=askLogHTML();l.scrollTop=l.scrollHeight;const b=document.getElementById('asksend');if(b)b.disabled=!!ui.askBusy;const c=document.getElementById('askclear');if(c)c.hidden=!(ui.chat||[]).length}
 function askLogHTML(){const ch=ui.chat||[];if(!ch.length)return`<div class="chat-empty"><p>${ui.askCard?'Frag alles zu <b>'+esc(ui.askCard.nameDe||ui.askCard.name)+'</b> – die KI bekommt den offiziellen Kartentext.':'Stell eine Regelfrage'+(S.phase==='game'&&S.g?' – die KI kennt euren Spielstand.':'.')} Weitere Kartennamen am besten in <b>[[Klammern]]</b> schreiben, dann holt die App den offiziellen Text dazu.</p><p style="display:none"> Kartennamen am besten in <b>[[Klammern]]</b> schreiben, dann holt die App den offiziellen Text dazu.</p>
   <div class="chips-row">${(ui.askCard?['Wie funktioniert diese Karte genau?','Gibt es Combos oder Fallstricke mit dieser Karte?']:['Wie zählt Commander-Schaden bei Partnern?','Was passiert, wenn mein Commander ins Exil geht?','Wie funktioniert Trampelschaden?']).map(x=>`<button class="ch txt" data-act="askex">${x}</button>`).join('')}</div></div>`;
@@ -2624,7 +2628,7 @@ elModal.addEventListener('click',e=>{if(e.target===elModal)return closeModal();c
     case'ask':if(ui.chatCtx){ui.chat=[];ui.chatCtx=null}ui.askCard=null;openModal('ask');break;
     case'askcard':{const c=ui.look&&ui.look.name?ui.look:null;if((c&&c.name)!==ui.chatCtx){ui.chat=[];ui.chatCtx=c&&c.name}ui.askCard=c;openModal('ask');break}
     case'askexplain':{const c=ui.look&&ui.look.name?ui.look:null;if(!c)break;ui.chat=[];ui.chatCtx=c.name;ui.askCard=c;ui.askBusy=false;openModal('ask');
-      askSend('Erkläre mir diese Karte ganz einfach, wie einem Mitspieler am Tisch: Was macht sie? Wann ist sie stark? Worauf muss ich achten? Bitte kurz, in einfachen Worten.');break}
+      askSend('Erkläre mir die Karte, einfach',explainPrompt(c));break}
     case'askuncard':ui.askCard=null;ui.chat=[];ui.chatCtx=null;renderModal();break;
     case'askclear':ui.chat=[];renderModal();break;
     case'asksend':{const i=document.getElementById('askin');if(i&&i.value.trim()){const v=i.value;i.value='';askSend(v)}break}
