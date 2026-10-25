@@ -702,7 +702,7 @@ table.t .dot{width:10px;height:10px;margin-right:6px;vertical-align:middle}
 .chat-empty p{margin:0 0 10px;opacity:.8;line-height:1.5}.chat-empty .chips-row{gap:6px}.chat-empty .ch{height:auto;min-height:40px;padding:8px 12px;text-align:left;font-size:14px}
 .chatin{display:flex;gap:8px;align-items:flex-end}.chatin textarea{flex:1;min-width:0;resize:none;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:#15171c;color:inherit;padding:10px 12px;font:inherit;font-size:16px;line-height:1.35}
 .chatin .tb{flex:none;width:54px;background:var(--brass);color:#1a1408;border-radius:12px;height:48px;min-width:52px;justify-content:center;padding:0}.chatin textarea{flex:1 1 auto;width:100%}.chatin .tb svg{width:20px;height:20px}
-.askcard{display:flex;align-items:center;gap:10px;padding:6px;border-radius:12px;background:rgba(255,255,255,.05)}.askcard img{width:40px;border-radius:4px}.askcard span{flex:1;min-width:0}
+.askcard{display:flex;align-items:center;gap:10px;padding:6px;border-radius:12px;background:rgba(255,255,255,.05)}.askcard img{width:40px;border-radius:4px}.askcard span{flex:1;min-width:0}.askcard .tb{flex:none;width:40px;height:40px;padding:0;justify-content:center}.askcard .tb svg{width:18px;height:18px;display:block}
 .hint.small{font-size:12px;opacity:.65;margin:0}
 :root[data-skin="light"] .msg.ai{background:rgba(0,0,0,.05)} :root[data-skin="light"] .chatin textarea{background:#fff;border-color:#d6d3cc}
 :root[data-skin="parchment"] .msg.ai{background:rgba(90,55,15,.1)} :root[data-skin="parchment"] .chatin textarea{background:#f6ecd2;color:#2b1d10;border-color:#8a6a3e}
@@ -811,7 +811,7 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
-const VERSION='4.2.1';
+const VERSION='4.3';
 const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal',arcane:'Arkan'};
 const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#0c0b0d',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
 const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#2a292c',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(0,0,0,.75)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
@@ -1469,24 +1469,26 @@ async function lookup(q,keepList){q=(q||'').trim();if(!q)return;if(!keepList)ui.
 
 // ---------- KI-Regelhilfe (kostenloser Dienst Pollinations.ai, kein Konto nötig) ----------
 const ASK_URL='https://text.pollinations.ai/openai';
-const ASK_SYS='Du bist der Regel-Assistent der App „Life & Lore“ für Magic: The Gathering (Schwerpunkt Commander). Antworte auf Deutsch, freundlich, kurz und konkret – meist 2 bis 6 Sätze, bei Bedarf eine kurze Aufzählung. Verwende deutsche Kartennamen und Begriffe, wenn du sie kennst. Stütze dich vor allem auf die mitgelieferten Kartentexte, Begriffe und den Spielstand. Erfinde niemals Kartentexte: Wenn dir eine Karte nicht vorliegt und du sie nicht sicher kennst, sag das und bitte darum, den Kartennamen in [[doppelte eckige Klammern]] zu schreiben. Wenn eine Regel strittig oder unsicher ist, sag es offen. Commander-Regeln: 40 Leben; 21 Kampfschaden von demselben Commander = verloren (Partner zählen getrennt); Commander-Steuer +2 pro früherem Wirken aus der Kommandozone. Beantworte nur Fragen rund um Magic.';
+const ASK_SYS='Du bist der Regel-Assistent der App „Life & Lore“ für Magic: The Gathering. Antworte auf Deutsch, freundlich und leicht verständlich, wie ein erfahrener Mitspieler am Tisch: kurze Sätze, keine Fachsprache ohne Erklärung, meist 3 bis 6 Sätze oder eine kurze Aufzählung. Halte dich streng an die mitgelieferten Kartentexte – erfinde nichts dazu und erwähne keine anderen Karten, außer der Nutzer fragt danach. Wenn dir eine Karte nicht vorliegt und du sie nicht sicher kennst, sag das ehrlich und bitte darum, den Namen in [[doppelte eckige Klammern]] zu schreiben. Ist eine Regel unsicher oder strittig, sag es offen. Beantworte nur Fragen rund um Magic.';
 function cardBrief(c){if(!c||!c.name)return'';return`${c.nameDe&&c.nameDe!==c.name?c.nameDe+' ('+c.name+')':c.name}${c.cost?' '+c.cost:''} — ${c.typeDe||c.type||''}${c.pt?' '+c.pt:''}\n${c.textDe||c.text||'(kein Text bekannt)'}`}
-async function askCtx(q){const out=[];
-  if(S.phase==='game'||S.g){try{if(S.players&&S.players.length&&S.g){out.push('Aktuelles Spiel ('+(FORMATS[S.cfg.fmt]?FORMATS[S.cfg.fmt].n:'')+', Zug '+S.g.turn+'):\n'+S.players.map(p=>`- ${p.name}: ${p.life} Leben${p.poison?', '+p.poison+' Gift':''}${isCmd()?', Commander: '+([0,1].map(k=>cmdName(p,k)).filter(Boolean).join(' + ')||'–'):''}`).join('\n'))}}catch(e){}}
+async function askCtx(q){const out=[];const inGame=S.phase==='game'&&S.g&&S.players&&S.players.length;
   const cards=[];const seen=new Set();const add=c=>{if(c&&c.name&&!seen.has(c.name)){seen.add(c.name);cards.push(c)}};
   if(ui.askCard)add(ui.askCard);
   const names=[...q.matchAll(/\[\[([^\]]{2,60})\]\]|„([^“]{2,60})“|"([^"]{2,60})"/g)].map(m=>m[1]||m[2]||m[3]).slice(0,3);
   for(const n of names){try{add(await sfCard(n))}catch(e){}}
-  try{if(S.players&&S.g&&isCmd())S.players.forEach(p=>(p.cdata||[]).forEach(c=>{if(c&&c.text)add(c)}))}catch(e){}
-  if(cards.length)out.push('Kartentexte (offiziell, von Scryfall):\n'+cards.slice(0,8).map(cardBrief).join('\n\n'));
-  const ql=q.toLowerCase();const rh=RULES.filter(r=>r[1]&&ql.includes(r[1].toLowerCase().split(/[ (]/)[0])).slice(0,6);
-  if(rh.length)out.push('Begriffe aus der App:\n'+rh.map(r=>r[1]+': '+r[2]).join('\n'));
+  if(cards.length)out.push('Karte(n), um die es geht (offizieller Text):\n'+cards.map(cardBrief).join('\n\n'));
+  if(inGame&&!ui.askCard){try{const cmd=isCmd();
+    out.push('Laufendes Spiel: '+(FORMATS[S.cfg.fmt]?FORMATS[S.cfg.fmt].n:'')+', Zug '+S.g.turn+'.\n'+S.players.map(p=>`- ${p.name}: ${p.life} Leben${p.poison?', '+p.poison+' Gift':''}${cmd?', Commander: '+([0,1].map(k=>cmdName(p,k)).filter(Boolean).join(' + ')||'–'):''}`).join('\n')+(cmd?'\nCommander-Regeln: 40 Leben, 21 Kampfschaden von demselben Commander = verloren (Partner zählen getrennt), Commander-Steuer +2 pro früherem Wirken.':''));
+    if(cmd){const cc=[];S.players.forEach(p=>(p.cdata||[]).forEach(c=>{if(c&&c.text&&!seen.has(c.name)&&new RegExp((c.nameDe||c.name).split(/[ ,]/)[0],'i').test(q)){seen.add(c.name);cc.push(c)}}));if(cc.length)out.push('Erwähnte Commander:\n'+cc.map(cardBrief).join('\n\n'))}}catch(e){}}
+  const ql=q.toLowerCase();const rh=RULES.filter(r=>r[1]&&r[1].length>3&&ql.includes(r[1].toLowerCase().split(/[ (]/)[0])).slice(0,4);
+  if(rh.length)out.push('Begriffe:\n'+rh.map(r=>r[1]+': '+r[2]).join('\n'));
   return out.join('\n\n')}
 function askMd(t){return esc(t).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/(^|[^*])\*([^*\n]+)\*/g,'$1<i>$2</i>').replace(/\[\[([^\]]+)\]\]/g,'<b>$1</b>').replace(/^#{1,4}\s*(.+)$/gm,'<b>$1</b>').replace(/^\s*[-*]\s+/gm,'• ').replace(/\n/g,'<br>')}
 async function askSend(q){q=(q||'').trim();if(!q||ui.askBusy)return;const ch=ui.chat||(ui.chat=[]);ch.push({r:'user',t:q});ui.askBusy=true;askRender();
-  let txt='';try{const ctx=await askCtx(q);const msgs=[{role:'system',content:ASK_SYS}];if(ctx)msgs.push({role:'system',content:ctx});
-    ch.slice(-8).forEach(m=>msgs.push({role:m.r==='user'?'user':'assistant',content:m.t}));
-    const go=async()=>{const ab=new AbortController();const tm=setTimeout(()=>ab.abort(),45000);try{return await fetch(ASK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:msgs,referrer:'lifelore'}),signal:ab.signal})}finally{clearTimeout(tm)}};
+  let txt='';try{const ctx=await askCtx(q);const msgs=[{role:'system',content:ASK_SYS}];
+    const hist=ch.slice(0,-1).slice(-6);hist.forEach(m=>msgs.push({role:m.r==='user'?'user':'assistant',content:m.t}));
+    msgs.push({role:'user',content:(ctx?ctx+'\n\n---\nFrage: ':'')+q});
+    const go=async()=>{const ab=new AbortController();const tm=setTimeout(()=>ab.abort(),45000);try{return await fetch(ASK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:msgs,referrer:'lifelore',temperature:.3}),signal:ab.signal})}finally{clearTimeout(tm)}};
     let r=await go();if(r.status===429||r.status>=500){await new Promise(x=>setTimeout(x,5000));r=await go()}
     if(r.status===429)txt='⏳ Der kostenlose Dienst ist gerade ausgelastet. Bitte in ein paar Sekunden nochmal fragen.';
     else if(!r.ok)txt='Der KI-Dienst antwortet gerade nicht (Fehler '+r.status+'). Später nochmal versuchen.';
@@ -1494,7 +1496,7 @@ async function askSend(q){q=(q||'').trim();if(!q||ui.askBusy)return;const ch=ui.
   }catch(e){txt=navigator.onLine===false?'Keine Internetverbindung – die KI-Hilfe braucht Internet.':'Keine Verbindung zum KI-Dienst. Bitte nochmal versuchen.'}
   ch.push({r:'ai',t:txt});ui.askBusy=false;askRender()}
 function askRender(){if(ui.modal!=='ask')return;const l=document.getElementById('chatlog');if(!l){renderModal();return}l.innerHTML=askLogHTML();l.scrollTop=l.scrollHeight;const b=document.getElementById('asksend');if(b)b.disabled=!!ui.askBusy;const c=document.getElementById('askclear');if(c)c.hidden=!(ui.chat||[]).length}
-function askLogHTML(){const ch=ui.chat||[];if(!ch.length)return`<div class="chat-empty"><p>Stell eine Regelfrage – die KI kennt euren Spielstand, eure Commander${ui.askCard?' und <b>'+esc(ui.askCard.nameDe||ui.askCard.name)+'</b>':''}. Kartennamen am besten in <b>[[Klammern]]</b> schreiben, dann holt die App den offiziellen Text dazu.</p>
+function askLogHTML(){const ch=ui.chat||[];if(!ch.length)return`<div class="chat-empty"><p>${ui.askCard?'Frag alles zu <b>'+esc(ui.askCard.nameDe||ui.askCard.name)+'</b> – die KI bekommt den offiziellen Kartentext.':'Stell eine Regelfrage'+(S.phase==='game'&&S.g?' – die KI kennt euren Spielstand.':'.')} Weitere Kartennamen am besten in <b>[[Klammern]]</b> schreiben, dann holt die App den offiziellen Text dazu.</p><p style="display:none"> Kartennamen am besten in <b>[[Klammern]]</b> schreiben, dann holt die App den offiziellen Text dazu.</p>
   <div class="chips-row">${(ui.askCard?['Wie funktioniert diese Karte genau?','Gibt es Combos oder Fallstricke mit dieser Karte?']:['Wie zählt Commander-Schaden bei Partnern?','Was passiert, wenn mein Commander ins Exil geht?','Wie funktioniert Trampelschaden?']).map(x=>`<button class="ch txt" data-act="askex">${x}</button>`).join('')}</div></div>`;
   return ch.map(m=>`<div class="msg ${m.r}">${m.r==='ai'?askMd(m.t):esc(m.t)}</div>`).join('')+(ui.askBusy?'<div class="msg ai busy"><i></i><i></i><i></i></div>':'')}
 const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid=(()=>{try{let c=localStorage.getItem('ll-cid');if(!c){c='c'+Math.random().toString(36).slice(2,12);localStorage.setItem('ll-cid',c)}return c}catch(e){return'c'+Math.random().toString(36).slice(2,12)}})(),approved=new Map(),rejected=new Set(),askQ=[],hbT=null,gotT=null,code=null,sendT=null,status='aus',vpeer=null,vconn=null,vcode=null,vstate=null,vprev={},retryT=null,clockT=null,vfx={},lastEv=null,evId=0,local=false,role=null,myPid=null,shownEv=0,ctrlUI={};
@@ -1604,7 +1606,7 @@ const LIVE=(()=>{let peer=null,clients=new Map(),vcli=null,cid=(()=>{try{let c=l
     holdT=setTimeout(()=>{held=true;ctrlSend({a:'life',d:d*10});holdI=setInterval(()=>ctrlSend({a:'life',d:d*10}),550)},450)}
   function ctrlUp(e){const z=e.target.closest&&e.target.closest('[data-cl]');clearTimeout(holdT);clearInterval(holdI);if(e.type==='pointerup'&&z&&!held&&role==='player')ctrlSend({a:'life',d:+z.dataset.cl});held=false}
   function ctrlClick(b){const t=b.dataset.tv;if(t==='c')ctrlSend({a:'ctr',k:b.dataset.k,d:+b.dataset.d});else if(t==='m')ctrlSend({a:'cmd',from:+b.dataset.f,k:+b.dataset.kk||0,d:+b.dataset.d});else if(t==='next')ctrlSend({a:'next'});
-    else if(t==='roll')ctrlSend({a:'roll',sides:b.dataset.s,n:ctrlUI.n||1});else if(t==='n'){ctrlUI.n=Math.max(1,Math.min(6,(ctrlUI.n||1)+ +b.dataset.d));renderCtrl()}else if(t==='more'){ctrlUI.more=!ctrlUI.more;renderCtrl()}else if(t==='look')openModal('look');else if(t==='rules')openModal('rules');else if(t==='ask'){ui.askCard=null;openModal('ask')}else if(t==='scan'){try{SCAN.open()}catch(x){openModal('look')}}else if(t==='qr'){tvQR=!tvQR;renderTV()}}
+    else if(t==='roll')ctrlSend({a:'roll',sides:b.dataset.s,n:ctrlUI.n||1});else if(t==='n'){ctrlUI.n=Math.max(1,Math.min(6,(ctrlUI.n||1)+ +b.dataset.d));renderCtrl()}else if(t==='more'){ctrlUI.more=!ctrlUI.more;renderCtrl()}else if(t==='look')openModal('look');else if(t==='rules')openModal('rules');else if(t==='ask'){if(ui.chatCtx){ui.chat=[];ui.chatCtx=null}ui.askCard=null;openModal('ask')}else if(t==='scan'){try{SCAN.open()}catch(x){openModal('look')}}else if(t==='qr'){tvQR=!tvQR;renderTV()}}
   function renderCtrl(){const r=vroot(),d=vstate;r.className='ctrl';const p=d.players.find(x=>x.id===myPid);if(!p){role=null;return renderChooser()}const g=d.g;
     if(d.ask&&!(d.ok||[]).includes(cid)){const rj=(d.rej||[]).includes(cid);r.className='';r.innerHTML=`<div class="tv-wait"><h1>Life &amp; Lore</h1><p>${rj?'Am Spielgerät wurde das Mitspielen abgelehnt.':`Warte auf Bestätigung am Spielgerät …<br><small>Dort erscheint gleich: „Ein Handy möchte als <b>${esc(p.name)}</b> mitspielen“.</small>`}</p>${rj?'':'<div class="tv-spin"></div>'}<button data-tv="role">Anderen Platz wählen</button><button data-tv="pick" data-r="view">Nur zuschauen</button><button data-tv="exit">Zurück</button></div>`;return}
     const f=vfx[p.id],prev=vprev[p.id];if(prev!=null&&prev!==p.life)vfx[p.id]={v:(f&&Date.now()-f.t<1600?f.v:0)+p.life-prev,t:Date.now()};vprev[p.id]=p.life;const ff=vfx[p.id];
@@ -1988,7 +1990,7 @@ elSetup.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!
     case'nav':if(b.dataset.to==='settings'&&ui.scr!=='settings'){ui.setBack=ui.scr||'home'}goScr(b.dataset.to);return;
     case'resume':applyLive();ui.back=null;ui.scr='home';S.phase='game';show();save();wake();return;
     case'archive':ui.archConfirm=false;openModal('archive');return;
-    case'ask':ui.askCard=null;openModal('ask');break;
+    case'ask':if(ui.chatCtx){ui.chat=[];ui.chatCtx=null}ui.askCard=null;openModal('ask');break;
     case'look':case'rules':openModal(b.dataset.act);return;
     case'watch':openModal('watchin');setTimeout(()=>{const i=document.getElementById('watchin');if(i)i.focus()},60);return;
     case'scan':openModal('look');SCAN.open();return;
@@ -2298,7 +2300,7 @@ elGame.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b
     case'sp-choose':ui.startPrompt=false;ui.assign='start';update();break;
     case'sp-skip':ui.startPrompt=false;update();break;
     case'dn':pushUndo();S.g.dn=(S.g.dn+1)%3;if(S.g.dn)ev(S.g.dn===1?'Es wird Tag':'Es wird Nacht');update();save();break;
-    case'ask':ui.askCard=null;openModal('ask');break;case'menu':case'tools':case'hist':case'stats':case'look':case'rules':openModal(a);if(a==='look')setTimeout(()=>{const i=document.getElementById('lookin');if(i&&!HASTOUCH)i.focus()},50);break;
+    case'ask':if(ui.chatCtx){ui.chat=[];ui.chatCtx=null}ui.askCard=null;openModal('ask');break;case'menu':case'tools':case'hist':case'stats':case'look':case'rules':openModal(a);if(a==='look')setTimeout(()=>{const i=document.getElementById('lookin');if(i&&!HASTOUCH)i.focus()},50);break;
   }});
 
 /* ---------- Auswertung ---------- */
@@ -2434,9 +2436,9 @@ elModal.addEventListener('click',e=>{if(e.target===elModal)return closeModal();c
     case'scan':SCAN.open();break;
     case'lookpick':lookup(b.dataset.n);break;
     case'rule':ui.rule=ui.rule===+b.dataset.i?null:+b.dataset.i;{const rl=document.getElementById('rulelist');if(rl)rl.innerHTML=ruleListHTML()}break;
-    case'ask':ui.askCard=null;openModal('ask');break;
-    case'askcard':ui.askCard=ui.look&&ui.look.name?ui.look:null;openModal('ask');break;
-    case'askuncard':ui.askCard=null;renderModal();break;
+    case'ask':if(ui.chatCtx){ui.chat=[];ui.chatCtx=null}ui.askCard=null;openModal('ask');break;
+    case'askcard':{const c=ui.look&&ui.look.name?ui.look:null;if((c&&c.name)!==ui.chatCtx){ui.chat=[];ui.chatCtx=c&&c.name}ui.askCard=c;openModal('ask');break}
+    case'askuncard':ui.askCard=null;ui.chat=[];ui.chatCtx=null;renderModal();break;
     case'askclear':ui.chat=[];renderModal();break;
     case'asksend':{const i=document.getElementById('askin');if(i&&i.value.trim()){const v=i.value;i.value='';askSend(v)}break}
     case'askex':askSend(b.textContent);break;
