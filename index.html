@@ -319,7 +319,7 @@ button.map-seat{cursor:pointer;border:0}
 .banner{flex:1;display:flex;align-items:center;gap:10px;justify-content:center;font-weight:600;font-size:16px;color:var(--brass);white-space:nowrap}
 .banner svg{width:20px;height:20px}
 @container (max-width:1250px){.bb .t{display:none}.bb{padding:0 10px}}
-@container (max-width:560px){.bb.turnb{max-width:170px;font-size:17px}.clock{display:none}}
+@container (max-width:560px){.bb.turnb{max-width:170px;font-size:17px}.clock .ct{display:none}.clock{background:#1a1d22;padding:0 12px}}
 
 /* ---------- Modal ---------- */
 #modal{position:fixed;inset:0;z-index:70;display:none;place-items:center;background:rgba(0,0,0,.6);padding:16px}
@@ -739,6 +739,12 @@ table.t .dot{width:10px;height:10px;margin-right:6px;vertical-align:middle}
 .panel.glowon.glowmulti::before{background:conic-gradient(from var(--ga),var(--glcols));animation:garot 14s linear infinite}
 @keyframes garot{to{--ga:360deg}}
 @media (prefers-reduced-motion:reduce){.panel.glowon.glowmulti::before,.sp-rays,.sp-crown svg,.sp-card b,.panel.sp-win .pickring{animation:none}}
+
+.clock svg{width:15px;height:15px;opacity:.75;flex:none}.clock.paused svg{opacity:1}
+body.gpaused .panel{filter:brightness(.55) saturate(.7);transition:filter .3s}
+#pauseov{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:58;max-width:calc(100vw - 32px);display:grid;gap:4px;justify-items:center;padding:18px 28px;border-radius:18px;background:rgba(10,10,14,.97);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid var(--brass);color:#fff6e0;box-shadow:0 20px 60px rgba(0,0,0,.6);font-family:var(--f-ui);cursor:pointer;animation:pin .35s cubic-bezier(.34,1.56,.64,1)}
+#pauseov b{font-family:var(--f-title);font-size:30px;letter-spacing:.12em;color:var(--brass)}#pauseov small{font-size:13px;opacity:.75}
+@keyframes pin{from{transform:translate(-50%,-50%) scale(.7);opacity:0}}
 /* ---------- Skin: Arkan (Violett & Gold) – nach dem Design-Kit ---------- */
 :root[data-skin="arcane"]{--table:var(--bgA);--ink:#e2e8f0;--head:#f4f0ff;--muted:rgb(var(--arcl) / .88);--dim:#94a3b8;--brass:#d4b06a;--chip:rgb(var(--b0) / .55);--line:rgb(var(--arcm) / .22);
   --vio:rgb(var(--arc));--vio2:rgb(var(--arc2));--lav:rgb(var(--arcl));--vline:rgb(var(--arcm) / .45);--vline2:rgb(var(--arcm) / .22);--vglow:rgb(var(--arc) / .55);
@@ -837,7 +843,7 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
-const VERSION='4.6';
+const VERSION='4.6.1';
 const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal',arcane:'Arkan'};
 const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#0c0b0d',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
 const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#2a292c',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(0,0,0,.75)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
@@ -2326,11 +2332,14 @@ function update(){try{MUSIC.follow()}catch(e){}try{if(LIVE.local)LIVE.push()}cat
 
 const nowG=()=>S.g.paused&&S.g.pausedAt?S.g.pausedAt:Date.now();
 function tickClock(){if(!S.g||S.phase!=='game')return;const c=document.getElementById('clock');const end=S.g.ended?S.g.endedAt:nowG();
-  if(c)c.innerHTML=(S.g.paused?'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>':'')+fmtT(end-S.g.started);
+  if(c)c.innerHTML=(S.g.paused?'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>':'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>')+'<span class="ct">'+fmtT(end-S.g.started)+'</span>';
+  pauseUI()
   const tt=elGame.querySelector('.panel.active .ttime');if(tt&&S.g.turnStart)tt.textContent=fmtT(nowG()-S.g.turnStart)}
+function pauseUI(){let o=document.getElementById('pauseov');const on=!!(S.g&&S.g.paused&&!S.g.ended&&S.phase==='game');document.body.classList.toggle('gpaused',on);
+  if(on&&!o){o=document.createElement('button');o.id='pauseov';o.dataset.act='pause';o.innerHTML='<b>Pause</b><small>Uhr und Zugzeit angehalten · tippen zum Fortsetzen</small>';elGame.appendChild(o)}else if(!on&&o)o.remove()}
 function togglePause(){const g=S.g;if(g.ended)return;const now=Date.now();
-  if(g.paused){const d=now-(g.pausedAt||now);g.started+=d;if(g.turnStart)g.turnStart+=d;g.paused=false;g.pausedAt=null;toast('Uhr läuft weiter')}
-  else{g.paused=true;g.pausedAt=now;toast('Uhr pausiert')}update();save()}
+  if(g.paused){const d=now-(g.pausedAt||now);g.started+=d;if(g.turnStart)g.turnStart+=d;g.paused=false;g.pausedAt=null;0}
+  else{g.paused=true;g.pausedAt=now;0}update();save();try{tickClock()}catch(e){}}
 setInterval(tickClock,1000);
 
 /* ---------- Eingabe: Tippen = 1 Schritt, Halten = schnell ---------- */
