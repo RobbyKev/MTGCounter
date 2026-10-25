@@ -811,7 +811,7 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
-const VERSION='4.4';
+const VERSION='4.5';
 const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal',arcane:'Arkan'};
 const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#0c0b0d',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
 const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#2a292c',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(0,0,0,.75)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
@@ -875,11 +875,16 @@ const AKEY='commander-tafel-archiv';
 function loadArch(){try{return JSON.parse(localStorage.getItem(AKEY))||[]}catch(e){return[]}}
 function saveArch(a){try{localStorage.setItem(AKEY,JSON.stringify(a))}catch(e){}}
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.setup)return s}catch(e){}return null}
-let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}},250);try{LIVE.push()}catch(e){}}
+let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}saveUndo()},250);try{LIVE.push()}catch(e){}}
 
 let S=migrate(load()||fresh());
 const ui={scr:'home',back:null,setBack:'home',startPrompt:false,cardK:{},cardEn:{},pad:{},archConfirm:false,ov:{},fx:{},delta:{},assign:null,modal:null,roll:{},rollTop:new Set(),pick:null,die:null,planar:null,confirm:null,shake:{}};
 let undo=[],undoKey=null,undoT=0;
+// Die letzten Undo-Schritte überleben ein Neuladen der Seite (nur für das laufende Spiel)
+const UKEY='commander-tafel-undo';let undoDirty=false;
+function saveUndo(){if(!undoDirty)return;undoDirty=false;const gid=S.g?'g'+S.g.started:null;
+  for(const n of[25,8,0]){try{if(!gid||!n||!undo.length){localStorage.removeItem(UKEY);return}localStorage.setItem(UKEY,JSON.stringify({gid,u:undo.slice(-n)}));return}catch(e){}}}
+try{const u=JSON.parse(localStorage.getItem(UKEY));if(u&&S.g&&u.gid==='g'+S.g.started&&Array.isArray(u.u))undo=u.u.filter(x=>typeof x==='string')}catch(e){}
 let wl=null;
 
 /* ---------- Tischlayout ---------- */
@@ -912,8 +917,8 @@ function deadReason(p){
 }
 const alive=()=>S.players.filter(p=>!deadReason(p)).map(p=>p.id);
 function pushUndo(key){const now=Date.now();if(key&&key===undoKey&&now-undoT<1500){undoT=now;return}undoKey=key||null;undoT=now;
-  undo.push(JSON.stringify({players:S.players,g:S.g,hist:S.hist,lifeLog:S.lifeLog,match:S.match}));if(undo.length>200)undo.shift()}
-function doUndo(){const s=undo.pop();undoKey=null;if(!s){toast('Nichts zum Rückgängigmachen');return}const o=JSON.parse(s);S.players=o.players;S.g=o.g;S.hist=o.hist;S.lifeLog=o.lifeLog||[];if('match' in o)S.match=o.match;ui.delta={};
+  undo.push(JSON.stringify({players:S.players,g:S.g,hist:S.hist,lifeLog:S.lifeLog,match:S.match}));if(undo.length>200)undo.shift();undoDirty=true}
+function doUndo(){const s=undo.pop();undoKey=null;undoDirty=true;if(!s){toast('Nichts zum Rückgängigmachen');return}const o=JSON.parse(s);S.players=o.players;S.g=o.g;S.hist=o.hist;S.lifeLog=o.lifeLog||[];if('match' in o)S.match=o.match;ui.delta={};
   if(!S.g.ended)unarchive();else archiveGame();
   if(ui.modal==='end'&&!S.g.ended)closeModal();relayout();update();save();toast('Rückgängig')}
 function addHist(e){e.t=Date.now();const l=S.hist[S.hist.length-1];
@@ -1138,11 +1143,22 @@ function fullscreen(){const d=document.documentElement;try{if(document.fullscree
 const SF='https://api.scryfall.com';
 async function sfAuto(q){try{const r=await fetch(SF+'/cards/autocomplete?q='+encodeURIComponent(q));if(!r.ok)return[];const j=await r.json();return j.data||[]}catch(e){return[]}}
 const deMap={};
-async function sfJSON(path){try{const r=await fetch(SF+path);if(!r.ok)return null;return await r.json()}catch(e){return null}}
+// Zwischenspeicher: gleiche Scryfall-Anfrage höchstens alle 30 Minuten (schont die API, die um Zurückhaltung bittet)
+const sfMem=new Map();
+function sfJSON(path){const hit=sfMem.get(path);if(hit&&Date.now()-hit.t<1800000)return hit.p;
+  const p=fetch(SF+path).then(r=>r.ok?r.json():r.status===404?null:Promise.reject()).catch(()=>{sfMem.delete(path);return null});
+  sfMem.set(path,{t:Date.now(),p});while(sfMem.size>300)sfMem.delete(sfMem.keys().next().value);return p}
+// Fertig aufbereitete Karten bleiben einen Tag auf dem Gerät – Commander-Bilder und Texte erscheinen dann sofort
+const CKEY='ll-cards';let cardC=null;
+function cardCache(){if(!cardC){try{cardC=JSON.parse(localStorage.getItem(CKEY))||{}}catch(e){cardC={}}}return cardC}
+function cardGet(n){const c=cardCache()[n.toLowerCase()];return c&&c.d&&Date.now()-c.t<864e5?{...c.d}:null}
+function cardPut(keys,d){const c=cardCache(),t=Date.now(),v=JSON.parse(JSON.stringify(d));keys.filter(Boolean).forEach(k=>c[k.toLowerCase().trim()]={t,d:v});
+  const ks=Object.keys(c);if(ks.length>150)ks.sort((a,b)=>c[a].t-c[b].t).slice(0,ks.length-150).forEach(k=>delete c[k]);try{localStorage.setItem(CKEY,JSON.stringify(c))}catch(e){}}
+async function sfCard(name){const k=String(name||'').trim();if(!k)return null;const h=cardGet(k);if(h)return h;const c=await sfCardNet(k);if(c)cardPut([k,c.name,c.nameDe],c);return c}
 async function sfSearchDe(q){const j=await sfJSON('/cards/search?q='+encodeURIComponent(q+' lang:de')+'&unique=cards');return j&&j.data?j.data:[]}
 function faceOf(c){return c.image_uris?c:(c.card_faces&&c.card_faces[0])||{}}
 function cardText(c,key){if(c[key])return c[key];if(c.card_faces)return c.card_faces.map(f=>f[key]||'').filter(Boolean).join('\n—\n');return''}
-async function sfCard(name){
+async function sfCardNet(name){
   let c=await sfJSON('/cards/named?fuzzy='+encodeURIComponent(name));
   if(!c||c.object!=='card'){const de=deMap[name.toLowerCase()];if(de)c=await sfJSON('/cards/named?exact='+encodeURIComponent(de));}
   if(!c||c.object!=='card'){const hits=await sfSearchDe(name);if(hits[0])c=await sfJSON('/cards/named?exact='+encodeURIComponent(hits[0].name));}
@@ -1471,14 +1487,21 @@ async function lookup(q,keepList){q=(q||'').trim();if(!q)return;if(!keepList)ui.
 const ASK_URL='https://text.pollinations.ai/openai';
 const ASK_SYS='Du bist der Regel-Assistent der App „Life & Lore“ für Magic: The Gathering. Antworte auf Deutsch, freundlich und leicht verständlich, wie ein erfahrener Mitspieler am Tisch: kurze Sätze, keine Fachsprache ohne Erklärung, meist 3 bis 6 Sätze oder eine kurze Aufzählung. Halte dich streng an die mitgelieferten Kartentexte – erfinde nichts dazu und erwähne keine anderen Karten, außer der Nutzer fragt danach. Wenn dir eine Karte nicht vorliegt und du sie nicht sicher kennst, sag das ehrlich und bitte darum, den Namen in [[doppelte eckige Klammern]] zu schreiben. Ist eine Regel unsicher oder strittig, sag es offen. Beantworte nur Fragen rund um Magic.';
 function cardBrief(c){if(!c||!c.name)return'';return`${c.nameDe&&c.nameDe!==c.name?c.nameDe+' ('+c.name+')':c.name}${c.cost?' '+c.cost:''} — ${c.typeDe||c.type||''}${c.pt?' '+c.pt:''}\n${c.textDe||c.text||'(kein Text bekannt)'}`}
-async function askCtx(q){const out=[];const inGame=S.phase==='game'&&S.g&&S.players&&S.players.length&&!LIVE.watching;
+// Datenschutz: Spielernamen gehen als „Spieler 1, 2 …“ an den KI-Dienst und werden in der Antwort wieder eingesetzt
+const aiAnon=()=>S.setup.aiAnon!==false&&S.players&&S.players.length>0&&!LIVE.watching;
+const aiAlias=p=>'Spieler '+(p.id+1);
+function aiPairs(){return aiAnon()?S.players.map(p=>[p.name,aiAlias(p)]).filter(([n,a])=>n&&n!==a):[]}
+const rxW=s=>new RegExp('(^|[^\\p{L}\\p{N}])('+s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')(?=$|[^\\p{L}\\p{N}])','gu');
+function aiOut(t){aiPairs().sort((x,y)=>y[0].length-x[0].length).forEach(([n,a])=>{t=t.replace(rxW(n),(m,p1)=>p1+a)});return t}
+function aiIn(t){aiPairs().sort((x,y)=>y[1].length-x[1].length).forEach(([n,a])=>{t=t.replace(rxW(a),(m,p1)=>p1+n)});return t}
+async function askCtx(q){const out=[];const inGame=S.phase==='game'&&S.g&&S.players&&S.players.length&&!LIVE.watching&&S.setup.aiGame!==false;
   const cards=[];const seen=new Set();const add=c=>{if(c&&c.name&&!seen.has(c.name)){seen.add(c.name);cards.push(c)}};
   if(ui.askCard)add(ui.askCard);
   const names=[...q.matchAll(/\[\[([^\]]{2,60})\]\]|„([^“]{2,60})“|"([^"]{2,60})"/g)].map(m=>m[1]||m[2]||m[3]).slice(0,3);
   for(const n of names){try{add(await sfCard(n))}catch(e){}}
   if(cards.length)out.push('Karte(n), um die es geht (offizieller Text):\n'+cards.map(cardBrief).join('\n\n'));
   if(inGame&&!ui.askCard){try{const cmd=isCmd();
-    out.push('Laufendes Spiel: '+(FORMATS[S.cfg.fmt]?FORMATS[S.cfg.fmt].n:'')+', Zug '+S.g.turn+'.\n'+S.players.map(p=>`- ${p.name}: ${p.life} Leben${p.poison?', '+p.poison+' Gift':''}${cmd?', Commander: '+([0,1].map(k=>cmdName(p,k)).filter(Boolean).join(' + ')||'–'):''}`).join('\n')+(cmd?'\nCommander-Regeln: 40 Leben, 21 Kampfschaden von demselben Commander = verloren (Partner zählen getrennt), Commander-Steuer +2 pro früherem Wirken.':''));
+    out.push('Laufendes Spiel: '+(FORMATS[S.cfg.fmt]?FORMATS[S.cfg.fmt].n:'')+', Zug '+S.g.turn+'.\n'+S.players.map(p=>`- ${aiAnon()?aiAlias(p):p.name}: ${p.life} Leben${p.poison?', '+p.poison+' Gift':''}${cmd?', Commander: '+([0,1].map(k=>cmdName(p,k)).filter(Boolean).join(' + ')||'–'):''}`).join('\n')+(cmd?'\nCommander-Regeln: 40 Leben, 21 Kampfschaden von demselben Commander = verloren (Partner zählen getrennt), Commander-Steuer +2 pro früherem Wirken.':''));
     if(cmd){const cc=[];S.players.forEach(p=>(p.cdata||[]).forEach(c=>{if(c&&c.text&&!seen.has(c.name)&&new RegExp((c.nameDe||c.name).split(/[ ,]/)[0].replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'i').test(q)){seen.add(c.name);cc.push(c)}}));if(cc.length)out.push('Erwähnte Commander:\n'+cc.map(cardBrief).join('\n\n'))}}catch(e){}}
   const ql=q.toLowerCase();const rh=RULES.filter(r=>r[1]&&r[1].length>3&&ql.includes(r[1].toLowerCase().split(/[ (]/)[0])).slice(0,4);
   if(rh.length)out.push('Begriffe:\n'+rh.map(r=>r[1]+': '+r[2]).join('\n'));
@@ -1486,13 +1509,13 @@ async function askCtx(q){const out=[];const inGame=S.phase==='game'&&S.g&&S.play
 function askMd(t){return esc(t).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/(^|[^*])\*([^*\n]+)\*/g,'$1<i>$2</i>').replace(/\[\[([^\]]+)\]\]/g,'<b>$1</b>').replace(/^#{1,4}\s*(.+)$/gm,'<b>$1</b>').replace(/^\s*[-*]\s+/gm,'• ').replace(/\n/g,'<br>')}
 async function askSend(q){q=(q||'').trim();if(!q||ui.askBusy)return;const ch=ui.chat||(ui.chat=[]);ch.push({r:'user',t:q});ui.askBusy=true;askRender();
   let txt='';try{const ctx=await askCtx(q);const msgs=[{role:'system',content:ASK_SYS}];
-    const hist=ch.slice(0,-1).slice(-6);hist.forEach(m=>msgs.push({role:m.r==='user'?'user':'assistant',content:m.t}));
-    msgs.push({role:'user',content:(ctx?ctx+'\n\n---\nFrage: ':'')+q});
+    const hist=ch.slice(0,-1).slice(-6);hist.forEach(m=>msgs.push({role:m.r==='user'?'user':'assistant',content:aiOut(m.t)}));
+    msgs.push({role:'user',content:(ctx?ctx+'\n\n---\nFrage: ':'')+aiOut(q)});
     const go=async()=>{const ab=new AbortController();const tm=setTimeout(()=>ab.abort(),45000);try{return await fetch(ASK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:msgs,referrer:'lifelore',temperature:.3}),signal:ab.signal})}finally{clearTimeout(tm)}};
     let r=await go();if(r.status===429||r.status>=500){await new Promise(x=>setTimeout(x,5000));r=await go()}
     if(r.status===429)txt='⏳ Der kostenlose Dienst ist gerade ausgelastet. Bitte in ein paar Sekunden nochmal fragen.';
     else if(!r.ok)txt='Der KI-Dienst antwortet gerade nicht (Fehler '+r.status+'). Später nochmal versuchen.';
-    else{const j=await r.json();txt=((j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||'').replace(/<think>[\s\S]*?<\/think>/g,'').trim()||'Keine Antwort erhalten – bitte nochmal versuchen.'}
+    else{const j=await r.json();txt=((j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||'').replace(/<think>[\s\S]*?<\/think>/g,'').trim();txt=txt?aiIn(txt):'Keine Antwort erhalten – bitte nochmal versuchen.'}
   }catch(e){txt=navigator.onLine===false?'Keine Internetverbindung – die KI-Hilfe braucht Internet.':'Keine Verbindung zum KI-Dienst. Bitte nochmal versuchen.'}
   ch.push({r:'ai',t:txt});ui.askBusy=false;askRender()}
 function askRender(){if(ui.modal!=='ask')return;const l=document.getElementById('chatlog');if(!l){renderModal();return}l.innerHTML=askLogHTML();l.scrollTop=l.scrollHeight;const b=document.getElementById('asksend');if(b)b.disabled=!!ui.askBusy;const c=document.getElementById('askclear');if(c)c.hidden=!(ui.chat||[]).length}
@@ -2066,7 +2089,7 @@ function startGame(){readSetupInputs();const st=S.setup;
     return{id:i,name:p.name,color:p.color,partner:p.partner,rot:p.rot,cmdr:p.cmdr.slice(),cdata:p.cdata.map(cmdObj),custom:[],startLife:sl,life:sl,poison:0,energy:0,exp:0,rad:0,speed:0,ring:0,bless:false,timers:[],tax1:0,tax2:0,misc:0,cmd:{},elim:null,time:0}});
   S.players.forEach(p=>S.players.forEach(q=>{if(q.id!==p.id)p.cmd[q.id]=[0,0]}));
   S.match=(st.n===2&&st.match&&!fcmd)?{game:1,results:[]}:null;
-  S.g=newG();S.hist=[];S.lifeLog=[];undo=[];ui.ov={};ui.fx={};ui.delta={};ui.roll={};ui.rollTop=new Set();
+  S.g=newG();S.hist=[];S.lifeLog=[];undo=[];undoDirty=true;ui.ov={};ui.fx={};ui.delta={};ui.roll={};ui.rollTop=new Set();
   logLives();ev(FORMATS[st.fmt].n+' · '+st.n+' Spieler'+(S.match?' · Match Best-of-3':'')+(st.arch>=0?' · Archenemy: '+S.players[st.arch].name:' · '+st.start+' Leben'));
   ui.startPrompt=true;ui.back=null;ui.scr='home';S.phase='game';show();save();wake();if(S.cfg.sound||S.cfg.sfx)ac()}
 function cmdObj(c){return c?{...c}:null}
@@ -2365,7 +2388,75 @@ function statsHTML(){const g=S.g;const end=g.ended?g.endedAt:nowG();
   <div class="grp"><h4>Spieler</h4>${tbl}</div>
   ${isDmg()?`<div class="grp"><h4>Commander-Schaden</h4>${mx}</div>`:''}`}
 
-function archiveHTML(){const all=loadArch();const fmts=[...new Set(all.map(g=>g.fmt||'commander'))];const af=ui.archFmt&&fmts.includes(ui.archFmt)?ui.archFmt:'all';const a=af==='all'?all:all.filter(g=>(g.fmt||'commander')===af);const chips=fmts.length>1?`<div class="chips-row">${['all',...fmts].map(f=>`<button class="ch txt" data-act="archfmt" data-v="${f}" aria-pressed="${f===af}">${f==='all'?'Alle':FORMATS[f]?FORMATS[f].n:f}</button>`).join('')}</div>`:'';if(!a.length)return'<p class="hint">Noch keine beendeten Spiele. Sobald ein Spiel einen Gewinner hat, landet es hier.</p>';
+/* ---------- Archiv sichern: als Datei exportieren und wieder einlesen ---------- */
+const ICO_DL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>',ICO_UL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M7 9l5-5 5 5M5 20h14"/></svg>';
+function archBackupHTML(has){return`<div class="grp"><h4>Sichern</h4><div class="mrow">${has?`<button class="mbtn" data-act="archexp">${ICO_DL}<span>Archiv exportieren<small>Als Datei speichern, z. B. in iCloud oder per Mail</small></span></button>`:''}<button class="mbtn" data-act="archimp">${ICO_UL}<span>Archiv importieren<small>Gesicherte Datei einlesen – vorhandene Spiele bleiben</small></span></button></div></div>`}
+function saveFile(blob,name){const f=new File([blob],name,{type:blob.type});
+  if(navigator.canShare&&navigator.canShare({files:[f]})&&HASTOUCH)return navigator.share({files:[f],title:name}).catch(()=>{});
+  const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);return Promise.resolve()}
+function archExport(){const games=loadArch();const d=new Date(),ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  saveFile(new Blob([JSON.stringify({app:'lifelore',kind:'archiv',v:1,exported:d.toISOString(),games},null,1)],{type:'application/json'}),'lifelore-archiv-'+ds+'.json')}
+// Eingelesene Spiele streng prüfen – die Datei könnte von irgendwoher stammen
+function archClean(g){if(!g||typeof g!=='object'||typeof g.id!=='string'||!Array.isArray(g.players)||!g.players.length)return null;
+  const n=(v,a,b)=>{v=+v;return Number.isFinite(v)?Math.max(a,Math.min(b,Math.round(v))):a},s=(v,l)=>typeof v==='string'?v.slice(0,l):null;
+  return{id:g.id.slice(0,40),fmt:own0(FORMATS,g.fmt)?g.fmt:'custom',mgame:g.mgame==null?null:n(g.mgame,1,9),date:n(g.date,0,4e12),dur:n(g.dur,0,1e9),turns:n(g.turns,0,9999),winner:s(g.winner,40),
+    players:g.players.slice(0,10).map(p=>({name:s(p&&p.name,40)||'?',cmdr:s(p&&p.cmdr,120)||'',color:p&&own0(COLORS,p.color)?p.color:'C',place:n(p&&p.place,1,10),by:s(p&&p.by,40)}))}}
+const own0=(o,k)=>typeof k==='string'&&Object.prototype.hasOwnProperty.call(o,k);
+function archImport(){const i=document.createElement('input');i.type='file';i.accept='.json,application/json';
+  i.onchange=()=>{const f=i.files&&i.files[0];if(!f)return;if(f.size>5e6){toast('Datei ist zu groß',2200);return}
+    f.text().then(t=>{let j;try{j=JSON.parse(t)}catch(e){toast('Keine gültige Archiv-Datei',2200);return}
+      const list=(Array.isArray(j)?j:j&&Array.isArray(j.games)?j.games:[]).map(archClean).filter(Boolean);if(!list.length){toast('Keine Spiele in der Datei gefunden',2200);return}
+      const cur=loadArch(),ids=new Set(cur.map(x=>x.id)),neu=list.filter(x=>!ids.has(x.id));
+      saveArch(cur.concat(neu).sort((a,b)=>a.date-b.date).slice(-500));toast(neu.length?neu.length+(neu.length===1?' Spiel':' Spiele')+' importiert':'Alle Spiele waren schon im Archiv',2400);if(ui.modal==='archive')renderModal()})};
+  i.click()}
+/* ---------- Ergebnis teilen: Bild mit Sieger, Platzierung und Lebensverlauf ---------- */
+const ICO_SH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4"/></svg>';
+function resultOrder(){const t=p=>p.elim?p.elim.t:Infinity;return S.players.slice().sort((x,y)=>(t(y)>t(x))-(t(y)<t(x)))}
+const cmdList=p=>[0,1].map(k=>cmdName(p,k)).filter(Boolean).join(' + ');
+function resultSub(){const g=S.g,F=FORMATS[S.cfg.fmt];return[F?F.n:'',S.players.length+' Spieler',S.cfg.turns?g.turn+(g.turn===1?' Runde':' Runden'):'',fmtT((g.ended?g.endedAt:nowG())-g.started),S.match?'Match '+S.players.map(p=>mWins(p.id)).join(':'):''].filter(Boolean).join(' · ')}
+function resultText(){const g=S.g,w=g.winner!=null?P(g.winner):null;
+  return[w?`🏆 ${w.name} gewinnt${cmdList(w)?' mit '+cmdList(w):''}`:'🤝 Unentschieden',resultSub(),'',
+    ...resultOrder().map((p,i)=>`${i+1}. ${p.name}${cmdList(p)?' ('+cmdList(p)+')':''} – ${p.life} Leben${p.elim&&p.elim.reason?' · '+p.elim.reason:''}`),'','— Life & Lore'].join('\n')}
+function loadImg(src){return new Promise(r=>{if(!src)return r(null);const i=new Image();i.crossOrigin='anonymous';i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src;setTimeout(()=>r(null),5000)})}
+async function resultPNG(){const W=1080,H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');
+  try{await Promise.race([Promise.all(['700 40px Cinzel','700 40px "Barlow Condensed"','500 30px Barlow'].map(f=>document.fonts.load(f))),new Promise(r=>setTimeout(r,1500))])}catch(e){}
+  const TF='Cinzel, Georgia, serif',NF='"Barlow Condensed", "Arial Narrow", sans-serif',UF='Barlow, system-ui, sans-serif';
+  const rr=(x,y,w,h,r)=>{g.beginPath();if(g.roundRect)g.roundRect(x,y,w,h,r);else g.rect(x,y,w,h)};
+  const fit=(t,max)=>{if(g.measureText(t).width<=max)return t;while(t.length>1&&g.measureText(t+'…').width>max)t=t.slice(0,-1);return t+'…'};
+  const bg=g.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#1b2130');bg.addColorStop(1,'#0b0d13');g.fillStyle=bg;g.fillRect(0,0,W,H);
+  g.textAlign='center';g.textBaseline='alphabetic';g.fillStyle='#c9a45c';g.font=`700 46px ${TF}`;g.fillText('LIFE & LORE',W/2,92);
+  g.fillStyle='#9a968c';g.font=`500 30px ${UF}`;g.fillText(fit(resultSub(),W-120),W/2,140);
+  // Sieger
+  const gm=S.g,w=gm.winner!=null?P(gm.winner):null,wc=w?col(w):COLORS.C,art=w&&isCmd()&&w.cdata&&w.cdata[0]&&w.cdata[0].art;
+  const wb=g.createLinearGradient(60,180,W-60,480);wb.addColorStop(0,wc.bg);wb.addColorStop(1,wc.bg2);rr(60,180,W-120,300,28);g.fillStyle=wb;g.fill();
+  const im=await loadImg(art);if(im){g.save();rr(60,180,W-120,300,28);g.clip();const s=Math.max((W-120)/im.width,300/im.height),iw=im.width*s,ih=im.height*s;g.drawImage(im,60+(W-120-iw)/2,180+(300-ih)*.3,iw,ih);
+    const sh=g.createLinearGradient(0,180,0,480);sh.addColorStop(0,'rgba(0,0,0,.55)');sh.addColorStop(1,'rgba(0,0,0,.7)');g.fillStyle=sh;g.fillRect(60,180,W-120,300);g.restore()}
+  const fg=im?'#f7f3ea':wc.fg;g.fillStyle=fg;g.font=`600 28px ${UF}`;g.globalAlpha=.85;g.fillText(S.match?(mOver()?'MATCH GEWONNEN':'SPIEL '+S.match.game+' GEWONNEN'):w?'GEWONNEN HAT':'ERGEBNIS',W/2,250);g.globalAlpha=1;
+  g.font=`700 92px ${TF}`;g.fillText(fit(w?w.name:'Unentschieden',W-180),W/2,355);
+  if(w&&cmdList(w)){g.font=`500 34px ${UF}`;g.fillText(fit('mit '+cmdList(w),W-180),W/2,420)}
+  // Platzierung
+  const ord=resultOrder(),rowH=Math.min(84,360/ord.length);let y=520;g.textAlign='left';
+  ord.forEach((p,i)=>{const c=col(p);g.fillStyle='rgba(255,255,255,.05)';rr(60,y,W-120,rowH-10,16);g.fill();const cy=y+(rowH-10)/2;
+    g.fillStyle=i===0&&w?'#c9a45c':'#9a968c';g.font=`700 ${Math.round(rowH*.5)}px ${NF}`;g.textBaseline='middle';g.fillText(i+1+'.',84,cy);
+    g.fillStyle=LINE[p.color]||c.bg;g.beginPath();g.arc(150,cy,11,0,Math.PI*2);g.fill();
+    g.fillStyle='#e9e4d8';g.font=`600 ${Math.round(rowH*.36)}px ${UF}`;const cm=cmdList(p);g.fillText(fit(p.name,cm?360:620),176,cm?cy-rowH*.13:cy);
+    if(cm){g.fillStyle='#9a968c';g.font=`500 ${Math.round(rowH*.26)}px ${UF}`;g.fillText(fit(cm,600),176,cy+rowH*.2)}
+    g.textAlign='right';g.fillStyle=p.elim?'#9a968c':'#e9e4d8';g.font=`700 ${Math.round(rowH*.5)}px ${NF}`;g.fillText(String(p.life),W-90,cy);g.textAlign='left';y+=rowH});
+  // Lebensverlauf
+  const log=S.lifeLog.slice(),end=gm.ended?gm.endedAt:Date.now();if(log.length){log.push({t:end,l:S.players.map(p=>p.life)});
+    const X0=110,X1=W-80,Y0=y+50,Y1=H-110,t0=log[0].t,t1=Math.max(end,t0+60000);let lo=0,hi=10;log.forEach(e=>e.l.forEach(v=>{if(v>hi)hi=v;if(v<lo)lo=v}));hi=Math.ceil(hi/10)*10;
+    const px=t=>X0+(t-t0)/(t1-t0)*(X1-X0),py=v=>Y0+(hi-v)/(hi-lo||1)*(Y1-Y0),step=hi-lo>60?20:10;
+    g.font=`500 22px ${UF}`;g.textAlign='right';g.textBaseline='middle';for(let v=Math.ceil(lo/step)*step;v<=hi;v+=step){g.strokeStyle=v===0?'#5a4a3a':'#262a31';g.lineWidth=2;g.beginPath();g.moveTo(X0,py(v));g.lineTo(X1,py(v));g.stroke();g.fillStyle='#9a968c';g.fillText(v,X0-14,py(v))}
+    S.players.forEach((p,i)=>{g.strokeStyle=LINE[p.color]||'#ccc';g.lineWidth=5;g.lineJoin='round';g.beginPath();let prev=null;log.forEach(e=>{const v=e.l[i];if(v==null)return;const X=px(e.t),Y=py(v);if(prev==null)g.moveTo(X,Y);else{g.lineTo(X,prev);g.lineTo(X,Y)}prev=Y});g.stroke()})}
+  g.textAlign='center';g.textBaseline='alphabetic';g.fillStyle='#6f6c65';g.font=`500 24px ${UF}`;g.fillText(new Date(gm.started).toLocaleDateString('de-DE',{day:'numeric',month:'long',year:'numeric'})+' · Life & Lore',W/2,H-40);
+  return new Promise(r=>{try{cv.toBlob(b=>r(b),'image/png')}catch(e){r(null)}})}
+async function shareResult(){if(!S.g)return;toast('Bild wird erstellt …',1600);const text=resultText(),name='lifelore-ergebnis.png';let blob=null;try{blob=await resultPNG()}catch(e){}
+  const abort=e=>e&&e.name==='AbortError';
+  if(blob&&navigator.canShare){const f=new File([blob],name,{type:'image/png'});if(navigator.canShare({files:[f]})){try{await navigator.share({files:[f],text,title:'Life & Lore'});return}catch(e){if(abort(e))return}}}
+  if(navigator.share&&HASTOUCH){try{await navigator.share({text,title:'Life & Lore'});return}catch(e){if(abort(e))return}}
+  if(blob){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
+  try{await navigator.clipboard.writeText(text);toast(blob?'Bild gespeichert · Text kopiert':'Ergebnis als Text kopiert',2400)}catch(e){if(blob)toast('Bild gespeichert',2000)}}
+function archiveHTML(){const all=loadArch();const fmts=[...new Set(all.map(g=>g.fmt||'commander'))];const af=ui.archFmt&&fmts.includes(ui.archFmt)?ui.archFmt:'all';const a=af==='all'?all:all.filter(g=>(g.fmt||'commander')===af);const chips=fmts.length>1?`<div class="chips-row">${['all',...fmts].map(f=>`<button class="ch txt" data-act="archfmt" data-v="${f}" aria-pressed="${f===af}">${f==='all'?'Alle':FORMATS[f]?FORMATS[f].n:f}</button>`).join('')}</div>`:'';if(!a.length)return(all.length?chips:'')+'<p class="hint">Noch keine beendeten Spiele. Sobald ein Spiel einen Gewinner hat, landet es hier.</p>'+archBackupHTML(all.length>0);
   const tally=(keyFn)=>{const m={};a.forEach(gm=>gm.players.forEach(p=>{const k=keyFn(p);if(!k)return;const e=m[k]||(m[k]={k,games:0,wins:0,place:0});e.games++;e.place+=p.place;if(p.place===1)e.wins++}));return Object.values(m).sort((x,y)=>y.wins-x.wins||y.wins/y.games-x.wins/x.games)};
   const tbl=(rows,label)=>`<div class="tblwrap"><table class="t"><thead><tr><th>${label}</th><th>Spiele</th><th>Siege</th><th>Quote</th><th>Ø Platz</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.k)}</td><td>${r.games}</td><td>${r.wins}</td><td>${Math.round(r.wins/r.games*100)} %</td><td>${(r.place/r.games).toFixed(1)}</td></tr>`).join('')}</tbody></table></div>`;
   const avg=a.reduce((s,g)=>s+g.dur,0)/a.length;
@@ -2374,6 +2465,7 @@ function archiveHTML(){const all=loadArch();const fmts=[...new Set(all.map(g=>g.
   <div class="grp"><h4>Spieler</h4>${tbl(tally(p=>p.name),'Spieler')}</div>
   ${cm.length?`<div class="grp"><h4>Commander</h4>${tbl(cm,'Commander')}</div>`:''}
   <div class="grp"><h4>Letzte Spiele</h4><div class="arch-list">${a.slice().reverse().slice(0,30).map(g=>{const d=new Date(g.date);return`<div class="arch-item"><span><b>${esc(g.winner||'Unentschieden')}</b> gewinnt${(()=>{const w=g.players.find(p=>p.place===1);return w&&w.cmdr?' mit '+esc(w.cmdr):''})()}</span><small>${FORMATS[g.fmt||'commander']?FORMATS[g.fmt||'commander'].n:''}${g.mgame?' (Spiel '+g.mgame+')':''} · ${d.toLocaleDateString('de-DE')} · ${fmtT(g.dur)} · ${g.turns} Runden · ${g.players.map(p=>esc(p.name)).join(', ')}</small></div>`}).join('')}</div></div>
+  ${archBackupHTML(true)}
   <button class="mbtn${ui.archConfirm?' warn':''}" data-act="archclear">${I.reset}<span>${ui.archConfirm?'Wirklich alles löschen? Nochmal tippen':'Archiv leeren'}</span></button>`}
 
 /* ---------- Modal ---------- */
@@ -2425,7 +2517,8 @@ function renderModal(){const t=ui.modal;if(!t)return closeModal();const X=`<butt
     ${ui.askCard?`<div class="askcard">${ui.askCard.img||ui.askCard.imgDe?`<img src="${esc(ui.askCard.imgDe||ui.askCard.img)}" alt="">`:''}<span>Frage zu <b>${esc(ui.askCard.nameDe||ui.askCard.name)}</b></span><button class="tb" data-act="askuncard" aria-label="Karte entfernen">${I.x}</button></div>`:''}
     <div class="chatlog" id="chatlog">${askLogHTML()}</div>
     <div class="chatin"><textarea id="askin" rows="2" placeholder="z. B. Darf ich [[Gegenzauber]] auf eine Fähigkeit wirken?" enterkeyhint="send"></textarea><button class="tb go2" id="asksend" data-act="asksend"${ui.askBusy?' disabled':''}>${I.next}</button></div>
-    <p class="hint small">Kostenloser KI-Dienst (Pollinations.ai), ohne Konto. Deine Frage, die Kartentexte und der Spielstand werden dorthin geschickt. Antworten können falsch sein – im Zweifel gelten die offiziellen Regeln.</p>`}
+    <div class="aiopts"><label class="tog small"><input type="checkbox" id="m-aigame" ${S.setup.aiGame!==false?'checked':''}> Spielstand mitschicken (Leben, Commander)</label><label class="tog small"><input type="checkbox" id="m-aianon" ${S.setup.aiAnon!==false?'checked':''}> Spielernamen anonymisieren („Spieler 1, 2 …“)</label></div>
+    <p class="hint small">Kostenloser KI-Dienst (Pollinations.ai), ohne Konto. Gesendet werden deine Frage, die Kartentexte und – wenn oben eingeschaltet – der Spielstand. Antworten können falsch sein – im Zweifel gelten die offiziellen Regeln.</p>`}
   else if(t==='rules'){body=`<div class="card-h"><h2>Regeln</h2>${X}</div>
     <button class="mbtn" data-act="ask">${I.chat}<span>KI fragen<small>Regelfrage in eigenen Worten stellen – kostenlos, ohne Konto</small></span></button>
     <div class="grp"><h4>${RULES.length} Begriffe</h4>
@@ -2439,7 +2532,8 @@ function renderModal(){const t=ui.modal;if(!t)return closeModal();const X=`<butt
   else if(t==='end'){const w=S.g.winner!=null?P(S.g.winner):null;const c=w?col(w):COLORS.C;body=`<div class="card-h"><h2>Spielende</h2>${X}</div>
     <div class="winner" style="--bg:${c.bg};--bg2:${c.bg2};--fg:${c.fg}"><small>${S.match?(mOver()?'Match gewonnen':'Spiel '+S.match.game+' gewonnen'):(w?'Gewonnen hat':'Ergebnis')}</small><b>${w?esc(w.name):'Unentschieden'}</b>${S.match?`<small>Stand ${S.players.map(p=>mWins(p.id)).join(' : ')}</small>`:''}${w&&cmdName(w,0)?`<small>mit ${esc([0,1].map(k=>cmdName(w,k)).filter(Boolean).join(' + '))}</small>`:''}</div>
     ${statsHTML()}
-    <div class="mrow"><button class="mbtn" data-act="restart2">${I.reset}<span>${S.match?(mOver()?'Neues Match':'Spiel '+(S.match.game+1)+' starten'):'Neue Runde'}<small>${S.match&&!mOver()?'Gleiche Decks, Leben zurück auf '+S.cfg.start:'Gleiche Spieler'}</small></span></button><button class="mbtn" data-act="close">${I.undo}<span>Weiterspielen<small>Zum Korrigieren „Zurück“ nutzen</small></span></button></div>`}
+    <div class="mrow"><button class="mbtn" data-act="restart2">${I.reset}<span>${S.match?(mOver()?'Neues Match':'Spiel '+(S.match.game+1)+' starten'):'Neue Runde'}<small>${S.match&&!mOver()?'Gleiche Decks, Leben zurück auf '+S.cfg.start:'Gleiche Spieler'}</small></span></button><button class="mbtn" data-act="close">${I.undo}<span>Weiterspielen<small>Zum Korrigieren „Zurück“ nutzen</small></span></button></div>
+    <button class="mbtn" data-act="share">${ICO_SH}<span>Ergebnis teilen<small>Bild mit Sieger, Platzierung und Lebensverlauf – z. B. für WhatsApp</small></span></button>`}
   const sc=elModal.querySelector('.card')?.scrollTop||0;
   elModal.innerHTML=`<div class="card" role="dialog" aria-modal="true">${body}</div>`;elModal.classList.add('on');elModal.querySelector('.card').scrollTop=sc}
 elModal.addEventListener('click',e=>{if(e.target===elModal)return closeModal();const b=e.target.closest('[data-act]');if(!b)return;
@@ -2450,6 +2544,9 @@ elModal.addEventListener('click',e=>{if(e.target===elModal)return closeModal();c
     case'archive':ui.archConfirm=false;openModal('archive');break;
     case'skin':S.setup.skin=b.dataset.v;applySkin();update();renderModal();save();break;
     case'archfmt':ui.archFmt=b.dataset.v;renderModal();break;
+    case'share':shareResult();break;
+    case'archexp':archExport();break;
+    case'archimp':archImport();break;
     case'archclear':if(ui.archConfirm){saveArch([]);ui.archConfirm=false;toast('Archiv geleert')}else ui.archConfirm=true;renderModal();break;
     case'setup':case'settings':case'home':{closeModal();S.players.forEach((p,i)=>Object.assign(S.setup.players[i],{name:p.name,color:p.color,partner:p.partner,rot:p.rot}));S.setup.n=S.players.length;S.setup.table=S.cfg.table;if(S.cfg.fmt)S.setup.fmt=S.cfg.fmt;
       const a=b.dataset.act;ui.scr=a==='setup'?'players':a;ui.back=a==='home'?null:'game';S.phase='setup';show();save();break}
@@ -2487,7 +2584,7 @@ elModal.addEventListener('click',e=>{if(e.target===elModal)return closeModal();c
     case'dn':pushUndo();S.g.dn=(S.g.dn+1)%3;if(S.g.dn)ev(S.g.dn===1?'Es wird Tag':'Es wird Nacht');update();save();renderModal();break;
     case'storm':S.g.storm=Math.max(0,S.g.storm+ +b.dataset.d);renderModal();update();save();break;
   }});
-elModal.addEventListener('change',e=>{if(e.target.id==='m-sfx'){S.cfg.sfx=S.setup.sfx=e.target.checked;if(e.target.checked){ac();sfx('heal')}save()}if(e.target.id==='m-turns'){S.cfg.turns=S.setup.turns=e.target.checked;update();save()}if(e.target.id==='m-clock'){S.cfg.clock=S.setup.clock=e.target.checked;update();save()}if(e.target.id==='m-art'){S.cfg.art=S.setup.art=e.target.checked;update();save()}if(e.target.id==='m-cmdlife'){S.cfg.cmdLife=S.setup.cmdLife=e.target.checked;save()}if(e.target.id==='m-sound'){S.cfg.sound=S.setup.sound=e.target.checked;if(e.target.checked)ac();save()}});
+elModal.addEventListener('change',e=>{if(e.target.id==='m-aigame'){S.setup.aiGame=e.target.checked;save()}if(e.target.id==='m-aianon'){S.setup.aiAnon=e.target.checked;save()}if(e.target.id==='m-sfx'){S.cfg.sfx=S.setup.sfx=e.target.checked;if(e.target.checked){ac();sfx('heal')}save()}if(e.target.id==='m-turns'){S.cfg.turns=S.setup.turns=e.target.checked;update();save()}if(e.target.id==='m-clock'){S.cfg.clock=S.setup.clock=e.target.checked;update();save()}if(e.target.id==='m-art'){S.cfg.art=S.setup.art=e.target.checked;update();save()}if(e.target.id==='m-cmdlife'){S.cfg.cmdLife=S.setup.cmdLife=e.target.checked;save()}if(e.target.id==='m-sound'){S.cfg.sound=S.setup.sound=e.target.checked;if(e.target.checked)ac();save()}});
 elModal.addEventListener('input',e=>{const t=e.target;if(t.id==='rulein'){ui.ruleQ=t.value;ui.rule=null;const rl=document.getElementById('rulelist');if(rl)rl.innerHTML=ruleListHTML();elModal.querySelectorAll('.rcats .ch').forEach(x=>x.setAttribute('aria-pressed',String(!ui.ruleQ&&x.dataset.v===(ui.rcat||'spiel'))));return}if(t.id!=='lookin')return;const dl=document.getElementById('dl-lookin');if(dl&&[...dl.options].some(o=>o.value===t.value)){lookup(t.value);t.blur();return}onCmdInput(t)});
 elModal.addEventListener('keydown',e=>{if(e.target.id==='askin'&&e.key==='Enter'&&!e.shiftKey){e.preventDefault();const v=e.target.value;if(v.trim()){e.target.value='';askSend(v)}return}if(e.target.id==='watchin'&&e.key==='Enter'){e.preventDefault();LIVE.watch(e.target.value);return}if(e.target.id==='lookin'&&e.key==='Enter'){e.preventDefault();lookList(e.target.value);e.target.blur()}});
 document.addEventListener('keydown',e=>{
