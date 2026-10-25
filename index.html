@@ -713,6 +713,32 @@ table.t .dot{width:10px;height:10px;margin-right:6px;vertical-align:middle}
 :root[data-skin="arcane"][data-acc="emerald"]{--arc:5 150 105;--arc2:16 185 129;--arcm:52 211 153;--arcl:167 243 208;--arct:220 252 235;--b0:5 14 11;--b1:8 22 17;--b2:11 30 23;--bgA:#06110d;--bgB:#0a1913;--bgC:#0e2219;--bgD:#081510;--bgE:#0c1d16}
 :root[data-skin="arcane"][data-acc="ember"]{--arc:220 38 38;--arc2:239 68 68;--arcm:248 113 113;--arcl:254 202 202;--arct:255 228 228;--b0:16 6 7;--b1:26 9 11;--b2:36 12 14;--bgA:#130708;--bgB:#1d0a0c;--bgC:#270e10;--bgD:#18090a;--bgE:#220c0e}
 :root[data-skin="arcane"][data-acc="night"]{--arc:71 85 105;--arc2:100 116 139;--arcm:148 163 184;--arcl:203 213 225;--arct:226 232 240;--b0:8 9 12;--b1:14 16 21;--b2:20 23 30;--bgA:#08090c;--bgB:#0e1015;--bgC:#14171e;--bgD:#0b0c10;--bgE:#11131a}
+
+/* Startspieler: Goldring beim Auslosen + Finale */
+.pickring{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:8;opacity:0;transition:opacity .08s}
+.panel.pick .pickring,.panel.sp-win .pickring{opacity:1;box-shadow:inset 0 0 0 max(4px,1.1cqmin) var(--brass),inset 0 0 28px color-mix(in srgb,var(--brass) 55%,transparent),0 0 0 3px var(--brass),0 0 36px color-mix(in srgb,var(--brass) 70%,transparent)}
+.panel.pick{transform:scale(1.015);transition:transform .08s}
+.panel.sp-win .pickring{animation:spring 1.1s ease-in-out infinite}
+@keyframes spring{50%{box-shadow:inset 0 0 0 max(5px,1.4cqmin) var(--brass),inset 0 0 50px color-mix(in srgb,var(--brass) 70%,transparent),0 0 0 4px var(--brass),0 0 70px color-mix(in srgb,var(--brass) 90%,transparent)}}
+.panel.sp-dim{filter:brightness(.45) saturate(.6);transition:filter .5s}
+.sp-banner{position:absolute;inset:0;display:grid;place-items:center;z-index:9;pointer-events:none;overflow:hidden;border-radius:inherit}
+.sp-rays{position:absolute;left:50%;top:50%;width:220cqmax;height:220cqmax;margin:-110cqmax;background:repeating-conic-gradient(color-mix(in srgb,var(--brass) 38%,transparent) 0 8deg,transparent 8deg 22deg);-webkit-mask:radial-gradient(closest-side,#000 15%,transparent 70%);mask:radial-gradient(closest-side,#000 15%,transparent 70%);animation:sprays 6s linear infinite,spfade .6s ease-out both}
+@keyframes sprays{to{transform:rotate(360deg)}}
+@keyframes spfade{from{opacity:0}}
+.sp-card{position:relative;display:grid;justify-items:center;gap:.2em;padding:1.1em 2em;border-radius:1.2em;background:radial-gradient(120% 120% at 50% 0%,color-mix(in srgb,var(--brass) 30%,#1a140a),#0d0a06 80%);border:2px solid var(--brass);box-shadow:0 0 0 1px rgba(0,0,0,.6),0 10px 40px rgba(0,0,0,.6),0 0 40px color-mix(in srgb,var(--brass) 60%,transparent);color:#fff6e0;font-size:clamp(12px,4.2cqmin,30px);animation:spin .7s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes spin{from{transform:scale(.3) rotate(-8deg);opacity:0}}
+.sp-crown svg{width:2.6em;height:2.6em;color:var(--brass);filter:drop-shadow(0 0 10px color-mix(in srgb,var(--brass) 80%,transparent));animation:spcrown 1.6s ease-in-out infinite}
+@keyframes spcrown{50%{transform:translateY(-.15em) scale(1.06)}}
+.sp-card small{font-size:.75em;letter-spacing:.2em;text-transform:uppercase;color:var(--brass)}
+.sp-card b{font-family:var(--f-title);font-size:1.9em;line-height:1.05;text-align:center;background:linear-gradient(100deg,#fff6e0 30%,var(--brass) 50%,#fff6e0 70%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:spshine 1.8s ease-in-out infinite}
+@keyframes spshine{from{background-position:120% 0}to{background-position:-120% 0}}
+.sp-card em{font-style:normal;font-weight:700;font-size:.95em;opacity:.9}
+.sp-banner.out{opacity:0;transition:opacity .5s}
+/* Mehrfarbiger Rahmen dreht sich langsam */
+@property --ga{syntax:'<angle>';inherits:false;initial-value:0deg}
+.panel.glowon.glowmulti::before{background:conic-gradient(from var(--ga),var(--glcols));animation:garot 14s linear infinite}
+@keyframes garot{to{--ga:360deg}}
+@media (prefers-reduced-motion:reduce){.panel.glowon.glowmulti::before,.sp-rays,.sp-crown svg,.sp-card b,.panel.sp-win .pickring{animation:none}}
 /* ---------- Skin: Arkan (Violett & Gold) – nach dem Design-Kit ---------- */
 :root[data-skin="arcane"]{--table:var(--bgA);--ink:#e2e8f0;--head:#f4f0ff;--muted:rgb(var(--arcl) / .88);--dim:#94a3b8;--brass:#d4b06a;--chip:rgb(var(--b0) / .55);--line:rgb(var(--arcm) / .22);
   --vio:rgb(var(--arc));--vio2:rgb(var(--arc2));--lav:rgb(var(--arcl));--vline:rgb(var(--arcm) / .45);--vline2:rgb(var(--arcm) / .22);--vglow:rgb(var(--arc) / .55);
@@ -811,7 +837,7 @@ const FORMATS={
   custom:{n:'Eigenes',life:null,cmd:false,dmg:false,hint:'Startleben selbst wählen'}};
 function fmtLife(f,n){const F=FORMATS[f];if(!F||F.life==null)return null;return f==='brawl'&&n>2?30:F.life}
 const isCmd=()=>!!(S.cfg&&S.cfg.cmd), isDmg=()=>!!(S.cfg&&S.cfg.dmg);
-const VERSION='4.5';
+const VERSION='4.6';
 const SKINS={classic:'Klassisch dunkel',card:'Kartenrahmen',light:'Hell & minimal',parchment:'Pergament & Foliant',identity:'Commander-Farben',terminal:'Terminal',arcane:'Arkan'};
 const ID_LINE={W:'#f4e7b8',U:'#4ea3ff',B:'#0c0b0d',R:'#ff6a3d',G:'#4fd16a',C:'#c9d1d9'};
 const ID_COL={W:'#9a8a5e',U:'#1f5aa0',B:'#2a292c',R:'#a8321c',G:'#2f7a3c',C:'#5d646c'},ID_GLOW={W:'rgba(255,240,190,.55)',U:'rgba(90,170,255,.55)',B:'rgba(0,0,0,.75)',R:'rgba(255,110,70,.55)',G:'rgba(110,230,120,.5)',C:'rgba(200,210,220,.45)'};
@@ -1109,12 +1135,19 @@ function pickStart(){closeModal();ui.startPrompt=false;const order=alive();if(or
   const steps=order.length*3+rnd(order.length);let i=0,delay=70;
   const step=()=>{ui.pick=order[i%order.length];update();if(S.cfg.sound)tone([[880,.04,'square',.04]]);i++;
     if(i<steps){delay=Math.min(delay*1.1,320);setTimeout(step,delay)}
-    else{const w=order[(steps-1)%order.length];setTimeout(()=>{setStarter(w,'ausgelost');if(S.cfg.turns)ui.pick=null;else setTimeout(()=>{ui.pick=null;update()},2500);update()},900)}};
+    else{const w=order[(steps-1)%order.length];setTimeout(()=>{setStarter(w,'ausgelost');ui.pick=null;update();startReveal(w)},650)}};
   step()}
+function startReveal(w){const el=elGame.querySelector(`.panel[data-pid="${w}"]`);if(!el)return;
+  elGame.querySelectorAll('.panel').forEach(x=>{x.classList.toggle('sp-dim',x!==el)});el.classList.add('sp-win');
+  const inn=el.querySelector('.inner');const b=document.createElement('div');b.className='sp-banner';
+  b.innerHTML=`<div class="sp-rays"></div><div class="sp-card"><span class="sp-crown">${I.crown}</span><small>Startspieler</small><b>${esc(P(w).name)}</b><em>beginnt!</em></div>`;inn.appendChild(b);
+  try{if(S.cfg.sound||S.cfg.sfx)tone([[523,.12,'triangle',.07],[659,.12,'triangle',.07],[784,.14,'triangle',.07],[1047,.5,'triangle',.08]],true)}catch(e){}
+  try{navigator.vibrate&&navigator.vibrate([30,60,30,60,120])}catch(e){}
+  setTimeout(()=>{b.classList.add('out');elGame.querySelectorAll('.panel').forEach(x=>x.classList.remove('sp-dim','sp-win'));setTimeout(()=>b.remove(),600)},3200)}
 function setStarter(w,how){setActive(w);S.g.first=w;S.g.turn=1;ev('Startspieler '+how+': '+P(w).name,w);sfx('turn');save();toast(P(w).name+' beginnt')}
 function rollAll(fromPrompt){closeModal();ui.startPrompt=false;const ids=alive();ui.roll={};let max=0;ids.forEach(id=>{const v=rnd(20)+1;ui.roll[id]=v;if(v>max)max=v});ui.rollTop=new Set(ids.filter(id=>ui.roll[id]===max));
   ev('Alle würfeln W20: '+ids.map(id=>P(id).name+' '+ui.roll[id]).join(', '));
-  if(fromPrompt===true){if(ui.rollTop.size===1){pushUndo();const w=[...ui.rollTop][0];setTimeout(()=>{setStarter(w,'mit der höchsten Zahl');update()},1500)}else{setTimeout(()=>{toast('Gleichstand – nochmal würfeln');ui.startPrompt=true;update()},2200)}}
+  if(fromPrompt===true){if(ui.rollTop.size===1){pushUndo();const w=[...ui.rollTop][0];setTimeout(()=>{setStarter(w,'mit der höchsten Zahl');update();startReveal(w)},1500)}else{setTimeout(()=>{toast('Gleichstand – nochmal würfeln');ui.startPrompt=true;update()},2200)}}
   update();save();clearTimeout(rollAll.t);rollAll.t=setTimeout(()=>{ui.roll={};ui.rollTop=new Set();update()},6000)}
 function diceKnock(v){const on=S.cfg?S.cfg.sfx:S.setup.sfx;if(!on)return;const a=ac();if(!a)return;const t=a.currentTime+.005;noise(a,t,.035,.25+.3*v,2800,'bandpass');osc(a,t,'sine',260+Math.random()*120,120,.05,.12*v+.04)}
 function rollDie3d(sides){ui.dSides=sides;const cv=document.getElementById('dicecv');if(!cv){rollDie(sides);return}
@@ -2104,6 +2137,7 @@ function restartSame(){pushUndo();if(S.match){if(mOver()){S.match={game:1,result
 /* ---------- Spielansicht ---------- */
 function panelHTML(id){if(id==null)return'';const p=P(id),c=col(p);return`
 <div class="panel" data-pid="${id}" style="--bg:${c.bg};--bg2:${c.bg2};--fg:${c.fg}">
+ <i class="pickring"></i>
  <div class="inner">
   <div class="half minus" data-pid="${id}" data-dir="-1"><span>−</span></div>
   <div class="half plus" data-pid="${id}" data-dir="1"><span>+</span></div>
@@ -2231,6 +2265,7 @@ function barHTML(){const g=S.g;
   <button class="bb" data-act="tools" aria-label="Würfel und Werkzeuge">${I.dice}<span class="t">Würfel</span></button>
   <button class="bb" data-act="look" aria-label="Karte nachschlagen">${I.search}<span class="t">Karte</span></button>
   <button class="bb" data-act="rules" aria-label="Regeln">${I.book}<span class="t">Regeln</span></button>
+  <button class="bb" data-act="ask" aria-label="KI fragen">${I.chat}<span class="t">KI</span></button>
   <button class="bb" data-act="undo" aria-label="Rückgängig">${I.undo}<span class="t">Zurück</span></button>
   <span class="sp"></span>
   ${S.cfg.turns&&g.active!=null?`<button class="bb" data-act="prev" aria-label="Vorheriger Zug">${I.prev}</button>`:''}
@@ -2263,7 +2298,7 @@ function update(){try{MUSIC.follow()}catch(e){}try{if(LIVE.local)LIVE.push()}cat
     el.querySelector('.name').innerHTML=esc(p.name)+(sk==='identity'&&idColors(p)&&isCmd()?` <span class="pips">${idColors(p).map(x=>useSym()?symImg(x,`<i style="--c:${ID_COL[x]}"></i>`):`<i style="--c:${ID_COL[x]}"></i>`).join('')}</span>`:'');
     const inn=el.querySelector('.inner');inn.classList.toggle('art',!!art);el.classList.toggle('hasart',!!art);if(art)inn.style.setProperty('--art',`url("${art}")`);
     {const ids=S.setup.glow!==false&&sk!=='identity'&&isCmd()?idColors(p):null;el.classList.toggle('glowon',!!ids);
-      if(ids){const cs=ids.map(x=>ID_LINE[x]);el.style.setProperty('--glg',cs.length===1?cs[0]:`linear-gradient(135deg,${cs.map((x,i)=>x+' '+Math.round(i/(cs.length-1)*100)+'%').join(',')})`);el.style.setProperty('--glc',ID_GLOW[ids[0]])}}
+      if(ids){const cs=ids.map(x=>ID_LINE[x]);el.classList.toggle('glowmulti',cs.length>1);el.style.setProperty('--glg',cs.length===1?cs[0]:`linear-gradient(135deg,${cs.join(',')})`);el.style.setProperty('--glcols',cs.join(',')+','+cs[0]);el.style.setProperty('--glc',ID_GLOW[ids[0]])}}
     el.querySelector('.cmdrline').innerHTML=cmdrHTML(p);
     el.querySelector('.num').textContent=p.life;
     const b=[];if(S.cfg.turns&&S.g.active===p.id&&!S.g.ended)b.push(`<span class="badge turn">am Zug${S.cfg.clock?' <span class="ttime"></span>':''}</span>`);if(S.match&&mWins(p.id))b.push(`<span class="badge">${'●'.repeat(mWins(p.id))} ${mWins(p.id)===1?'1 Sieg':'2 Siege'}</span>`);
